@@ -6,7 +6,34 @@ Points for consideration
   4) A customer can buy more than one product in every purchase
   5) Bill for every purchase has to be stored
   6) These are just details of one shop
- 
+
+-------------------------------------------------------------------------------
+Practice Schema
+
+product
+	prodId, prodName, prodPrice
+
+Supplier
+	supId, supName, contact
+
+ProductSupplier
+	prodSupplierId, prodId, supId
+
+customer
+	cusID, Name, AddressId, phoneNo
+
+address
+	addressId, doorNo, street, city, state, pinCode
+
+purchase
+	purschaseNumber, customerId, date
+
+purchaseDetails
+	purchaseNumber, prodId, qty, price
+
+--------------------------------------------------------------------------------
+ DDL schema
+
 categories
 id, name, status
  
