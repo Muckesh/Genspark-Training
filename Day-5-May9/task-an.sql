@@ -303,23 +303,33 @@ VALUES (CURRENT_TIMESTAMP, 1, 1, 1);
 
 -- Transaction-Based Questions (5)
 -- 1. Write a transaction that inserts a customer and an initial rental in one atomic operation.
+START TRANSACTION;
 
-BEGIN;
 
--- Step 1: Insert new customer and get customer_id
 WITH new_customer AS (
-    INSERT INTO customer (store_id, first_name, last_name, email, address_id, active)
-    VALUES (1, 'Jon', 'Doe', 'johndoe@example.com', 5, 1)
+    INSERT INTO customer (
+        store_id, first_name, last_name, email, address_id,
+        activebool, create_date, last_update, active
+    )
+    VALUES (
+        1, 'John', 'Berger', 'johnB@example.com', 5,
+        true, NOW(), NOW(), 1
+    )
     RETURNING customer_id
 )
-
--- Step 2: Insert new rental using the newly inserted customer_id
-INSERT INTO rental (rental_date, inventory_id, customer_id, staff_id)
-SELECT CURRENT_TIMESTAMP, 10, customer_id, 1
+INSERT INTO rental (
+    rental_date, inventory_id, customer_id, staff_id, last_update
+)
+SELECT
+    NOW(), 100, customer_id, 2, NOW()
 FROM new_customer;
 
 COMMIT;
 
+-- ROLLBACK;
+
+select * from customer;
+select * from rental order by rental_date desc;
 
 -- 2. Simulate a failure in a multi-step transaction (update film + insert into inventory) and roll back.
 BEGIN;
@@ -334,16 +344,55 @@ INSERT INTO inventory (film_id, store_id) VALUES (1, NULL); -- store_id NULL vio
 ROLLBACK;
 
 --3. Create a transaction that transfers an inventory item from one store to another.
+START TRANSACTION;
 
-BEGIN;
-
--- Example: Move inventory item ID 100 from store 1 to store 2
 UPDATE inventory
-SET store_id = 2
-WHERE inventory_id = 100 AND store_id = 1;
-
--- Optionally log the transfer
-INSERT INTO inventory_log (inventory_id, from_store, to_store, transfer_date)
-VALUES (100, 1, 2, CURRENT_TIMESTAMP);
+SET store_id = 1,
+    last_update = NOW()
+WHERE inventory_id = 100;
 
 COMMIT;
+
+select * from inventory WHERE inventory_id = 100;
+
+-- Q4. Demonstrate SAVEPOINT and ROLLBACK TO SAVEPOINT by updating payment amounts, then undoing one.
+
+--BEFORE
+select amount from payment where payment_id = 17503; -- 7.99
+select amount from payment where payment_id = 17504; -- 1.99
+
+START TRANSACTION;
+	UPDATE payment SET amount = amount + 1 WHERE payment_id = 17503;
+	
+	SAVEPOINT after_first_update;
+	
+	-- Second update
+	UPDATE payment SET amount = amount + 1 WHERE payment_id = 17504;
+	
+	-- Now decide to undo second update
+	ROLLBACK TO SAVEPOINT after_first_update;
+COMMIT;
+
+--AFTER
+select amount from payment where payment_id = 17503; -- 8.99
+select amount from payment where payment_id = 17504; -- 1.99
+
+-- Q5.Write a transaction that deletes a customer and all associated rentals and payments, ensuring atomicity.
+
+START TRANSACTION;
+
+-- Delete payments
+DELETE FROM payment WHERE customer_id = 10;
+
+-- Delete rentals
+DELETE FROM rental WHERE customer_id = 10;
+
+-- Delete customer
+DELETE FROM customer WHERE customer_id = 10;
+
+COMMIT;
+
+SELECT * FROM payment WHERE customer_id = 10; -- none displayed
+SELECT * FROM rental WHERE customer_id = 10; -- none displayed
+SELECT * FROM customer WHERE customer_id = 10; -- none displayed
+
