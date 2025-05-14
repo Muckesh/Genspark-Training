@@ -1,0 +1,64 @@
+primary secondary server for replication
+
+---------------- primary server -------------------
+
+initdb -D "C:\Presidio\Genspark-Training\Day-8-May14/pri"
+
+pg_ctl -D C:\Presidio\Genspark-Training\Day-8-May14\pri -o "-p 5433" -l C:\Muckesh\Presidio\Genspark-Training\Day-8-May14\pri\logfile start
+
+psql -p 5433 -d postgres -c "CREATE ROLE replicator with REPLICATION LOGIN PASSWORD 'repl_pass';"
+
+pg_basebackup -D  C:\Presidio\Genspark-Training\Day-8-May14\sec -Fp -Xs -P -R -h 127.0.0.1 -U replicator -p 5433
+
+psql -p 5433 -d postgres
+
+postgres=# select * from pg_stat_replication;
+
+postgres=# create table rental_log(
+ log_id serial primary key,
+ rental_time timestamp,
+ customer_id int,
+ film_id int,
+ amount numeric,
+ logged_on timestamp default current_timestamp);
+
+postgres=# insert into rental_log (rental_time,customer_id,film_id,amount,logged_on) values (current_timestamp,1,121,2.99, current_timestamp);
+postgres=# select * from rental_log;
+
+postgres=# create or replace procedure sp_add_rental_log(
+ p_customer_id int, p_film_id int, p_amount numeric)
+ language plpgsql
+ AS $$
+ begin insert into rental_log(rental_time,customer_id,film_id,amount)
+ values (current_timestamp,p_customer_id,p_film_id,p_amount);
+ exception when others then
+ raise notice 'Error occurred : %',sqlerrm;
+ end; $$;
+
+postgres=# call sp_add_rental_log(2,21,3.99);
+
+postgres=# create table rental_log_update (update_id serial primary key, log_id int,old_amount numeric, new_amount numeric, updated_in timestamp default current_timestamp);
+
+postgres=# create or replace function trg_rental_log_update()
+ returns trigger
+ as $$
+ begin insert into rental_log_update (log_id,old_amount,new_amount) values (old.log_id,old.amount,new.amount);
+ return new;
+ end; $$ language plpgsql ;
+
+postgres=# create trigger after_rental_log_update after update on rental_log for each row when (old.amount is distinct from new.amount) execute function trg_rental_log_update();
+
+postgres=# update rental_log set amount = 6.99 where customer_id = 1;
+
+postgres=# select * from rental_log_update;
+
+-------------------- secondary server -------------------------
+pg_ctl -D C:\Presidio\Genspark-Training\Day-8-May14\sec -o "-p 5435" -l C:\Muckesh\Presidio\Genspark-Training\Day-8-May14\sec\logfile start
+
+psql -p 5435 -d postgres
+
+select pg_is_in_recovery();
+
+select * from rental_log;
+
+select * from rental_log_update;

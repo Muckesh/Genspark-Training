@@ -1,0 +1,105 @@
+2025-05-14 12:59:45.091 IST [8552] LOG:  starting PostgreSQL 17.4 on x86_64-windows, compiled by msvc-19.43.34808, 64-bit
+2025-05-14 12:59:45.095 IST [8552] LOG:  could not bind IPv6 address "::1": Permission denied
+2025-05-14 12:59:45.095 IST [8552] LOG:  could not bind IPv4 address "127.0.0.1": Permission denied
+2025-05-14 12:59:45.095 IST [8552] WARNING:  could not create listen socket for "localhost"
+2025-05-14 12:59:45.095 IST [8552] FATAL:  could not create any TCP/IP sockets
+2025-05-14 12:59:45.097 IST [8552] LOG:  database system is shut down
+2025-05-14 13:00:18.462 IST [2428] LOG:  starting PostgreSQL 17.4 on x86_64-windows, compiled by msvc-19.43.34808, 64-bit
+2025-05-14 13:00:18.467 IST [2428] LOG:  could not bind IPv6 address "::1": Permission denied
+2025-05-14 13:00:18.467 IST [2428] LOG:  could not bind IPv4 address "127.0.0.1": Permission denied
+2025-05-14 13:00:18.467 IST [2428] WARNING:  could not create listen socket for "localhost"
+2025-05-14 13:00:18.467 IST [2428] FATAL:  could not create any TCP/IP sockets
+2025-05-14 13:00:18.484 IST [2428] LOG:  database system is shut down
+2025-05-14 13:01:20.368 IST [6388] LOG:  starting PostgreSQL 17.4 on x86_64-windows, compiled by msvc-19.43.34808, 64-bit
+2025-05-14 13:01:20.372 IST [6388] LOG:  listening on IPv6 address "::1", port 5433
+2025-05-14 13:01:20.372 IST [6388] LOG:  listening on IPv4 address "127.0.0.1", port 5433
+2025-05-14 13:01:20.423 IST [2856] LOG:  database system was shut down at 2025-05-14 12:53:06 IST
+2025-05-14 13:01:20.451 IST [6388] LOG:  database system is ready to accept connections
+2025-05-14 13:04:36.890 IST [13352] LOG:  checkpoint starting: force wait
+2025-05-14 13:04:42.242 IST [13352] LOG:  checkpoint complete: wrote 52 buffers (0.3%); 0 WAL file(s) added, 0 removed, 1 recycled; write=5.320 s, sync=0.017 s, total=5.353 s; sync files=15, longest=0.002 s, average=0.002 s; distance=10846 kB, estimate=10846 kB; lsn=0/20000B8, redo lsn=0/2000028
+2025-05-14 13:07:41.131 IST [6720] LOG:  starting PostgreSQL 17.4 on x86_64-windows, compiled by msvc-19.43.34808, 64-bit
+2025-05-14 13:07:41.136 IST [6720] LOG:  listening on IPv6 address "::1", port 5435
+2025-05-14 13:07:41.136 IST [6720] LOG:  listening on IPv4 address "127.0.0.1", port 5435
+2025-05-14 13:07:41.182 IST [16864] LOG:  database system was interrupted; last known up at 2025-05-14 13:04:42 IST
+2025-05-14 13:07:46.767 IST [16864] LOG:  could not open file "./logfile": sharing violation
+2025-05-14 13:07:46.767 IST [16864] DETAIL:  Continuing to retry for 30 seconds.
+2025-05-14 13:07:46.767 IST [16864] HINT:  You might have antivirus, backup, or similar software interfering with the database system.
+2025-05-14 13:08:13.690 IST [16864] LOG:  syncing data directory (fsync), elapsed time: 32.50 s, current path: ./pg_commit_ts
+2025-05-14 13:08:13.739 IST [16864] LOG:  starting backup recovery with redo LSN 0/2000028, checkpoint LSN 0/20000B8, on timeline ID 1
+2025-05-14 13:08:13.739 IST [16864] LOG:  entering standby mode
+2025-05-14 13:08:13.751 IST [16864] LOG:  redo starts at 0/2000028
+2025-05-14 13:08:13.754 IST [16864] LOG:  completed backup recovery with redo LSN 0/2000028 and end LSN 0/2000158
+2025-05-14 13:08:13.754 IST [16864] LOG:  consistent recovery state reached at 0/2000158
+2025-05-14 13:08:13.754 IST [6720] LOG:  database system is ready to accept read-only connections
+2025-05-14 13:08:13.990 IST [16808] LOG:  started streaming WAL from primary at 0/3000000 on timeline 1
+2025-05-14 13:09:04.157 IST [9752] FATAL:  role "postgres" does not exist
+2025-05-14 13:12:41.312 IST [15120] LOG:  restartpoint starting: time
+2025-05-14 13:12:41.332 IST [15120] LOG:  restartpoint complete: wrote 1 buffers (0.0%); 0 WAL file(s) added, 0 removed, 1 recycled; write=0.003 s, sync=0.001 s, total=0.022 s; sync files=0, longest=0.000 s, average=0.000 s; distance=16384 kB, estimate=16384 kB; lsn=0/30000B8, redo lsn=0/3000060
+2025-05-14 13:12:41.333 IST [15120] LOG:  recovery restart point at 0/3000060
+2025-05-14 13:22:27.947 IST [16808] FATAL:  terminating walreceiver due to timeout
+2025-05-14 13:22:27.948 IST [16864] LOG:  invalid record length at 0/3000168: expected at least 24, got 0
+2025-05-14 13:22:28.051 IST [12704] LOG:  started streaming WAL from primary at 0/3000000 on timeline 1
+2025-05-14 13:55:45.536 IST [12704] FATAL:  terminating walreceiver due to timeout
+2025-05-14 13:55:45.641 IST [10132] LOG:  started streaming WAL from primary at 0/3000000 on timeline 1
+2025-05-14 14:55:15.334 IST [15516] ERROR:  function ps_is_in_recovery() does not exist at character 8
+2025-05-14 14:55:15.334 IST [15516] HINT:  No function matches the given name and argument types. You might need to add explicit type casts.
+2025-05-14 14:55:15.334 IST [15516] STATEMENT:  select ps_is_in_recovery();
+2025-05-14 15:00:23.189 IST [15120] LOG:  restartpoint starting: time
+2025-05-14 15:00:28.976 IST [15120] LOG:  restartpoint complete: wrote 53 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=5.658 s, sync=0.081 s, total=5.788 s; sync files=42, longest=0.035 s, average=0.002 s; distance=154 kB, estimate=14761 kB; lsn=0/3026A98, redo lsn=0/3026A08
+2025-05-14 15:00:28.976 IST [15120] LOG:  recovery restart point at 0/3026A08
+2025-05-14 15:00:28.976 IST [15120] DETAIL:  Last completed transaction was at log time 2025-05-14 14:57:37.658518+05:30.
+2025-05-14 15:05:23.992 IST [15120] LOG:  restartpoint starting: time
+2025-05-14 15:05:28.796 IST [15120] LOG:  restartpoint complete: wrote 44 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.679 s, sync=0.076 s, total=4.804 s; sync files=38, longest=0.035 s, average=0.002 s; distance=147 kB, estimate=13299 kB; lsn=0/304B828, redo lsn=0/304B798
+2025-05-14 15:05:28.796 IST [15120] LOG:  recovery restart point at 0/304B798
+2025-05-14 15:05:28.796 IST [15120] DETAIL:  Last completed transaction was at log time 2025-05-14 15:03:33.740932+05:30.
+2025-05-14 15:10:23.805 IST [15120] LOG:  restartpoint starting: time
+2025-05-14 15:10:24.956 IST [15120] LOG:  restartpoint complete: wrote 11 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.095 s, sync=0.013 s, total=1.152 s; sync files=11, longest=0.003 s, average=0.002 s; distance=35 kB, estimate=11973 kB; lsn=0/3054610, redo lsn=0/30545B8
+2025-05-14 15:10:24.957 IST [15120] LOG:  recovery restart point at 0/30545B8
+2025-05-14 15:10:24.957 IST [15120] DETAIL:  Last completed transaction was at log time 2025-05-14 15:07:57.451505+05:30.
+2025-05-14 15:15:23.972 IST [15120] LOG:  restartpoint starting: time
+2025-05-14 15:15:28.453 IST [15120] LOG:  restartpoint complete: wrote 41 buffers (0.3%); 0 WAL file(s) added, 0 removed, 0 recycled; write=4.345 s, sync=0.086 s, total=4.482 s; sync files=38, longest=0.035 s, average=0.003 s; distance=164 kB, estimate=10792 kB; lsn=0/307D858, redo lsn=0/307D800
+2025-05-14 15:15:28.453 IST [15120] LOG:  recovery restart point at 0/307D800
+2025-05-14 15:15:28.453 IST [15120] DETAIL:  Last completed transaction was at log time 2025-05-14 15:15:13.326641+05:30.
+2025-05-14 15:20:23.459 IST [15120] LOG:  restartpoint starting: time
+2025-05-14 15:20:25.444 IST [15120] LOG:  restartpoint complete: wrote 19 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.949 s, sync=0.019 s, total=1.985 s; sync files=14, longest=0.002 s, average=0.002 s; distance=32 kB, estimate=9716 kB; lsn=0/3085AE8, redo lsn=0/3085A90
+2025-05-14 15:20:25.444 IST [15120] LOG:  recovery restart point at 0/3085A90
+2025-05-14 15:20:25.444 IST [15120] DETAIL:  Last completed transaction was at log time 2025-05-14 15:18:16.547774+05:30.
+2025-05-14 15:50:24.364 IST [15120] LOG:  restartpoint starting: time
+2025-05-14 15:50:25.442 IST [15120] LOG:  restartpoint complete: wrote 10 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.981 s, sync=0.047 s, total=1.078 s; sync files=8, longest=0.036 s, average=0.006 s; distance=5 kB, estimate=8745 kB; lsn=0/30870E8, redo lsn=0/3087090
+2025-05-14 15:50:25.442 IST [15120] LOG:  recovery restart point at 0/3087090
+2025-05-14 15:50:25.442 IST [15120] DETAIL:  Last completed transaction was at log time 2025-05-14 15:49:38.290465+05:30.
+2025-05-14 15:54:20.466 IST [10660] ERROR:  permission denied for table rental_log
+2025-05-14 15:54:20.466 IST [10660] STATEMENT:  select * from rental_log;
+2025-05-14 15:55:24.450 IST [15120] LOG:  restartpoint starting: time
+2025-05-14 15:55:25.052 IST [15120] LOG:  restartpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.548 s, sync=0.043 s, total=0.602 s; sync files=6, longest=0.035 s, average=0.008 s; distance=5 kB, estimate=7871 kB; lsn=0/3088570, redo lsn=0/3088518
+2025-05-14 15:55:25.052 IST [15120] LOG:  recovery restart point at 0/3088518
+2025-05-14 15:55:25.052 IST [15120] DETAIL:  Last completed transaction was at log time 2025-05-14 15:52:50.864083+05:30.
+2025-05-14 16:00:24.065 IST [15120] LOG:  restartpoint starting: time
+2025-05-14 16:00:25.663 IST [15120] LOG:  restartpoint complete: wrote 15 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=1.538 s, sync=0.049 s, total=1.598 s; sync files=13, longest=0.034 s, average=0.004 s; distance=25 kB, estimate=7086 kB; lsn=0/308EC18, redo lsn=0/308EBC0
+2025-05-14 16:00:25.663 IST [15120] LOG:  recovery restart point at 0/308EBC0
+2025-05-14 16:00:25.663 IST [15120] DETAIL:  Last completed transaction was at log time 2025-05-14 16:00:00.101638+05:30.
+2025-05-14 16:03:41.497 IST [10660] ERROR:  cannot execute UPDATE in a read-only transaction
+2025-05-14 16:03:41.497 IST [10660] STATEMENT:  update rental_log set amount = 1.99 where customer_id = 2;
+2025-05-14 16:05:24.672 IST [15120] LOG:  restartpoint starting: time
+2025-05-14 16:05:25.313 IST [15120] LOG:  restartpoint complete: wrote 6 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.551 s, sync=0.045 s, total=0.642 s; sync files=6, longest=0.035 s, average=0.008 s; distance=8 kB, estimate=6378 kB; lsn=0/3090C38, redo lsn=0/3090BE0
+2025-05-14 16:05:25.314 IST [15120] LOG:  recovery restart point at 0/3090BE0
+2025-05-14 16:05:25.314 IST [15120] DETAIL:  Last completed transaction was at log time 2025-05-14 16:04:28.128706+05:30.
+2025-05-14 16:10:24.321 IST [15120] LOG:  restartpoint starting: time
+2025-05-14 16:10:24.455 IST [15120] LOG:  restartpoint complete: wrote 2 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.110 s, sync=0.006 s, total=0.134 s; sync files=2, longest=0.004 s, average=0.003 s; distance=0 kB, estimate=5741 kB; lsn=0/3090ED8, redo lsn=0/3090E80
+2025-05-14 16:10:24.455 IST [15120] LOG:  recovery restart point at 0/3090E80
+2025-05-14 16:10:24.455 IST [15120] DETAIL:  Last completed transaction was at log time 2025-05-14 16:10:14.874616+05:30.
+2025-05-14 16:15:24.459 IST [15120] LOG:  restartpoint starting: time
+2025-05-14 16:15:25.249 IST [15120] LOG:  restartpoint complete: wrote 8 buffers (0.0%); 0 WAL file(s) added, 0 removed, 0 recycled; write=0.758 s, sync=0.012 s, total=0.791 s; sync files=8, longest=0.002 s, average=0.002 s; distance=10 kB, estimate=5168 kB; lsn=0/30938B0, redo lsn=0/3093858
+2025-05-14 16:15:25.250 IST [15120] LOG:  recovery restart point at 0/3093858
+2025-05-14 16:15:25.250 IST [15120] DETAIL:  Last completed transaction was at log time 2025-05-14 16:13:28.920503+05:30.
+2025-05-14 17:58:00.746 IST [10132] FATAL:  terminating walreceiver due to timeout
+2025-05-14 17:58:00.751 IST [16864] LOG:  invalid record length at 0/3093960: expected at least 24, got 0
+2025-05-14 17:58:00.828 IST [3980] LOG:  started streaming WAL from primary at 0/3000000 on timeline 1
+2025-05-14 18:28:40.821 IST [3980] FATAL:  terminating walreceiver due to timeout
+2025-05-14 18:28:40.935 IST [11696] LOG:  started streaming WAL from primary at 0/3000000 on timeline 1
+2025-05-14 20:18:44.751 IST [11696] FATAL:  terminating walreceiver due to timeout
+2025-05-14 20:18:44.824 IST [8440] LOG:  started streaming WAL from primary at 0/3000000 on timeline 1
+2025-05-14 20:48:55.735 IST [8440] FATAL:  terminating walreceiver due to timeout
+2025-05-14 20:48:55.820 IST [19376] LOG:  started streaming WAL from primary at 0/3000000 on timeline 1
+2025-05-14 22:25:49.496 IST [19376] FATAL:  terminating walreceiver due to timeout
+2025-05-14 22:25:49.568 IST [9084] LOG:  started streaming WAL from primary at 0/3000000 on timeline 1

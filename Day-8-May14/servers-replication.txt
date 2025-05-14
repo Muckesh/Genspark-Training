@@ -1,0 +1,27 @@
+Availability - high availability -> low downtime
+	Min downtime
+	Replication or redundancy -> replicating the main server and making it read only
+	Auto recovery
+
+Non - Available
+	crash - auto recovery
+	network failure - replication
+	hardware failure - replication
+	maintenance time - min downtime
+
+Master and slave
+Master - primary server
+slave - standby (used for load balancing)
+
+Master crashes / network failure or hardware failure - slave takes over (promotion)
+Huge traffic - we can use the slave as side along master - load balancing
+
+repmgr - replication manager - node manager for failover
+
+PgBouncer - connection pooling
+
+Pgpool - load balancing + connection pooling
+
+streaming rep -> WAL - write ahead log -> rep is read only -> physical form
+logical rep -> table level - publisher/subscriber pub/sub model
+
