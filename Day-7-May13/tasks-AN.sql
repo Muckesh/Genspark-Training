@@ -266,9 +266,11 @@ begin
 	if new.amount <= 0 then
 		raise exception 'Payment amount must be greater than zero. Attempted : %',new.amount;
 	end if;
+	return new;
 end;
 $$ language plpgsql;
 -- attach trigger
+drop trigger trg_check_payment_amount on payment;
 create trigger trg_check_payment_amount
 before insert on payment
 for each row
