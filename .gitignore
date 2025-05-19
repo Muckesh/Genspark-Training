@@ -1,0 +1,29 @@
+# exclude vs code settings
+.vscode/
+
+# Build results
+bin/
+obj/
+
+# user specific files
+*.user
+*.suo
+
+# Visual Studio files
+*.vs/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Dotnet specific
+*.dll
+*.exe
+*.pdb
+
+# Logs
+*.log
+
+# NuGet packages
+*.nupkg
+packages/
