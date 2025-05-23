@@ -1,171 +1,69 @@
-// using System;
-// using System.IO;
-
-// public class FileManager
-// {
-//     private static readonly Lazy<FileManager> _instance = new Lazy<FileManager>(() => new FileManager());
-
-//     private StreamWriter _writer;
-//     private StreamReader _reader;
-//     private FileStream _stream;
-//     private readonly string _filePath = "data.txt";
-//     private bool _isClosed = false;
-
-//     private FileManager()
-//     {
-//         try
-//         {
-//             Console.WriteLine("Opening File");
-//             _stream = new FileStream(_filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
-//             _writer = new StreamWriter(_stream) { AutoFlush = true };
-//             _reader = new StreamReader(_stream);
-//         }
-//         catch (Exception ex)
-//         {
-//             Console.WriteLine("Error initializing FileManager: " + ex.Message);
-//             throw;
-//         }
-//     }
-
-//     public static FileManager Instance => _instance.Value;
-
-//     public void Write(string text)
-//     {
-//         try
-//         {
-//             if (_isClosed) throw new ObjectDisposedException("FileManager");
-//             _writer.WriteLine(text);
-//         }
-//         catch (Exception ex)
-//         {
-//             Console.WriteLine("Error writing to file: " + ex.Message);
-//         }
-//     }
-
-//     public void Read()
-//     {
-//         try
-//         {
-//             if (_isClosed) throw new ObjectDisposedException("FileManager");
-
-//             _writer.Flush(); // Ensure all writes are saved
-//             _stream.Seek(0, SeekOrigin.Begin); // Move to beginning of stream before reading
-
-//             string line;
-//             while ((line = _reader.ReadLine()) != null)
-//             {
-//                 Console.WriteLine(line);
-//             }
-//         }
-//         catch (Exception ex)
-//         {
-//             Console.WriteLine("Error reading from file: " + ex.Message);
-//         }
-//     }
-
-//     public void Close()
-//     {
-//         if (_isClosed) return;
-
-//         try
-//         {
-//             Console.WriteLine("Closing file...");
-
-//             _reader?.Dispose(); _reader = null;
-//             _writer?.Dispose(); _writer = null;
-//             _stream?.Dispose(); _stream = null;
-
-//             _isClosed = true;
-//         }
-//         catch (Exception ex)
-//         {
-//             Console.WriteLine("Error closing file: " + ex.Message);
-//         }
-//     }
-// }
-
 using System;
 using System.IO;
 
-public class FileManager
+
+public sealed class FileManager
 {
-    private static readonly Lazy<FileManager> _instance = new Lazy<FileManager>(() => new FileManager());
+    private static FileManager? _instance;
+    private FileStream? _fileStream;
+    private StreamReader? _reader;
+    private StreamWriter? _writer;
 
-    private StreamWriter _writer;
-    private StreamReader _reader;
-    private FileStream _stream;
-    private readonly string _filePath = "data.txt";
-    private bool _isClosed = false;
+    private FileManager() { }
 
-    private FileManager()
+    public static FileManager GetInstance()
     {
-        try
+        if (_instance == null)
+            _instance = new FileManager();
+        return _instance;
+    }
+
+    public void OpenFile(string path)
+    {
+        _fileStream = new FileStream(path, FileMode.OpenOrCreate, FileAccess.ReadWrite);
+        _reader = new StreamReader(_fileStream);
+        _writer = new StreamWriter(_fileStream);
+    }
+
+    public void WriteFile(string line)
+    {
+        if (_writer == null)
         {
-            Console.WriteLine("Opening File");
-            _stream = new FileStream(_filePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
-            _writer = new StreamWriter(_stream) { AutoFlush = true };
-            _reader = new StreamReader(_stream);
+            Console.WriteLine("Error Opening file for writing.");
+            return;
         }
-        catch (Exception ex)
+
+        _writer.BaseStream.Seek(0, SeekOrigin.End); // Move to end
+        _writer.WriteLine(line);
+        _writer.Flush(); // Always flush!
+        Console.WriteLine("Contents written successfully.");
+    }
+
+    public void ReadFile()
+    {
+        if (_reader == null)
         {
-            Console.WriteLine("Error initializing FileManager: " + ex.Message);
-            throw;
+            Console.WriteLine("Error opening file for reading.");
+            return;
+        }
+
+        _reader.BaseStream.Seek(0, SeekOrigin.Begin); // Go to start
+        string? line;
+        Console.WriteLine("Reading from file:");
+        while ((line = _reader.ReadLine()) != null)
+        {
+            Console.WriteLine(line);
         }
     }
 
-    public static FileManager Instance => _instance.Value;
-
-    public void Write(string text)
+    public void CloseFile()
     {
-        try
-        {
-            if (_isClosed) throw new ObjectDisposedException("FileManager");
-            _writer.WriteLine(text);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error writing to file: " + ex.Message);
-        }
-    }
+        _writer?.Dispose();
+        _reader?.Dispose();
+        _fileStream?.Dispose();
 
-    public void Read()
-    {
-        try
-        {
-            if (_isClosed) throw new ObjectDisposedException("FileManager");
-
-            _writer.Flush(); // Ensure all writes are saved
-            _stream.Seek(0, SeekOrigin.Begin); // Move to beginning of stream before reading
-
-            string line;
-            while ((line = _reader.ReadLine()) != null)
-            {
-                Console.WriteLine(line);
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error reading from file: " + ex.Message);
-        }
-    }
-
-    public void Close()
-    {
-        if (_isClosed) return;
-
-        try
-        {
-            Console.WriteLine("Closing file...");
-
-            // _reader?.Dispose(); _reader = null;
-            // _writer?.Dispose(); _writer = null;
-            _stream?.Dispose(); _stream = null;
-
-            _isClosed = true;
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error closing file: " + ex.Message);
-        }
+        _writer = null;
+        _reader = null;
+        _fileStream = null;
     }
 }
