@@ -23,7 +23,8 @@ builder.Services.AddTransient<IRepository<Guid,Transaction>,TransactionRepositor
 
 // builder.Services.AddTransient<IBankService,BankService>();
 builder.Services.AddTransient<IAccountService,AccountService>();
-builder.Services.AddTransient<ITransactionService,TransactionService>();
+builder.Services.AddTransient<ITransactionService, TransactionService>();
+builder.Services.AddTransient<ITransferServiceWithTransaction,TransferServiceWithTransaction>();
 
 
 
