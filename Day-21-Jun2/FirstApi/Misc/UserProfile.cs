@@ -8,8 +8,11 @@ public class UserProfile : Profile
         .ForMember(dest => dest.UserName, act => act.MapFrom(src => src.Email))
         .ForMember(dest => dest.Password, opt => opt.Ignore());
 
-        CreateMap<User, DoctorAddRequestDto>()
-        .ForMember(dest => dest.Email, act => act.MapFrom(src => src.UserName));
+        // CreateMap<User, DoctorAddRequestDto>()
+        // .ForMember(dest => dest.Email, act => act.MapFrom(src => src.UserName));
+        CreateMap<PatientAddRequestDto, User>()
+        .ForMember(dest => dest.UserName, act => act.MapFrom(src => src.Email))
+        .ForMember(dest => dest.Password, opt => opt.Ignore());
     }
     
 }
