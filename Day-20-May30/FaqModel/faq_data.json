@@ -1,0 +1,82 @@
+[
+    {
+        "question": "How can I open a new bank account?",
+        "answer": "You can open a new account by visiting your nearest branch or through our mobile app with valid ID and address proof."
+    },
+    {
+        "question": "What documents are required to apply for a loan?",
+        "answer": "You need ID proof, address proof, income proof, and bank statements for the past 6 months."
+    },
+    {
+        "question": "How do I reset my internet banking password?",
+        "answer": "Go to the login page, click on 'Forgot Password', and follow the instructions sent to your registered email or phone number."
+    },
+    {
+        "question": "What are the bank’s working hours?",
+        "answer": "Our branches are open from 9:00 AM to 4:00 PM, Monday to Friday."
+    },
+    {
+        "question": "How can I block my debit card?",
+        "answer": "You can block your debit card via mobile banking, internet banking, or by calling customer support."
+    },
+    {
+        "question": "What is the current interest rate on savings accounts?", 
+        "answer": "The current interest rate on savings accounts is 3.5% per annum."
+    },
+    {
+        "question": "How can I check my account balance?",
+        "answer": "You can check your balance using mobile banking, internet banking, or by visiting an ATM."
+    },
+    {
+        "question": "Is there a minimum balance requirement?", 
+        "answer": "Yes, the minimum balance requirement depends on your account type and location."
+    },
+    {
+        "question": "How to apply for a credit card?",
+        "answer": "You can apply for a credit card through our website or by visiting your nearest branch with valid documents."
+    },
+    {
+        "question": "What is the daily withdrawal limit from an ATM?",
+        "answer": "The daily withdrawal limit is ₹25,000 for regular debit cards."
+    },
+    {
+        "question": "How do I enable two-factor authentication?",
+        "answer": "Log in to your account settings and enable 2FA using SMS OTP or authenticator apps."
+    },
+    {
+        "question": "Can I open a joint bank account?",
+        "answer": "Yes, you can open a joint account by visiting a branch with KYC documents of all applicants."
+    },
+    {
+        "question": "How can I update my registered mobile number?",
+        "answer": "Log in to internet banking or visit the nearest branch to update your mobile number."
+    },
+    {
+        "question": "What should I do if a transaction fails but money is debited?", 
+        "answer": "The debited amount will be refunded within 2–3 working days. If not, contact support with transaction details."
+    },
+    {
+        "question": "How do I apply for a home loan?",
+        "answer": "You can apply for a home loan online or at a branch by submitting the required documents."
+    },
+    {
+        "question": "Is mobile banking secure?",
+        "answer": "Yes, our mobile banking app uses end-to-end encryption and 2FA to ensure secure access."
+    },
+    {
+        "question": "How can I get a bank statement?",
+        "answer": "You can download your account statement through internet banking or request it at a branch."
+    },
+    {
+        "question": "What is the UPI transaction limit?",
+        "answer": "The UPI daily transaction limit is ₹1,00,000, depending on your account type and bank policy."
+    },
+    {
+        "question": "Can I access my account while abroad?",
+        "answer": "Yes, you can access your account online from anywhere in the world using internet or mobile banking."
+    },
+    {
+        "question": "How do I contact customer support?",
+        "answer": "You can reach us via phone, email, or live chat 24x7 through our website or mobile app."
+    }
+]
