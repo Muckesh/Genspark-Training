@@ -27,3 +27,6 @@ Thumbs.db
 # NuGet packages
 *.nupkg
 packages/
+
+# venv
+venv/
