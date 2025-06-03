@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]")]
@@ -68,6 +69,21 @@ public class DoctorsController : ControllerBase
         catch (Exception ex)
         {
             return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("doctors")]
+    [Authorize(Roles = "Doctor")]
+    public async Task<ActionResult<IEnumerable<Doctor>>> GetDoctors()
+    {
+        try
+        {
+            var doctors = await _doctorService.GetAllDoctors();
+            return doctors.ToList();
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
         }
     }
 }

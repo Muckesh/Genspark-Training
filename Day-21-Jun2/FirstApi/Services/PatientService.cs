@@ -37,9 +37,15 @@ public class PatientService : IPatientService
             patient = await _patientRepository.Add(patient);
             return patient;
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             throw new Exception(e.Message);
         }
+    }
+    
+    public async Task<ICollection<Patient>> GetAllPatients()
+    {
+        var doctors = await _patientRepository.GetAll();
+        return doctors.ToList();
     }
 }

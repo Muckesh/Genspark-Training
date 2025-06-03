@@ -217,6 +217,6 @@ public class DoctorService : IDoctorService
     public async Task<ICollection<Doctor>> GetAllDoctors()
     {
         var doctors = await _doctorRepository.GetAll();
-        return [.. doctors];
+        return doctors.ToList();
     }
 }
