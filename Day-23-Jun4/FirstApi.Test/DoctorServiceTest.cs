@@ -52,7 +52,69 @@ public class DoctorServiceTest
 
         // Assert
         Assert.That(result.Count(), Is.EqualTo(1));   
-    }   
+    }
+
+    [Test]
+        public async Task TestGetAllDoctors()
+        {
+        var doctors = new List<Doctor>
+
+        {
+            new Doctor { Id = 1, Name = "Doc 1" },
+            new Doctor { Id = 2, Name = "Doc 2"}
+        };
+        var doctorRepositoryMock = new Mock<IRepository<int, Doctor>>();
+        doctorRepositoryMock.Setup(r => r.GetAll()).ReturnsAsync(doctors);
+        var service = new DoctorService(
+            doctorRepositoryMock.Object,
+            Mock.Of<IRepository<int, Speciality>>(),
+            Mock.Of<IRepository<int, DoctorSpeciality>>(),
+            Mock.Of<IRepository<string, User>>(),
+            Mock.Of<IOtherContextFunctionalities>(),
+            Mock.Of<IEncryptionService>(),
+            Mock.Of<IMapper>()
+        );
+        var result = await service.GetAllDoctors();
+        Assert.That(result.Count, Is.EqualTo(2));
+    }  
+
+    [Test]
+    public void TestGetAllDoctorsException()
+    {
+        var doctorRepositoryMock = new Mock<IRepository<int, Doctor>>();
+        doctorRepositoryMock.Setup(r => r.GetAll()).ReturnsAsync(new List<Doctor>());
+        var service = new DoctorService(
+            doctorRepositoryMock.Object,
+            Mock.Of<IRepository<int, Speciality>>(),
+            Mock.Of<IRepository<int, DoctorSpeciality>>(),
+            Mock.Of<IRepository<string, User>>(),
+            Mock.Of<IOtherContextFunctionalities>(),
+            Mock.Of<IEncryptionService>(),
+            Mock.Of<IMapper>()
+        );
+        Assert.ThrowsAsync<Exception>(async () => await service.GetAllDoctors());
+    }
+
+    [Test]
+    public async Task TestGetDoctByName_ReturnsDoctors()
+    {
+        var doctors = new List<Doctor> { new Doctor { Id = 1, Name = "Tom" }, new Doctor { Id = 2, Name = "Tim" } };
+        var doctorRepositoryMock = new Mock<IRepository<int, Doctor>>();
+        doctorRepositoryMock.Setup(r => r.GetAll()).ReturnsAsync(doctors);
+        var service = new DoctorService(
+            doctorRepositoryMock.Object,
+            Mock.Of<IRepository<int, Speciality>>(),
+            Mock.Of<IRepository<int, DoctorSpeciality>>(),
+            Mock.Of<IRepository<string, User>>(),
+            Mock.Of<IOtherContextFunctionalities>(),
+            Mock.Of<IEncryptionService>(),
+            Mock.Of<IMapper>()
+        );
+        var result = await service.GetDoctorByName("Tom");
+        Assert.That(result.Name, Is.EqualTo("Tom"));
+    }
+
+
 
     [TearDown]
     public void TearDown()

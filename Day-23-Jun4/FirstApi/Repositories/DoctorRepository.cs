@@ -19,12 +19,12 @@ public class DoctorRepository : Repository<int, Doctor>
 
     public override async Task<IEnumerable<Doctor>> GetAll()
     {
-        var doctors = _clinicContext.Doctors;
+        var doctors = await _clinicContext.Doctors.ToListAsync();
         if (doctors.Count() == 0)
         {
             throw new Exception("No doctors in the database.");
         }
-        return (await doctors.ToListAsync());
+        return doctors;
 
     }
 }
