@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notify</title>
+</head>
+<body>
+    <h1>Notify - SignalR</h1>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@8.0.7/dist/browser/signalr.min.js"></script>
+    <script>
+
+        const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJib2JAZ21haWwuY29tIiwicm9sZSI6InN0YWZmIiwibmJmIjoxNzQ5MTUwODI0LCJleHAiOjE3NDkyMzcyMjQsImlhdCI6MTc0OTE1MDgyNH0.CGODVsDroUYrBrPyw_tz27aHpfMogku-2mzgGurDo6c"
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("http://localhost:5009/notificationHub", {
+                accessTokenFactory: () => token
+            })
+            .withAutomaticReconnect()
+            .build();
+
+
+        connection.on("ReceiveNotification", (message, uploadLoadedBy) => {
+            
+            alert(`${message} by ${uploadLoadedBy}`)
+
+        })
+
+        connection.start()
+            .catch(err => {
+                console.log("Connection Failed");
+            })
+
+
+    </script>
+
+</body>
+</html>
