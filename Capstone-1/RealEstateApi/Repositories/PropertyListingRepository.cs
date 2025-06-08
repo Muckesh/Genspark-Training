@@ -16,9 +16,10 @@ namespace RealEstateApi.Repositories
             var listings = await _realEstateDbContext.PropertyListings
                             .Include(l => l.Agent)
                             .Include(l => l.Images)
-                            .Include(l=>l.Inquiries)
+                            .Include(l => l.Inquiries)
                             .ToListAsync();
-            return listings.Count == 0 ? throw new Exception("No property listings in the database.") : listings;
+            // return listings.Count == 0 ? throw new Exception("No property listings in the database.") : listings;
+            return listings;
         }
 
         public override async Task<PropertyListing> GetByIdAsync(Guid id)

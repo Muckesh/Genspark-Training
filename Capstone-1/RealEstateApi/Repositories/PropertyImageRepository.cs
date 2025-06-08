@@ -16,7 +16,8 @@ namespace RealEstateApi.Repositories
             var images = await _realEstateDbContext.PropertyImages
                             .Include(p => p.Listing)
                             .ToListAsync();
-            return images.Count == 0 ? throw new Exception("No property images found.") : images;
+            // return images.Count == 0 ? throw new Exception("No property images found.") : images;
+            return images;
         }
 
         public override async Task<PropertyImage> GetByIdAsync(Guid id)

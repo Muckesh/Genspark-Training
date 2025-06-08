@@ -1,5 +1,5 @@
 using RealEstateApi.Contexts;
-using RealEstateApi.Interaces;
+using RealEstateApi.Interfaces;
 
 namespace RealEstateApi.Repositories
 {

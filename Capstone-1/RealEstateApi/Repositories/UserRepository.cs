@@ -13,7 +13,8 @@ namespace RealEstateApi.Repositories
         public override async Task<IEnumerable<User>> GetAllAsync()
         {
             var users = await _realEstateDbContext.Users.ToListAsync();
-            return users.Count == 0 ? throw new Exception("No users found") : users;
+            // return users.Count == 0 ? throw new Exception("No users found") : users;
+            return users;
         }
 
         public override async Task<User> GetByIdAsync(Guid id)

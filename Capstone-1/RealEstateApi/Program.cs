@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using RealEstateApi.Contexts;
-using RealEstateApi.Interaces;
+using RealEstateApi.Interfaces;
 using RealEstateApi.Models;
 using RealEstateApi.Repositories;
 using RealEstateApi.Services;
@@ -64,7 +64,10 @@ builder.Services.AddTransient<IRepository<Guid,PropertyListing>,PropertyListingR
 
 #region Services
 builder.Services.AddTransient<IAuthService, AuthService>();
-builder.Services.AddTransient<ITokenService,TokenService>();
+builder.Services.AddTransient<ITokenService, TokenService>();
+builder.Services.AddTransient<IPasswordService, PasswordService>();
+builder.Services.AddTransient<IAgentService, AgentService>();
+builder.Services.AddTransient<IBuyerService,BuyerService>();
 #endregion
 
 var app = builder.Build();

@@ -15,7 +15,7 @@ namespace RealEstateApi.Models
             var agents = await _realEstateDbContext.Agents
                         .Include(a=>a.User)
                         .ToListAsync();
-            return agents.Count == 0 ? throw new Exception("No agents in the database.") : agents;
+            return agents;
         }
 
         public override async Task<Agent> GetByIdAsync(Guid id)

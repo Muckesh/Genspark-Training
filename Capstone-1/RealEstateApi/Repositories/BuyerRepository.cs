@@ -14,9 +14,10 @@ namespace RealEstateApi.Repositories
         public override async Task<IEnumerable<Buyer>> GetAllAsync()
         {
             var buyers = await _realEstateDbContext.Buyers
-                            .Include(b=>b.User)
+                            .Include(b => b.User)
                             .ToListAsync();
-            return buyers.Count == 0 ? throw new Exception("No buyers in the database.") : buyers;
+            // return buyers.Count == 0 ? throw new Exception("No buyers in the database.") : buyers;
+            return buyers;
         }
 
         public override async Task<Buyer> GetByIdAsync(Guid id)

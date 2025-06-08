@@ -1,4 +1,4 @@
-namespace RealEstateApi.Interaces
+namespace RealEstateApi.Interfaces
 {
     public interface IRepository<K, T> where T : class
     {

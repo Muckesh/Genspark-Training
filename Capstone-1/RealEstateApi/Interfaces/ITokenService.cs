@@ -1,6 +1,6 @@
 using RealEstateApi.Models;
 
-namespace RealEstateApi.Interaces
+namespace RealEstateApi.Interfaces
 {
     public interface ITokenService
     {

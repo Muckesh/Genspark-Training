@@ -2,7 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
-using RealEstateApi.Interaces;
+using RealEstateApi.Interfaces;
 using RealEstateApi.Models;
 
 namespace RealEstateApi.Services

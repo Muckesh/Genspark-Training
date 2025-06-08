@@ -17,7 +17,8 @@ namespace RealEstateApi.Repositories
                                     .Include(i => i.Listing)
                                     .ToListAsync();
 
-            return inquiries.Count == 0 ? throw new Exception("No inquiries found") : inquiries;
+            // return inquiries.Count == 0 ? throw new Exception("No inquiries found") : inquiries;
+            return inquiries;
 
         }
 
