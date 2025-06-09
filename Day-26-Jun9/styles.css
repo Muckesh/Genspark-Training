@@ -1,23 +1,34 @@
-/* @import url("https://fonts.googleapis.com/css?family=Inter:wght@400;500;600&family=Poppins:wght@500;600&family=Roboto:wght@400&display=swap"); */
+@import url("https://fonts.googleapis.com/css?family=Inter:wght@400;500;600&family=Poppins:wght@500;600&family=Roboto:wght@400&display=swap");
 
 *{
-    padding: 0;
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
+
 body{
-    background-color: #F5F5F5;
-    font-family: "Inter", "Poppins";
-    
+    background-color: #f5f5f5;
+    font-family: 'Inter','Poppins',sans-serif;
+    color: #333;
 }
-
-.header{
-    background-color: white;
-
-}
-
 
 .container{
-    padding: 12px 24px;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 24px;
+}
+
+.primary-color{
+    color: rgb(92, 161, 223);
+}
+
+/* Header */
+.header{
+    background-color: white;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.header .container{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -25,91 +36,258 @@ body{
 
 .logo{
     display: flex;
-    justify-content: space-between;
-    gap: 12px;
     align-items: center;
+    gap: 12px;
     font-weight: 600;
 }
 
-.stethoscope{
-    color: rgb(92, 161, 223);
+.logo h2{
+    font-size: 24px;
+    font-weight: 600;
+}
+nav{
+    position: relative;
 }
 
-a{
-    text-decoration: none;
-    color: black;
-    font-size: 16px;
-}
-
-ul{
+.menu{
+    list-style: none;
     display: flex;
-    list-style-type: none;
-    gap: 24px;
     align-items: center;
+    gap: 24px;
 }
 
-li{
-    font-size: medium;
-}
-
-.btn{
-    padding: 8px 20px;
+.menu a{
+    text-decoration: none;
+    color: #333;
     font-size: 16px;
-    border-radius: 5px;
+}
+
+/* Buttons */
+.btn{
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 500;
+    border: 1px solid #666;
     background-color: white;
-    border: 1px solid rgba(0, 0, 0, 0.32);
     cursor: pointer;
+    transition: transform 0.3s ease-out;
+}
+
+.btn:hover{
+    transform: scale(1.1);
 }
 
 .primary-btn{
     background-color: rgb(92, 161, 223);
     color: white;
+    border: none;
 }
 
+/* Hero section */
 .hero{
     background-color: rgb(238, 248, 253);
-    padding: 12px 24px;
+    padding: 64px 24px;
 }
 
 .hero-content{
-    color: black;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 20px;
+    justify-content: space-around;
+    gap: 24px;
 }
 
 .hero-text{
+    /* flex: 1; */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     gap: 24px;
+}
+
+.hero-text h1{
+    font-size: 32px;
+    font-weight: 600;
+}
+
+.hero-text p{
+    font-size: 16px;
+    font-weight: 400;
+}
+
+/* .hero-image{
+    flex: 1;
+} */
+
+/* .hero-image img{
+    max-width: 100%;
+    border-radius: 8px;
+}
+ */
+
+ /* Services */
+.services{
+padding: 64px 24px;
+background-color: white;
 }
 
 .services-container{
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 24px;
 }
 
 .cards{
     display: flex;
-    gap: 12px;
+    gap: 24px;
+    /* flex-wrap: wrap; */
 }
 
 .card{
+   
     background-color: white;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 22px 26px;
-    gap: 24px;
-    border-radius: 5px;
-    box-shadow: 1px 2px rgba(86, 85, 85, 0.2);
+    padding: 24px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease-out;
 }
 
+.card:hover{
+    transform: scale(1.1);
+}
+
+.card h3{
+    font-size: 20px;
+    font-weight: 500;
+    margin-top: 12px;
+}
+
+.card p{
+    margin-top: 8px;
+    font-size: 16px;
+}
+
+/* Testimonials */
 .testimonials{
     background-color: rgb(238, 248, 253);
-    
+    padding: 64px 24px;
+}
+
+.testimonials-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.testimonial-box{
+    background-color: white;
+    padding: 32px;
+    border-radius: 8px;
+    display: flex;
+    gap: 24px;
+    align-items: center;
+}
+
+.testimonial-box .icon{
+    font-size: 32px;
+    color: rgb(92, 161, 223);
+}
+
+.testimonial-box .testimonial-texts{
+    font-size: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Clinic Hours */
+.clinic-hours{
+    padding: 64px 24px;
+    background-color: white;
+}
+
+.clinic-container{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 36px;
+}
+
+.hour-box{
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px 36px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.row{
+    display: flex;
+    gap: 16px;
+}
+
+.col{
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+@media(max-width:991px){
+    .hero-content,
+    .clinic-container,
+    .cards{
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+#menu-toggle{
+    display: none;
+}
+
+.hamburger{
+    font-size: 24px;
+    display: none;
+    cursor: pointer;
+}
+
+@media (max-width:768px){
+    .hamburger{
+        display: block;
+    }
+    .menu{
+        position: absolute;
+        right: 0;
+        /* background-color: rgb(238, 248, 253); */
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        padding: 12px;
+        flex-direction: column;
+        align-items: center;
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        text-align: center;
+        transition: opacity 0.3s ease-in, max-height 0.3s ease-in;
+    }
+
+
+    .menu li{
+        width: 100%;
+    }
+
+    menu li:hover , .menu li:focus-within{
+        opacity: 1;
+        max-height: 170px;
+    }
+
+
+    #menu-toggle:checked ~ .menu{
+        opacity: 1;
+        max-height: 900px;
+    }
 }
