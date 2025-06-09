@@ -1,0 +1,115 @@
+/* @import url("https://fonts.googleapis.com/css?family=Inter:wght@400;500;600&family=Poppins:wght@500;600&family=Roboto:wght@400&display=swap"); */
+
+*{
+    padding: 0;
+    margin: 0;
+}
+body{
+    background-color: #F5F5F5;
+    font-family: "Inter", "Poppins";
+    
+}
+
+.header{
+    background-color: white;
+
+}
+
+
+.container{
+    padding: 12px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo{
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    font-weight: 600;
+}
+
+.stethoscope{
+    color: rgb(92, 161, 223);
+}
+
+a{
+    text-decoration: none;
+    color: black;
+    font-size: 16px;
+}
+
+ul{
+    display: flex;
+    list-style-type: none;
+    gap: 24px;
+    align-items: center;
+}
+
+li{
+    font-size: medium;
+}
+
+.btn{
+    padding: 8px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.32);
+    cursor: pointer;
+}
+
+.primary-btn{
+    background-color: rgb(92, 161, 223);
+    color: white;
+}
+
+.hero{
+    background-color: rgb(238, 248, 253);
+    padding: 12px 24px;
+}
+
+.hero-content{
+    color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.hero-text{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.services-container{
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.cards{
+    display: flex;
+    gap: 12px;
+}
+
+.card{
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 22px 26px;
+    gap: 24px;
+    border-radius: 5px;
+    box-shadow: 1px 2px rgba(86, 85, 85, 0.2);
+}
+
+.testimonials{
+    background-color: rgb(238, 248, 253);
+    
+}
