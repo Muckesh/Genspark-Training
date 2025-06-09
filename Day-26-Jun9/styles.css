@@ -118,6 +118,14 @@ nav{
     flex: 1;
 } */
 
+.hero-image img{
+    transition: transform 0.3s ease-out;
+}
+
+.hero-image img:hover{
+    transform: scale(1.1);
+}
+
 /* .hero-image img{
     max-width: 100%;
     border-radius: 8px;
@@ -252,6 +260,7 @@ background-color: white;
     font-size: 24px;
     display: none;
     cursor: pointer;
+    color: rgb(92, 161, 223);
 }
 
 @media (max-width:768px){
