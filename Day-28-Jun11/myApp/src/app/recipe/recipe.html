@@ -1,0 +1,26 @@
+<!-- <div class="card" style="width: 18rem;">
+  <img class="card-img-top" [src]="recipe?.image" alt="Card image cap">
+  <div class="card-body">
+    <h5 class="card-title">{{recipe?.name}}</h5>
+    <p class="card-text"><strong>Cuisine : </strong>{{recipe?.cuisine}}</p>
+    <p class="card-text"><strong>Cooking Time : </strong>{{recipe?.cookingTime}} minutes</p>
+    <p class="card-text"><strong>Ingredients : </strong>{{recipe?.ingredients}}</p>
+    <a href="#" class="btn btn-primary">Buy for</a>
+  </div>
+</div> -->
+
+<div class="card h-100 shadow-sm">
+  <img class="card-img-top" [src]="recipe?.image" alt="{{recipe?.name}}">
+  <div class="card-body">
+    <h5 class="card-title">{{ recipe?.name }}</h5>
+    <p class="card-text">
+      <strong>Cuisine:</strong> {{ recipe?.cuisine }}
+    </p>
+    <p class="card-text">
+      <strong>Cooking Time:</strong> {{ recipe?.cookingTime }} minutes
+    </p>
+    <p class="card-text">
+      <strong>Ingredients:</strong> {{ recipe?.ingredients?.join(', ') }}
+    </p>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+<!-- @if (recipes().length>0) {
+    <div class="container">
+        @for (item of recipes(); track item.id) {
+            <app-recipe [recipe]="item"></app-recipe>
+        }
+    </div>
+}
+@else {
+    <div>
+        No recipes available.
+    </div>
+} -->
+
+<div class="container mt-4 mb-4">
+  <h2 class="mb-4 text-center">Recipe Collection</h2>
+
+  @if (recipes().length > 0) {
+    <div class="row g-4">
+      @for (item of recipes(); track item.id) {
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <app-recipe [recipe]="item"></app-recipe>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="alert alert-warning text-center">No recipes available.</div>
+  }
+</div>
