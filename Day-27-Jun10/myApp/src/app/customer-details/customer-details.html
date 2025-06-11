@@ -1,0 +1,16 @@
+<div class="customer-card">
+  <h1>Customer Details</h1>
+
+  <h3>{{ customer.name }}</h3>
+  <p>{{ customer.email }}</p>
+  <p>{{ customer.phone }}</p>
+  <p>{{ customer.address }}</p>
+
+  <div class="like-dislike">
+    <button (click)="like()">👍</button>
+    <span>{{ customer.likeCount }}</span>
+
+    <button (click)="dislike()">👎</button>
+    <span>{{ customer.dislikeCount }}</span>
+  </div>
+</div>

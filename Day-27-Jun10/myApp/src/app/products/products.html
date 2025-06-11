@@ -1,0 +1,14 @@
+
+
+<div class="products-list">
+    <div class="cart-icon">
+  🛒
+  <span class="badge">{{ cartCount }}</span>
+</div>
+  <div *ngFor="let product of products" class="product-card">
+    <img [src]="product.imageUrl" [alt]="product.name" />
+    <h3>{{ product.name }}</h3>
+    <p>${{ product.price }}</p>
+    <button (click)="addToCart()">Add to Cart</button>
+  </div>
+</div>

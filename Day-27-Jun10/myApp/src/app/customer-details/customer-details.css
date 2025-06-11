@@ -1,0 +1,54 @@
+.customer-card {
+  max-width: 350px;
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px 25px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  margin: 20px auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.customer-card h1 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #1976d2;
+  padding-bottom: 8px;
+  color: #1976d2;
+}
+
+.customer-card h3 {
+  margin-top: 0;
+  font-weight: 600;
+}
+
+.customer-card p {
+  margin: 6px 0;
+  font-size: 15px;
+}
+
+.like-dislike {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.like-dislike button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font-size: 28px;
+  transition: transform 0.15s ease;
+}
+
+.like-dislike button:hover {
+  transform: scale(1.2);
+}
+
+.like-dislike span {
+  font-weight: bold;
+  font-size: 18px;
+  min-width: 24px;
+  text-align: center;
+}
