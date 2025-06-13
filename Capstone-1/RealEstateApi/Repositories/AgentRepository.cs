@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RealEstateApi.Contexts;
+using RealEstateApi.Exceptions;
 using RealEstateApi.Repositories;
 
 namespace RealEstateApi.Models
@@ -13,7 +14,9 @@ namespace RealEstateApi.Models
         public override async Task<IEnumerable<Agent>> GetAllAsync()
         {
             var agents = await _realEstateDbContext.Agents
-                        .Include(a=>a.User)
+                        .Include(a => a.User)
+                        .Include(a => a.Listings)
+                        .Where(a=>a.User!.IsDeleted==false)
                         .ToListAsync();
             return agents;
         }
@@ -21,9 +24,10 @@ namespace RealEstateApi.Models
         public override async Task<Agent> GetByIdAsync(Guid id)
         {
             var agent = await _realEstateDbContext.Agents
-                            .Include(a=>a.User)
-                            .SingleOrDefaultAsync(a => a.Id == id);
-            return agent??throw new Exception("Agent with the given ID not found.");
+                            .Include(a => a.User)
+                            .Include(a=>a.Listings)
+                            .SingleOrDefaultAsync(a => a.User!.IsDeleted==false&& a.Id == id);
+            return agent??throw new NotFoundException("Agent with the given ID not found.");
         }
     }
 }

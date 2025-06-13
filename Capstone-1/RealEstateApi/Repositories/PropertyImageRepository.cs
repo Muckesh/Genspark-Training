@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RealEstateApi.Contexts;
+using RealEstateApi.Exceptions;
 using RealEstateApi.Models;
 
 namespace RealEstateApi.Repositories
@@ -15,6 +16,7 @@ namespace RealEstateApi.Repositories
         {
             var images = await _realEstateDbContext.PropertyImages
                             .Include(p => p.Listing)
+                            .Where(p=>p.IsDeleted==false)
                             .ToListAsync();
             // return images.Count == 0 ? throw new Exception("No property images found.") : images;
             return images;
@@ -24,8 +26,8 @@ namespace RealEstateApi.Repositories
         {
             var image = await _realEstateDbContext.PropertyImages
                             .Include(p => p.Listing)
-                            .SingleOrDefaultAsync(p => p.Id == id);
-            return image ?? throw new Exception("Image not found.");
+                            .SingleOrDefaultAsync(p => p.IsDeleted == false && p.Id == id);
+            return image ?? throw new NotFoundException("Image not found.");
         }
     }
 }

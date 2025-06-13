@@ -12,6 +12,24 @@ namespace RealEstateApi.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AuditLogs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    TableName = table.Column<string>(type: "text", nullable: false),
+                    UserId = table.Column<string>(type: "text", nullable: true),
+                    ActionType = table.Column<string>(type: "text", nullable: false),
+                    OldValues = table.Column<string>(type: "text", nullable: true),
+                    NewValues = table.Column<string>(type: "text", nullable: true),
+                    PrimaryKey = table.Column<string>(type: "text", nullable: true),
+                    Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuditLogs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -21,7 +39,9 @@ namespace RealEstateApi.Migrations
                     PasswordHash = table.Column<string>(type: "text", nullable: false),
                     Role = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    RefreshToken = table.Column<string>(type: "text", nullable: true),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -128,6 +148,8 @@ namespace RealEstateApi.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     FileName = table.Column<string>(type: "text", nullable: false),
                     FileUrl = table.Column<string>(type: "text", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    DeletedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     PropertyListingId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -165,6 +187,9 @@ namespace RealEstateApi.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AuditLogs");
+
             migrationBuilder.DropTable(
                 name: "Inquiries");
 

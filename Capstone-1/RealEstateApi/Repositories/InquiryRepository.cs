@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RealEstateApi.Contexts;
+using RealEstateApi.Exceptions;
 using RealEstateApi.Models;
 
 namespace RealEstateApi.Repositories
@@ -28,7 +29,7 @@ namespace RealEstateApi.Repositories
                                 .Include(i => i.Buyer)
                                 .Include(i => i.Listing)
                                 .SingleOrDefaultAsync(i => i.Id == id);
-            return inquiry ?? throw new Exception("Inquiry not found.");
+            return inquiry ?? throw new NotFoundException("Inquiry not found.");
         }
     }
 }

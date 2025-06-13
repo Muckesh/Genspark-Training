@@ -44,6 +44,40 @@ namespace RealEstateApi.Migrations
                     b.ToTable("Agents");
                 });
 
+            modelBuilder.Entity("RealEstateApi.Models.AuditLog", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ActionType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NewValues")
+                        .HasColumnType("text");
+
+                    b.Property<string>("OldValues")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PrimaryKey")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TableName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditLogs");
+                });
+
             modelBuilder.Entity("RealEstateApi.Models.Buyer", b =>
                 {
                     b.Property<Guid>("Id")
@@ -95,6 +129,9 @@ namespace RealEstateApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("text");
@@ -102,6 +139,9 @@ namespace RealEstateApi.Migrations
                     b.Property<string>("FileUrl")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
 
                     b.Property<Guid>("PropertyListingId")
                         .HasColumnType("uuid");
@@ -182,6 +222,12 @@ namespace RealEstateApi.Migrations
                     b.Property<string>("PasswordHash")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("RefreshToken")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("RefreshTokenExpiryTime")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Role")
                         .IsRequired()

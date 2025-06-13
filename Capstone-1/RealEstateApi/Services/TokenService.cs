@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using RealEstateApi.Interfaces;
@@ -27,7 +28,7 @@ namespace RealEstateApi.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(2),
+                Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = creds
             };
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -40,6 +41,14 @@ namespace RealEstateApi.Services
 
             // return new JwtSecurityTokenHandler().WriteToken(token);
             return tokenHandler.WriteToken(token);
+        }
+
+        public async Task<string> GenerateRefreshToken()
+        {
+            var randomBytes = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomBytes);
+            return Convert.ToBase64String(randomBytes);
         }
     }
 }

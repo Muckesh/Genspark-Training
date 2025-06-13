@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RealEstateApi.Contexts;
+using RealEstateApi.Exceptions;
 using RealEstateApi.Models;
 
 namespace RealEstateApi.Repositories
@@ -15,8 +16,9 @@ namespace RealEstateApi.Repositories
         {
             var listings = await _realEstateDbContext.PropertyListings
                             .Include(l => l.Agent)
-                            .Include(l => l.Images)
+                            .Include(l => l.Images.Where(i=>i.IsDeleted==false))
                             .Include(l => l.Inquiries)
+                            .Where(l=>l.IsDeleted==false)
                             .ToListAsync();
             // return listings.Count == 0 ? throw new Exception("No property listings in the database.") : listings;
             return listings;
@@ -26,10 +28,10 @@ namespace RealEstateApi.Repositories
         {
             var listing = await _realEstateDbContext.PropertyListings
                             .Include(l => l.Agent)
-                            .Include(l => l.Images)
+                            .Include(l => l.Images.Where(i=>i.IsDeleted==false))
                             .Include(l => l.Inquiries)
-                            .SingleOrDefaultAsync(l => l.Id == id);
-            return listing ?? throw new Exception("Property listing not found");
+                            .FirstOrDefaultAsync(l => l.IsDeleted==false&& l.Id == id);
+            return listing ?? throw new NotFoundException("Property listing not found");
         }
     }
 }

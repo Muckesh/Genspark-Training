@@ -1,4 +1,5 @@
 using RealEstateApi.Contexts;
+using RealEstateApi.Exceptions;
 using RealEstateApi.Interfaces;
 
 namespace RealEstateApi.Repositories
@@ -17,6 +18,9 @@ namespace RealEstateApi.Repositories
 
         public abstract Task<T> GetByIdAsync(K id);
 
+        // public abstract Task<K> DeleteAsync(K key);
+
+
         public async Task<T> AddAsync(T item)
         {
             _realEstateDbContext.Add(item);
@@ -29,7 +33,7 @@ namespace RealEstateApi.Repositories
             var item = await GetByIdAsync(key);
             if (item == null)
             {
-                throw new KeyNotFoundException("Item not found");
+                throw new NotFoundException("Item not found");
             }
 
             _realEstateDbContext.Remove(item);
@@ -45,5 +49,6 @@ namespace RealEstateApi.Repositories
             return item;
 
         }
+
     }
 }

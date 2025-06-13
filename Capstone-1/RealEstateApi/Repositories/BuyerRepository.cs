@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RealEstateApi.Contexts;
+using RealEstateApi.Exceptions;
 using RealEstateApi.Models;
 
 namespace RealEstateApi.Repositories
@@ -15,6 +16,8 @@ namespace RealEstateApi.Repositories
         {
             var buyers = await _realEstateDbContext.Buyers
                             .Include(b => b.User)
+                            .Include(b => b.Inquiries)
+                            .Where(b=>b.User!.IsDeleted==false)
                             .ToListAsync();
             // return buyers.Count == 0 ? throw new Exception("No buyers in the database.") : buyers;
             return buyers;
@@ -23,9 +26,10 @@ namespace RealEstateApi.Repositories
         public override async Task<Buyer> GetByIdAsync(Guid id)
         {
             var buyer = await _realEstateDbContext.Buyers
-                            .Include(b=>b.User)
-                            .SingleOrDefaultAsync(b => b.Id == id);
-            return buyer ?? throw new Exception("Buyer with the given Id not found.");
+                            .Include(b => b.User)
+                            .Include(b=>b.Inquiries)
+                            .FirstOrDefaultAsync(b => b.User!.IsDeleted==false && b.Id == id);
+            return buyer ?? throw new NotFoundException("Buyer with the given Id not found.");
         }
     }
 }
