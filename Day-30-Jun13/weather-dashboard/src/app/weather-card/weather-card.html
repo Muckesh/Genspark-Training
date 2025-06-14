@@ -1,0 +1,14 @@
+<div class="glass-card text-center mx-auto mt-4" style="max-width: 400px;">
+    <h2 class="fw-bold">{{weather.name}}</h2>
+
+    <img 
+        src="http://openweathermap.org/img/w/{{ weather.weather[0].icon }}.png"
+        alt="{{weather.weather[0].description}}"
+        width="80"
+    >
+
+    <h3 class="display-9">Temperature : {{weather.main.temp}} °C</h3>
+    <p class="mb-1 text-capitalize">Condition : {{weather.weather[0].description}}</p>
+    <p class="mb-1">Humidity : {{weather.main.humidity}} %</p>
+    <p class="mb-0">Wind Speed : {{weather.wind.speed}} m/s</p>
+</div>

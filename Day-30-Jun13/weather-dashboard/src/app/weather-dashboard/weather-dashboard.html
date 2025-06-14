@@ -1,0 +1,10 @@
+<app-city-search></app-city-search>
+
+<div *ngIf="weather$ | async as weather; else errorTpl">
+    <app-weather-card [weather] = "weather" ></app-weather-card>
+
+</div>
+
+<ng-template #errorTpl>
+    <p *ngIf="errorMsg">{{errorMsg}}</p>
+</ng-template>
