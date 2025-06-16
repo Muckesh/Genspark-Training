@@ -1,0 +1,15 @@
+<!-- <div class="loginDiv">
+    <label class="form-control">Username</label>
+    <input class="form-control" type="text" [(ngModel)]="user.username"/>
+     <label class="form-control">Password</label>
+    <input class="form-control" type="text" [(ngModel)]="user.password"/>
+    <button class="btn btn-success" (click)="handleLogin()">LOgin</button>"
+</div> -->
+
+<h2>Login</h2>
+<input [(ngModel)]="username" placeholder="Username"><br>
+<input [(ngModel)]="password" type="password" placeholder="Password"><br>
+<label>
+  <input type="checkbox" [(ngModel)]="useSession">Use Session Storage (Local Storage - Default)
+</label><br>
+<button (click)="login()">Login</button>
