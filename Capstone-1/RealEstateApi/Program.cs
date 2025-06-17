@@ -22,6 +22,11 @@ Log.Logger = new LoggerConfiguration()
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5009); 
+});
+
 builder.Host.UseSerilog();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -149,6 +154,18 @@ builder.Services.AddVersionedApiExplorer(options=>
 });
 #endregion
 
+#region Cors
+builder.Services.AddCors(opts =>
+{
+    opts.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("http://127.0.0.1:5500")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+#endregion
 
 
 var app = builder.Build();
@@ -179,6 +196,9 @@ app.Use(async (context, next) =>
 app.UseAuthentication();
 app.UseMiddleware<TokenBlacklistMiddleware>();
 app.UseAuthorization();
+app.UseCors();
+app.MapHub<NotificationHub>("/hubs/notifications");
+
 app.MapControllers().RequireRateLimiting("PerUserPolicy");
 
 app.Run();

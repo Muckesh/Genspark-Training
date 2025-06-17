@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Property Notifications</title>
+  <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@8.0.7/dist/browser/signalr.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    #notifications {
+      margin-top: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #28a745;
+    }
+
+    .card h3 {
+      margin: 0 0 5px 0;
+    }
+
+    .card p {
+      margin: 0;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Live Property Listings</h1>
+  <div id="notifications"></div>
+
+  <script>
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIwMTk3NjVhOS05YWRjLTcyMzktOTU4MS0wYWEzODkxODIyM2IiLCJlbWFpbCI6ImJydWNlQGdtYWlsLmNvbSIsInJvbGUiOiJCdXllciIsIm5iZiI6MTc1MDA5Mzk0NiwiZXhwIjoxNzUwMTgwMzQ2LCJpYXQiOjE3NTAwOTM5NDZ9.xsWZRRPU9hqxf7QCbiJTWlIc875oNxzWoDkX1ofnWrI";
+
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl("http://localhost:5009/hubs/notifications")
+      .withAutomaticReconnect()
+      .build();
+
+    connection.on("ReceiveListingNotification", (data) => {
+      const notifications = document.getElementById("notifications");
+      const card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML = `
+        <h3>${data.title}</h3>
+        <p>📍 ${data.location}</p>
+        <p>💰 ₹${data.price.toLocaleString()}</p>
+      `;
+      notifications.prepend(card); // displaying newest on top
+    });
+
+    connection.start()
+      .then(() => console.log("Connected to hub"))
+      .catch(err => console.error(err));
+  </script>
+</body>
+</html>

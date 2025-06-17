@@ -1,0 +1,17 @@
+2025-06-16 10:19:44.955 +05:30 [INF] User profile is available. Using '/Users/muckesh/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-06-16 10:19:45.095 +05:30 [INF] Now listening on: http://localhost:5009
+2025-06-16 10:19:45.098 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-06-16 10:19:45.099 +05:30 [INF] Hosting environment: Development
+2025-06-16 10:19:45.099 +05:30 [INF] Content root path: /Users/muckesh/Developer/Genspark-Training/Capstone-1/RealEstateApi
+2025-06-16 10:20:00.680 +05:30 [INF] Application is shutting down...
+2025-06-16 14:40:45.174 +05:30 [INF] User profile is available. Using '/Users/muckesh/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-06-16 14:40:45.310 +05:30 [INF] Now listening on: http://localhost:5009
+2025-06-16 14:40:45.313 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-06-16 14:40:45.313 +05:30 [INF] Hosting environment: Development
+2025-06-16 14:40:45.313 +05:30 [INF] Content root path: /Users/muckesh/Developer/Genspark-Training/Capstone-1/RealEstateApi
+2025-06-16 14:41:10.477 +05:30 [INF] Application is shutting down...
+2025-06-16 15:13:18.544 +05:30 [INF] User profile is available. Using '/Users/muckesh/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-06-16 15:13:18.666 +05:30 [INF] Now listening on: http://localhost:5009
+2025-06-16 15:13:18.669 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-06-16 15:13:18.669 +05:30 [INF] Hosting environment: Development
+2025-06-16 15:13:18.669 +05:30 [INF] Content root path: /Users/muckesh/Developer/Genspark-Training/Capstone-1/RealEstateApi

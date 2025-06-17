@@ -27,3 +27,9 @@ ORDER BY a."Id", u."Id"
 2025-06-15 22:28:29.209 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5009/swagger/v1/swagger.json - null null
 2025-06-15 22:28:29.228 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5009/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 18.8807ms
 2025-06-15 22:35:21.727 +05:30 [INF] Application is shutting down...
+2025-06-15 23:09:30.580 +05:30 [INF] User profile is available. Using '/Users/muckesh/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-06-15 23:09:30.716 +05:30 [INF] Now listening on: http://localhost:5009
+2025-06-15 23:09:30.718 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-06-15 23:09:30.719 +05:30 [INF] Hosting environment: Development
+2025-06-15 23:09:30.719 +05:30 [INF] Content root path: /Users/muckesh/Developer/Genspark-Training/Capstone-1/RealEstateApi
+2025-06-15 23:10:00.302 +05:30 [INF] Application is shutting down...
