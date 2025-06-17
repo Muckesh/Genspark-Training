@@ -28,7 +28,7 @@ namespace RealEstateApi.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(1),
+                Expires = DateTime.UtcNow.AddDays(4),
                 SigningCredentials = creds
             };
             var tokenHandler = new JwtSecurityTokenHandler();

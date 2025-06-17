@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.SignalR;
 using RealEstateApi.Exceptions;
+using RealEstateApi.Hubs;
 using RealEstateApi.Interfaces;
 using RealEstateApi.Misc;
 using RealEstateApi.Models;
@@ -10,12 +12,15 @@ namespace RealEstateApi.Services
 {
     public class PropertyListingService : IPropertyListingService
     {
+        private readonly IHubContext<NotificationHub> _hubContext;
+
         private readonly IRepository<Guid, PropertyListing> _propertyListingRepository;
         private readonly IRepository<Guid, PropertyImage> _propertyImageRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PropertyListingService(IRepository<Guid, PropertyListing> propertyListingRepository, IRepository<Guid, PropertyImage> propertyImageRepository, IHttpContextAccessor httpContextAccessor)
+        public PropertyListingService(IHubContext<NotificationHub> hubContext,IRepository<Guid, PropertyListing> propertyListingRepository, IRepository<Guid, PropertyImage> propertyImageRepository, IHttpContextAccessor httpContextAccessor)
         {
+            _hubContext = hubContext;
             _propertyListingRepository = propertyListingRepository;
             _propertyImageRepository = propertyImageRepository;
             _httpContextAccessor = httpContextAccessor;
@@ -89,7 +94,25 @@ namespace RealEstateApi.Services
                 AgentId = agentId
             };
 
+
+
             listing = await _propertyListingRepository.AddAsync(listing);
+
+            // await _hubContext.Clients.Group("buyers").SendAsync("ReceiveListingNotification", new {
+            //     Title = "New Property Listed!",
+            //     ListingId = listing.Id,
+            //     Location = listing.Location,
+            //     Price = listing.Price
+            // });
+
+            await _hubContext.Clients.All.SendAsync("ReceiveListingNotification", new
+            {
+                Title = listing.Title,
+                ListingId = listing.Id,
+                Location = listing.Location,
+                Price = listing.Price
+            });
+
 
             return listing ?? throw new FailedOperationException("Unable to add listing at the moment");
 

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RealEstateApi.Contexts;
+using RealEstateApi.Hubs;
 using RealEstateApi.Interfaces;
 using RealEstateApi.Middlewares;
 using RealEstateApi.Models;
@@ -56,6 +57,9 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
+builder.Services.AddSignalR();
+
 
 #region Controllers
 builder.Services.AddControllers()

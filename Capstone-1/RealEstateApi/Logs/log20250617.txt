@@ -1,0 +1,7 @@
+2025-06-17 23:42:09.566 +05:30 [INF] User profile is available. Using '/Users/muckesh/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-06-17 23:42:09.696 +05:30 [WRN] Overriding address(es) 'http://localhost:5009'. Binding to endpoints defined via IConfiguration and/or UseKestrel() instead.
+2025-06-17 23:42:09.708 +05:30 [INF] Now listening on: http://[::]:5009
+2025-06-17 23:42:09.709 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-06-17 23:42:09.709 +05:30 [INF] Hosting environment: Development
+2025-06-17 23:42:09.709 +05:30 [INF] Content root path: /Users/muckesh/Developer/Genspark-Training/Capstone-1/RealEstateApi
+2025-06-17 23:42:17.135 +05:30 [INF] Application is shutting down...
