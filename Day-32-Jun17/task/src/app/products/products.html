@@ -1,0 +1,38 @@
+<div class="container mt-4">
+  <input
+    class="form-control mb-3"
+    type="text"
+    [(ngModel)]="searchString"
+    (input)="handleSearchProducts()"
+    placeholder="Search products..."
+  />
+
+  <div class="row">
+    @if (!loading || searchString=="") {
+        @for (product of products; track product.id) {
+        <div class="col-12 col-sm-6 col-md-4 mb-4">
+            <div style="cursor: pointer;" (click)="goToProductDetails(product.id)">
+                <app-product [product]="product"></app-product>
+            </div>
+        </div>
+        }
+    }
+  </div>
+
+  <div class="text-center my-3" *ngIf="loading">
+    <div class="spinner-border text-primary"></div>
+  </div>
+
+  <!-- @if (displayScrollToTop) {
+    <button
+    class="btn btn-secondary position-fixed bottom-0 end-0 m-3"
+    (click)="scrollToTop()"
+  >
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5"/>
+        </svg>
+        Back to Top
+  </button>
+  } -->
+</div>
+<!-- <router-outlet></router-outlet> -->
