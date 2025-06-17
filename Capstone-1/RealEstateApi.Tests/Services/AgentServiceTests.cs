@@ -13,7 +13,7 @@ using RealEstateApi.Models.DTOs;
 using RealEstateApi.Services;
 using Xunit;
 
-namespace RealEstateApi.Tests
+namespace RealEstateApi.Tests.Services
 {
     public class AgentServiceTests
     {

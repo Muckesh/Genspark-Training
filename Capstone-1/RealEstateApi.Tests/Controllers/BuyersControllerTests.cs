@@ -12,7 +12,7 @@ using RealEstateApi.Models;
 using RealEstateApi.Models.DTOs;
 using Xunit;
 
-namespace RealEstateApi.Tests
+namespace RealEstateApi.Tests.Controllers
 {
     public class BuyersControllerTests
     {
