@@ -1,1 +1,43 @@
 <p>dashboard works!</p>
+
+<h2 class="text-center mt-4">User Dashboard</h2>
+
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-6">
+      <google-chart
+        [title]="genderChart.title"
+        [type]="genderChart.type"
+        [data]="genderChart.data"
+        [columns]="genderChart.columnNames"
+        [options]="genderChart.options"
+        [width]="genderChart.width"
+        [height]="genderChart.height"
+      ></google-chart>
+    </div>
+
+    <div class="col-md-6">
+      <google-chart
+        [title]="roleChart.title"
+        [type]="roleChart.type"
+        [data]="roleChart.data"
+        [columns]="roleChart.columnNames"
+        [options]="roleChart.options"
+        [width]="roleChart.width"
+        [height]="roleChart.height"
+      ></google-chart>
+    </div>
+  </div>
+
+  <div class="mt-5">
+    <google-chart
+      [title]="stateChart.title"
+      [type]="stateChart.type"
+      [data]="stateChart.data"
+      [columns]="stateChart.columnNames"
+      [options]="stateChart.options"
+      [width]="stateChart.width"
+      [height]="stateChart.height"
+    ></google-chart>
+  </div>
+</div>
