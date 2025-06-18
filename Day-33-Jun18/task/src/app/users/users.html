@@ -1,0 +1,72 @@
+
+
+<div class="container my-4">
+    <h1>Add User</h1>
+    <form (ngSubmit)="addUser()" #userForm="ngForm" class="mb-4">
+    <input class="form-control mb-2" placeholder="First Name" [(ngModel)]="newUser.firstName" name="firstName" required />
+    <input class="form-control mb-2" placeholder="Last Name" [(ngModel)]="newUser.lastName" name="lastName" required />
+    <input class="form-control mb-2" type="number" placeholder="Age" [(ngModel)]="newUser.age" name="age" required />
+    
+    <select class="form-select mb-2" [(ngModel)]="newUser.gender" name="gender" required>
+        <option value="" disabled selected>Select Gender</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+    </select>
+
+    <input class="form-control mb-2" placeholder="Role (Company Title)" [(ngModel)]="newUser.company.title" name="role" required />
+    <input class="form-control mb-2" placeholder="State" [(ngModel)]="newUser.address.state" name="state" required />
+    
+    <button class="btn btn-success" type="submit" [disabled]="!userForm.valid">Add User</button>
+    </form>
+
+
+  <!-- <button class="btn btn-success mb-3" (click)="addUser()">Add Mock User</button> -->
+    <h1>Filters</h1>
+  <div class="row mb-4 g-2">
+    <div class="col-md-4">
+      <select class="form-select" [(ngModel)]="genderFilter" (change)="filterUsers()">
+        <option value="">All Genders</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Filter by Role"
+        [(ngModel)]="roleFilter"
+        (input)="filterUsers()" />
+    </div>
+    <div class="col-md-4">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Filter by State"
+        [(ngModel)]="stateFilter"
+        (input)="filterUsers()" />
+    </div>
+  </div>
+  <h1>Users Table</h1>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <thead class="table-dark">
+        <tr>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Role</th>
+          <th>State</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filteredUsers">
+          <td>{{ user.firstName }} {{ user.lastName }}</td>
+          <td>{{ user.gender }}</td>
+          <td>{{ user.company.title }}</td>
+          <td>{{ user.address.state }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
