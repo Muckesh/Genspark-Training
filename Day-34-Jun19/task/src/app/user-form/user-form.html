@@ -1,0 +1,50 @@
+<form [formGroup]="userForm" (ngSubmit)="submitForm()" class="p-3 border rounded">
+    <h2 class="form-title">Add User</h2>
+    <div class="form-group mb-2">
+        <label>Username</label>
+        <input type="text" formControlName="username" class="form-control">
+        <div *ngIf="userForm.get('username')?.invalid && userForm.get('username')?.touched">
+            <div *ngIf="userForm.get('username')?.errors?.['required']" class="text-danger">Username is required!</div>
+            <div *ngIf="userForm.get('username')?.errors?.['bannedWord']" class="text-danger">Username contains banned word!</div>
+        </div>
+
+    </div>
+
+    <div class="form-group mb-2">
+        <label>Email</label>
+        <input type="email" formControlName="email" class="form-control">
+        <div *ngIf="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+            <div *ngIf="userForm.get('email')?.errors?.['required']" class="text-danger">Email is required!</div>
+            <div *ngIf="userForm.get('email')?.errors?.['email']" class="text-danger">Invalid email address!</div>
+        </div>
+
+    </div>
+
+    <div class="form-group mb-2">
+        <label>Password</label>
+        <input type="password" formControlName="password" class="form-control">
+        <div *ngIf="userForm.get('password')?.invalid && userForm.get('password')?.touched">
+      <div *ngIf="userForm.get('password')?.errors?.['required']" class="text-danger">Password is required!</div>
+        <div *ngIf="userForm.get('password')?.errors?.['minlength']" class="text-danger">
+            Password must be at least 6 characters long!
+        </div>
+        <div *ngIf="userForm.get('password')?.errors?.['weakPassword']" class="text-danger">
+            Password must contain a number and a symbol!
+        </div>
+    </div>
+
+    </div>
+    <div class="form-group mb-2">
+        <label>Confirm Password</label>
+        <input type="password" formControlName="confirmPassword" class="form-control">
+        <div *ngIf="userForm.get('confirmPassword')?.touched && userForm.errors?.['passwordMismatch']" class="text-danger">Passwords do not match!</div>
+    </div>
+    <div class="form-group mb-3">
+        <label>Role</label>
+        <select formControlName="role" class="form-control">
+            <option *ngFor="let role of roles" [value]="role">{{role}}</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success" [disabled]="userForm.invalid">Add User</button>
+</form>

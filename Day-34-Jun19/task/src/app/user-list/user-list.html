@@ -1,0 +1,32 @@
+<div class="container mt-4">
+    <h2>Users List</h2>
+  <div class="mb-3">
+    <input
+      class="form-control"
+      type="text"
+      [(ngModel)]="searchTerm"
+      (input)="onSearchChange()"
+      placeholder="Search by username..."
+    />
+  </div>
+
+  <div class="mb-3">
+    <select class="form-select" [(ngModel)]="selectedRole" (change)="onRoleChange()">
+      <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+    </select>
+  </div>
+
+  <div *ngIf="filteredUsers.length; else noUsers">
+    <div *ngFor="let user of filteredUsers" class="card mb-2">
+      <div class="card-body">
+        <h5 class="card-title">{{ user.username }}</h5>
+        <p class="card-text">Email: {{ user.email }}</p>
+        <p class="card-text">Role: {{ user.role }}</p>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noUsers>
+    <p class="text-muted">No users found.</p>
+  </ng-template>
+</div>
