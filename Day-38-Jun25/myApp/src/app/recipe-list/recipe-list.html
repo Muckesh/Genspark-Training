@@ -1,0 +1,11 @@
+<ng-container *ngIf="!loading">
+  <div *ngIf="error">{{ error }}</div>
+
+  <ng-container *ngIf="!error">
+    <div *ngIf="recipes.length === 0">No recipes found.</div>
+    <app-recipe-card
+      *ngFor="let rec of recipes"
+      [recipe]="rec"
+    ></app-recipe-card>
+  </ng-container>
+</ng-container>
