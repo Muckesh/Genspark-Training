@@ -1,0 +1,154 @@
+Linux: OS, open source, 1991, multi-user
+Unix: OS, 1970, licensed
+Linus + Unix = Linux
+Linux VS Unix
+Linux is not an OS.
+Linux is an open-source Kernel.
+Linux Kernel (Engine)
+Ubuntu (Beginner), CentOS (Enterprise systems), Debian (super stable), Redhat, Kali Linux (Hacking), Fedora (heavy dev) : Linux Distributions / Distros
+Key Features
+Basic Linux Commands:
+1. ls
+2. pwd
+3. cd
+4. mkdir
+5. rmdir
+6. cp
+esc : wq => Save and Exit
+esc : q! => Discard and Exit
+cp -r [source-directory]/ /home/user/backups
+/home/user/backups
+7. mv
+8. rm
+rm | rmdir
+Removes files and non-empty directories| Remove empty directories only
+rm file.txt //Delete
+rm -r myfolder //Delete folder + content
+rm -rf myfolder //Force delete
+9. touch
+10. cat
+11. man
+12. top, htop
+File Permissions
+1. Read (r)
+2. Write (w)
+3. Execute (x)
+Ownerships
+1. Owner
+2. Group
+3. Others
+1. chmod
+ls -lart
+-l : Show file details
+-a : Show hidden files too
+-r : Reverse the sort order (oldest to newest)
+-t : Sort by time (most recently modified files first unless reversed)
+drwxr-xr-x
+d : File Type
+rwx : Owner Permissions
+r-x : Group Permissions
+r-x : Others Permissions
+
+- : Regular file
+d : Dir
+l : Symbolic link
+
+2. chown
+1. chown swati hello.js  //Changes the owner of hello.js to the user swati  => chown user file
+2. chown swati:devs hello.js  //Changes owner to swati and the group to devs  => chown user:group file
+3. chown :devs hello.js  //Leaves the owner unchanged but changes the group to devs  => chown :group file
+4. chown -r swati project/  //swati as the owner of the folder (files and subfolders)  => chown -r user folder/
+
+adduser, userdel, usermod, passwd => Not supported on a MacOS.
+dscl
+
+whoami
+1. sudo adduser newuser //Add a new user
+sudo adduser swati
+
+passwd swati
+
+sudo userdel newuser //Delete the user
+sudo userdel swati
+
+sudo groupadd devs //Create a group
+sudo groupadd test
+
+sudo usermod -aG devs newuser
+sudo usermod -aG test swati
+
+Initial Membership: devs
+sudo usermod -a -G test swati
+Memberships: devs, test
+
+groups username //Shows the group names the user belongs to.
+groups swati
+
+-a: Append
+-G: Groups
+
+Questions:
+1. You have a file with permissions -rw-r--r--, and you run chmod +x file.sh. What happens?
+-> Execution permission is added to the file for owner, group and others.
+the permission becomes: (file.sh becomes executable by everyone)
+-rw-r--r--  ->  -rwxr-xr-x
+
+2. What is the difference between chmod 744 file.txt and chmod u=rwx,go=r file.txt?
+-> There is no difference in the resulting permissions.
+Both commands set:
+    User (owner): read, write, execute (rwx)
+    Group: read only (r)
+    Others: read only (r)
+Final permissions: -rwxr--r--
+The difference lies in syntax:
+744 is numeric (octal) notation.
+u=rwx,go=r is symbolic notation.
+
+
+3. What is the sticky bit, and when should you use it?
+The sticky bit (+t) is a special permission set on directories that allows only the file's owner or root to delete or rename files within that directory.
+chmod +t /shared/dir
+
+
+4. You are told to give the owner full access, group only execute, and others no permissions. What symbolic command achieves this?
+chmod u=rwx,g=x,o= file
+rwx--x---
+
+5. What is umask, and why is it important?
+umask (user file creation mode mask) defines default permission bits to remove when a file or directory is created.
+It ensures new files and directories are not overly permissive.
+
+Example:
+Default file permissions: 666
+Umask: 022
+Final file permissions: 644 (rw-r--r--)
+
+6. If the umask is 022, what are the default permissions for a new file and a new directory?
+File:
+Default: 666 (rw-rw-rw-)
+Umask 022 -> Final: 644 (rw-r--r--)
+
+Directory:
+Default: 777 (rwxrwxrwx)
+Umask 022 -> Final: 755 (rwxr-xr-x)
+
+7. Why is umask often set to 002 in development environments but 027 or 077 in production?
+002:
+In dev environments, group write permission is enabled (e.g., 664 for files) to support collaboration between users in the same group.
+
+027 or 077:
+In production:
+
+027: removes write for group and all for others (secure yet flexible).
+
+077: removes all group and others permissions (most secure).
+Used to protect sensitive files and limit access.
+
+8. useradd vs adduser
+
+useradd	-> Low-level -> Native binary utility, non-interactive.
+adduser -> High-level -> Debian-based Perl script wrapper over useradd. Interactive and user-friendly.
+
+useradd: Needs flags for home directory, shell, etc.
+
+adduser: Prompts interactively (username, password, etc.)
