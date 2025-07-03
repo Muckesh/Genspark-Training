@@ -1,0 +1,73 @@
+<!-- Inquiry List -->
+<!-- <div *ngFor="let entry of (groupedInquiries | keyvalue)">
+  <h3>Conversation: {{ entry.key }}</h3>
+  <ul>
+    <li *ngFor="let inquiry of entry.value">
+      {{ inquiry.message }} -->
+      <!-- <button (click)="openChat(inquiry)">Open Chat</button> -->
+       <!-- <button [routerLink]="['/agent/inquiry/',inquiry?.id]">Open Chat</button>
+    </li>
+  </ul>
+</div> -->
+
+<!-- <div class="inquiry-cards">
+  <div *ngFor="let inquiry of inquiries" class="inquiry-card" (click)="openChat(inquiry)">
+    <h3>{{ inquiry.listingTitle }}</h3>
+    <p>Inquiry: {{ inquiry.message }}</p>
+    <button [routerLink]="['/agent/inquiry/',inquiry?.id]">Open Chat</button>
+  </div>
+</div> -->
+
+<h2 class="mb-4"><i class="bi bi-chat-left-text me-2"></i>Inquiries</h2>
+  <div class="container">
+    
+    <div *ngIf="inquiries.length === 0" class="empty-state">
+      <i class="bi bi-chat-square-text text-muted" style="font-size: 3rem;"></i>
+      <h4 class="mt-3">No inquiries yet</h4>
+      <p class="text-muted">Start by inquiring about a property you're interested in</p>
+    </div>
+
+    <div class="inquiry-cards">
+      <div *ngFor="let inquiry of inquiries" 
+           class="inquiry-card" 
+           [class.active]="selectedInquiry?.id === inquiry.id"
+           [routerLink]="['/agent/inquiry/',inquiry?.id]">
+        <div class="card-header">
+          <h3 class="mb-1">{{ inquiry.listingTitle }}</h3>
+          <span class="badge" [class.bg-primary]="inquiry.status === 'Pending'"
+                               [class.bg-success]="inquiry.status === 'Responded'"
+                               [class.bg-secondary]="inquiry.status === 'Closed'">
+            {{ inquiry.status }}
+          </span>
+        </div>
+        <p class="inquiry-preview">{{ inquiry.message }}</p>
+        <div class="card-footer">
+          <!-- <small class="text-muted">Last updated: {{ inquiry.createdAt | date:'short' }}</small> -->
+           <p class="mb-1"> Buyer : {{ inquiry.buyerName }}</p>
+          <small class="text-muted">Created At: {{ inquiry.createdAt | date:'short' }}</small>
+          <button class="btn btn-sm btn-outline-primary" [routerLink]="['/agent/inquiry/',inquiry?.id]">View Chat</button>
+        </div>
+      </div>
+    <!-- </div> -->
+  </div>
+</div>
+
+<!-- Chat UI -->
+<!-- <div *ngIf="selectedInquiry" class="chat-box">
+  <h4>Chat for "{{ selectedInquiry.listingTitle }}"</h4>
+
+  <div class="messages" #scrollContainer>
+    <div
+      *ngFor="let reply of replies$ | async"
+      [ngClass]="getMessageClass(reply.authorType!)"
+      class="message"
+    >
+      <strong>{{ reply.authorType }}:</strong> {{ reply.message }}
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <input [(ngModel)]="newMessage" placeholder="Type reply..." />
+    <button (click)="sendMessage()" [disabled]="!newMessage.trim()">Send</button>
+  </div>
+</div> -->

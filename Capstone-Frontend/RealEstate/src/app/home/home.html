@@ -1,0 +1,63 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-body text-center">
+          <h1 class="card-title mb-4">Welcome to Real Estate App</h1>
+          
+          <div *ngIf="isAuthenticated(); else notLoggedIn" class="mt-4">
+            <div class="alert alert-info">
+              You are logged in as <strong>{{ getCurrentUser()?.role }}</strong>
+            </div>
+            
+            <button 
+              (click)="logout()" 
+              class="btn btn-outline-danger mb-4"
+            >
+              Logout
+            </button>
+            
+            <nav class="mt-3">
+              <ul class="nav flex-column">
+                <li class="nav-item mb-2">
+                  <a routerLink="/properties" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-house-door me-2"></i>View Properties
+                  </a>
+                </li>
+                <li class="nav-item mb-2" *ngIf="hasRole('Agent')">
+                  <a routerLink="/agent" class="btn btn-outline-success w-100">
+                    <i class="bi bi-person-badge me-2"></i>Agent Dashboard
+                  </a>
+                </li>
+                <li class="nav-item mb-2" *ngIf="hasRole('Buyer')">
+                  <a routerLink="/buyer" class="btn btn-outline-info w-100">
+                    <i class="bi bi-cart me-2"></i>Buyer Dashboard
+                  </a>
+                </li>
+                <li class="nav-item mb-2" *ngIf="hasRole('Admin')">
+                  <a routerLink="/admin" class="btn btn-outline-warning w-100">
+                    <i class="bi bi-shield-lock me-2"></i>Admin Dashboard
+                  </a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+          
+          <ng-template #notLoggedIn>
+            <div class="alert alert-light mt-4">
+              <p class="mb-3">Please sign in to access your dashboard</p>
+              <div class="d-flex justify-content-center gap-3">
+                <a routerLink="/login" class="btn btn-primary">
+                  <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                </a>
+                <a routerLink="/register" class="btn btn-outline-secondary">
+                  <i class="bi bi-person-plus me-2"></i>Register
+                </a>
+              </div>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,125 @@
+<div class="sidebar d-flex flex-column p-3" [class.collapsed]="isCollapsed">
+  <!-- Header with toggle button -->
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <a href="/" class="d-flex align-items-center text-decoration-none">
+      <i class="bi bi-shield-lock fs-4"></i>
+      @if (!isCollapsed) {
+        <span class="fs-5 ms-2">
+          @switch (role) {
+            @case ("Admin") { Admin Panel }
+            @case ("Agent") { Agent Panel }
+            @case ("Buyer") { Buyer Panel }
+            @default { Guest Panel }
+          }
+        </span>
+      }
+    </a>
+    <button class="btn btn-link p-0" (click)="toggleCollapse()">
+      <i class="bi" [class.bi-chevron-left]="!isCollapsed" [class.bi-chevron-right]="isCollapsed"></i>
+    </button>
+  </div>
+
+  <hr class="my-2">
+
+  <!-- Main Menu -->
+  <ul class="nav nav-pills flex-column mb-auto">
+    @if (role === "Admin") {
+      @for (item of adminMenuItems; track item.path) {
+        <li class="nav-item">
+          <a [routerLink]="item.path" 
+             routerLinkActive="active" 
+             class="nav-link d-flex align-items-center"
+             [title]="item.title">
+            <i class="bi {{item.icon}}"></i>
+            @if (!isCollapsed) {
+              <span class="ms-2">{{item.title}}</span>
+            }
+          </a>
+        </li>
+      }
+    }
+    @else if (role === "Agent") {
+      @for (item of agentMenuItems; track item.path) {
+        <li class="nav-item">
+          <a [routerLink]="item.path" 
+             routerLinkActive="active" 
+             class="nav-link d-flex align-items-center"
+             [title]="item.title">
+            <i class="bi {{item.icon}}"></i>
+            @if (!isCollapsed) {
+              <span class="ms-2">{{item.title}}</span>
+            }
+          </a>
+        </li>
+      }
+    }
+    @else if (role === "Buyer") {
+      @for (item of buyerMenuItems; track item.path) {
+        <li class="nav-item">
+          <a [routerLink]="item.path" 
+             routerLinkActive="active" 
+             class="nav-link d-flex align-items-center"
+             [title]="item.title">
+            <i class="bi {{item.icon}}"></i>
+            @if (!isCollapsed) {
+              <span class="ms-2">{{item.title}}</span>
+            }
+          </a>
+        </li>
+      }
+    }
+  </ul>
+
+  
+  <!-- User Section -->
+  <div class="mt-auto">
+    <hr class="my-2">
+    <ul class="nav nav-pills flex-column">
+      <li class="nav-item">
+        @if (role==="Admin") {
+          <a [routerLink]="['/admin/profile']" 
+           routerLinkActive="active" 
+           class="nav-link d-flex align-items-center"
+           [title]="user.name">
+          <i class="bi bi-person"></i>
+          @if (!isCollapsed) {
+            <span class="ms-2">{{user.name}}</span>
+          }
+        </a>
+        }
+        @else if (role==="Agent") {
+          <a [routerLink]="['/agent/profile']" 
+           routerLinkActive="active" 
+           class="nav-link d-flex align-items-center"
+           [title]="user.name">
+          <i class="bi bi-person"></i>
+          @if (!isCollapsed) {
+            <span class="ms-2">{{user.name}}</span>
+          }
+        </a>
+        }
+        @else if (role==="Buyer") {
+          <a [routerLink]="['/buyer/profile']" 
+           routerLinkActive="active" 
+           class="nav-link d-flex align-items-center"
+           [title]="user.name">
+          <i class="bi bi-person"></i>
+          @if (!isCollapsed) {
+            <span class="ms-2">{{user.name}}</span>
+          }
+        </a>
+        }
+      </li>
+      <li class="nav-item">
+        <a (click)="logout()" 
+           class="nav-link text-danger d-flex align-items-center"
+           title="Sign Out">
+          <i class="bi bi-door-closed"></i>
+          @if (!isCollapsed) {
+            <span class="ms-2">Sign Out</span>
+          }
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>

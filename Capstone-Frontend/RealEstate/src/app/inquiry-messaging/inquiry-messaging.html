@@ -1,0 +1,101 @@
+<!-- <div class="inquiry-cards">
+  <div *ngFor="let inquiry of inquiries" class="inquiry-card" (click)="openChat(inquiry)">
+    <h3>{{ inquiry.listingTitle }}</h3>
+    <p>Status: {{ inquiry.status }}</p>
+  </div>
+</div> -->
+
+<div *ngIf="selectedInquiry" class="chat-box">
+  <h4>Chat about "{{ selectedInquiry.listingTitle }}"</h4>
+
+  <div class="messages" #scrollContainer>
+    <div
+      *ngFor="let reply of replies$ | async"
+      [ngClass]="getMessageClass(reply.authorType!)"
+      class="message"
+    >
+      <strong>{{ reply.authorType }}:</strong> {{ reply.message }}
+    </div>
+  </div>
+
+  <div class="chat-input">
+    <input
+      [(ngModel)]="newMessage"
+      placeholder="Type your reply..."
+    />
+    <button (click)="sendReply()" [disabled]="!newMessage.trim()">Send</button>
+  </div>
+</div>
+
+<!-- <div class="inquiry-container"> -->
+  <!-- Inquiry List Sidebar -->
+  <!-- <div class="inquiry-list">
+    @if (inquiries.length > 0) {
+      <div *ngFor="let inquiry of inquiries" 
+           class="inquiry-card" 
+           [class.active]="selectedInquiry?.id === inquiry.id"
+           (click)="openChat(inquiry)">
+        <h3>{{ inquiry.listingTitle }}</h3>
+        <p>{{ inquiry.message }}</p>
+        <span class="timestamp">
+          {{ inquiry.createdAt | date:'shortTime' }}
+        </span> -->
+        <!-- @if (inquiry.unreadCount && inquiry.unreadCount > 0) {
+          <span class="badge">{{ inquiry.unreadCount }}</span>
+        } -->
+      <!-- </div>
+    } @else {
+      <div class="empty-state">
+        <i class="bi bi-chat-square-text"></i>
+        <h4>No inquiries yet</h4>
+        <p>Start a conversation about a property</p>
+      </div>
+    }
+  </div> -->
+
+  <!-- Chat Area -->
+  <!-- @if (selectedInquiry) {
+    <div class="chat-box">
+      <div class="chat-header">
+        <h4>{{ selectedInquiry.listingTitle }}</h4>
+        <button class="close-btn" (click)="selectedInquiry = null">
+          <i class="bi bi-x-lg"></i>
+        </button>
+      </div>
+
+      <div class="messages" #scrollContainer>
+        @for (reply of replies$ | async; track reply.id) {
+          <div [ngClass]="getMessageClass(reply.authorType!)" class="message">
+            <strong>{{ reply.authorType }}:</strong> 
+            {{ reply.message }}
+            <div class="timestamp">
+              {{ reply.createdAt | date:'shortTime' }}
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state">
+            <i class="bi bi-chat-left-text"></i>
+            <h4>No messages yet</h4>
+            <p>Start the conversation</p>
+          </div>
+        }
+      </div>
+
+      <div class="chat-input">
+        <input 
+          [(ngModel)]="newMessage" 
+          placeholder="Type your message..."
+          (keyup.enter)="sendReply()">
+        <button (click)="sendReply()" [disabled]="!newMessage.trim()">
+          <i class="bi bi-send"></i> Send
+        </button>
+      </div>
+    </div>
+  } @else {
+    <div class="empty-state">
+      <i class="bi bi-chat-left"></i>
+      <h4>Select a conversation</h4>
+      <p>Choose an inquiry from the list to start chatting</p>
+    </div>
+  }
+</div> -->

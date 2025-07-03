@@ -1,0 +1,188 @@
+/* Enhanced Property Detail Styles */
+.property-detail-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.property-hero-img {
+  transition: transform 0.3s ease;
+}
+
+.property-hero-img:hover {
+  transform: scale(1.02);
+}
+
+.thumbnail-img {
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.thumbnail-img:hover {
+  border-color: #0d6efd;
+  transform: scale(1.05);
+}
+
+.thumbnail-img.active {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+}
+
+.feature-card {
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
+}
+
+.feature-card:hover {
+  background-color: #fff !important;
+  border-color: #0d6efd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.detail-item {
+  transition: background-color 0.2s ease;
+}
+
+.detail-item:hover {
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+.card {
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn {
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #0b5ed7 0%, #0a58ca 100%);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+.sticky-top {
+  z-index: 1020;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .display-6 {
+    font-size: 1.75rem;
+  }
+  
+  .property-hero-img {
+    height: 300px !important;
+  }
+  
+  .thumbnail-img {
+    height: 40px !important;
+  }
+}
+
+/* Animation for loading */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeIn 0.6s ease-out;
+}
+
+/* Custom scrollbar for thumbnail container */
+.thumbnail-container::-webkit-scrollbar {
+  height: 4px;
+}
+
+.thumbnail-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 2px;
+}
+
+.thumbnail-container::-webkit-scrollbar-thumb {
+  background: #0d6efd;
+  border-radius: 2px;
+}
+
+.thumbnail-container::-webkit-scrollbar-thumb:hover {
+  background: #0b5ed7;
+}
+
+/* Enhanced badge styles */
+.badge {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* Improved form controls */
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+/* Price highlight */
+.text-primary {
+  color: #0d6efd !important;
+}
+
+/* Enhanced list group items */
+.list-group-item {
+  border-left: none;
+  border-right: none;
+  padding: 0.75rem 0;
+}
+
+.list-group-item:first-child {
+  border-top: none;
+}
+
+.list-group-item:last-child {
+  border-bottom: none;
+}
+
+/* Carousel enhancements */
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%;
+  opacity: 0.8;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+  opacity: 1;
+}
+
+.carousel-indicators button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin: 0 4px;
+}
+
+/* Agent card enhancements */
+.rounded-circle {
+  border: 3px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

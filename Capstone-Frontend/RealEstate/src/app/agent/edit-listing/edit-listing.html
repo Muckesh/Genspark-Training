@@ -1,0 +1,381 @@
+<!-- <div class="container py-4">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Property Listing</h5>
+          <button class="btn btn-sm btn-outline-primary" (click)="toggleEdit()">
+            <i class="bi" [class.bi-pencil]="!isEditing" [class.bi-x]="isEditing"></i>
+            {{ isEditing ? 'Cancel' : 'Edit' }}
+          </button>
+        </div>
+        <div class="card-body">
+          <div *ngIf="updateMessage" class="alert alert-success alert-dismissible fade show">
+            {{ updateMessage }}
+            <button type="button" class="btn-close" (click)="updateMessage = null"></button>
+          </div>
+          <div *ngIf="updateError" class="alert alert-danger alert-dismissible fade show">
+            {{ updateError }}
+            <button type="button" class="btn-close" (click)="updateError = null"></button>
+          </div>
+
+          <form *ngIf="isEditing" [formGroup]="listingForm" (ngSubmit)="onSubmit()">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-control" formControlName="title">
+                <div *ngIf="f['title'].invalid && (f['title'].dirty || f['title'].touched)" class="text-danger small">
+                  <div *ngIf="f['title'].errors?.['required']">Title is required</div>
+                  <div *ngIf="f['title'].errors?.['minlength']">Minimum 5 characters required</div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label">Price (₹)</label>
+                <input type="number" class="form-control" formControlName="price">
+                <div *ngIf="f['price'].invalid && (f['price'].dirty || f['price'].touched)" class="text-danger small">
+                  <div *ngIf="f['price'].errors?.['required']">Price is required</div>
+                  <div *ngIf="f['price'].errors?.['min']">Price must be positive</div>
+                </div>
+              </div>
+              
+              <div class="col-md-12">
+                <label class="form-label">Description</label>
+                <textarea class="form-control" rows="3" formControlName="description"></textarea>
+                <div *ngIf="f['description'].invalid && (f['description'].dirty || f['description'].touched)" class="text-danger small">
+                  <div *ngIf="f['description'].errors?.['required']">Description is required</div>
+                  <div *ngIf="f['description'].errors?.['minlength']">Minimum 20 characters required</div>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label">Location</label>
+                <input type="text" class="form-control" formControlName="location">
+                <div *ngIf="f['location'].invalid && (f['location'].dirty || f['location'].touched)" class="text-danger small">
+                  <div *ngIf="f['location'].errors?.['required']">Location is required</div>
+                </div>
+              </div>
+              
+              <div class="col-md-2">
+                <label class="form-label">Bedrooms</label>
+                <input type="number" class="form-control" formControlName="bedrooms">
+                <div *ngIf="f['bedrooms'].invalid && (f['bedrooms'].dirty || f['bedrooms'].touched)" class="text-danger small">
+                  <div *ngIf="f['bedrooms'].errors?.['required']">Bedrooms is required</div>
+                  <div *ngIf="f['bedrooms'].errors?.['min']">Cannot be negative</div>
+                </div>
+              </div>
+              
+              <div class="col-md-2">
+                <label class="form-label">Bathrooms</label>
+                <input type="number" class="form-control" formControlName="bathrooms">
+                <div *ngIf="f['bathrooms'].invalid && (f['bathrooms'].dirty || f['bathrooms'].touched)" class="text-danger small">
+                  <div *ngIf="f['bathrooms'].errors?.['required']">Bathrooms is required</div>
+                  <div *ngIf="f['bathrooms'].errors?.['min']">Cannot be negative</div>
+                </div>
+              </div>
+              
+              <div class="col-md-2">
+                <label class="form-label">Sq Ft</label>
+                <input type="number" class="form-control" formControlName="squareFeet">
+                <div *ngIf="f['squareFeet'].invalid && (f['squareFeet'].dirty || f['squareFeet'].touched)" class="text-danger small">
+                  <div *ngIf="f['squareFeet'].errors?.['required']">Square feet is required</div>
+                  <div *ngIf="f['squareFeet'].errors?.['min']">Must be at least 1</div>
+                </div>
+              </div>
+              
+              <div class="col-md-4">
+                <label class="form-label">Property Type</label>
+                <select class="form-select" formControlName="propertyType">
+                  <option *ngFor="let type of propertyTypes" [value]="type">{{type}}</option>
+                </select>
+              </div>
+              
+              <div class="col-md-4">
+                <label class="form-label">Listing Type</label>
+                <select class="form-select" formControlName="listingType">
+                  <option *ngFor="let type of listingTypes" [value]="type">{{type}}</option>
+                </select>
+              </div>
+              
+              <div class="col-md-4">
+                <label class="form-label">Status</label>
+                <select class="form-select" formControlName="status">
+                  <option *ngFor="let status of statusOptions" [value]="status">{{status}}</option>
+                </select>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-check form-switch mt-4">
+                  <input class="form-check-input" type="checkbox" id="petsAllowed" formControlName="isPetsAllowed">
+                  <label class="form-check-label" for="petsAllowed">Pets Allowed</label>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-check form-switch mt-4">
+                  <input class="form-check-input" type="checkbox" id="hasParking" formControlName="hasParking">
+                  <label class="form-check-label" for="hasParking">Parking Available</label>
+                </div>
+              </div>
+              
+              <div class="col-12 text-end">
+                <button type="submit" class="btn btn-primary" [disabled]="isSubmitting || listingForm.invalid">
+                  <i class="bi bi-save"></i>
+                  {{ isSubmitting ? 'Saving...' : 'Update Listing' }}
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <div *ngIf="!isEditing">
+            <h5 class="mb-3">{{ listingData?.title }}</h5>
+            <div class="row">
+              <div class="col-md-6">
+                <p><strong>Price:</strong> ₹{{ listingData?.price | number }}</p>
+                <p><strong>Location:</strong> {{ listingData?.location }}</p>
+                <p><strong>Property Type:</strong> {{ listingData?.propertyType }}</p>
+                <p><strong>Listing Type:</strong> {{ listingData?.listingType }}</p>
+                <p><strong>Status:</strong> {{ listingData?.status }}</p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Bedrooms:</strong> {{ listingData?.bedrooms }}</p>
+                <p><strong>Bathrooms:</strong> {{ listingData?.bathrooms }}</p>
+                <p><strong>Square Feet:</strong> {{ listingData?.squareFeet | number }}</p>
+                <p><strong>Pets Allowed:</strong> {{ listingData?.isPetsAllowed ? 'Yes' : 'No' }}</p>
+                <p><strong>Parking:</strong> {{ listingData?.hasParking ? 'Yes' : 'No' }}</p>
+              </div>
+            </div>
+            <div class="mt-3">
+              <h6>Description</h6>
+              <p>{{ listingData?.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<div class="container py-4">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="card shadow-sm border-0">
+        <!-- Card Header -->
+        <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+          <h5 class="mb-0 d-flex align-items-center">
+            <i class="bi bi-house me-2 text-primary"></i>
+            Property Listing
+          </h5>
+          <button class="btn btn-sm" 
+                  [class.btn-outline-primary]="!isEditing"
+                  [class.btn-outline-secondary]="isEditing"
+                  (click)="toggleEdit()">
+            <i class="bi" [class.bi-pencil]="!isEditing" [class.bi-x]="isEditing"></i>
+            {{ isEditing ? 'Cancel' : 'Edit' }}
+          </button>
+        </div>
+
+        <!-- Card Body -->
+        <div class="card-body">
+          <!-- Status Messages -->
+          <div *ngIf="updateMessage" class="alert alert-success alert-dismissible fade show mb-4">
+            <i class="bi bi-check-circle me-2"></i>
+            {{ updateMessage }}
+            <button type="button" class="btn-close" (click)="updateMessage = null"></button>
+          </div>
+          
+          <div *ngIf="updateError" class="alert alert-danger alert-dismissible fade show mb-4">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            {{ updateError }}
+            <button type="button" class="btn-close" (click)="updateError = null"></button>
+          </div>
+
+          <!-- Edit Form -->
+          <form *ngIf="isEditing" [formGroup]="listingForm" (ngSubmit)="onSubmit()">
+            <div class="row g-3">
+              <!-- Title -->
+              <div class="col-md-8">
+                <label class="form-label">Title <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" formControlName="title" placeholder="Beautiful 3BHK Apartment">
+                <div *ngIf="f['title'].invalid && (f['title'].dirty || f['title'].touched)" class="text-danger small mt-1">
+                  <div *ngIf="f['title'].errors?.['required']"><i class="bi bi-exclamation-circle"></i> Title is required</div>
+                  <div *ngIf="f['title'].errors?.['minlength']"><i class="bi bi-exclamation-circle"></i> Minimum 5 characters required</div>
+                </div>
+              </div>
+              
+              <!-- Price -->
+              <div class="col-md-4">
+                <label class="form-label">Price (₹) <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text">₹</span>
+                  <input type="number" class="form-control" formControlName="price" placeholder="5000000">
+                </div>
+                <div *ngIf="f['price'].invalid && (f['price'].dirty || f['price'].touched)" class="text-danger small mt-1">
+                  <div *ngIf="f['price'].errors?.['required']"><i class="bi bi-exclamation-circle"></i> Price is required</div>
+                  <div *ngIf="f['price'].errors?.['min']"><i class="bi bi-exclamation-circle"></i> Price must be positive</div>
+                </div>
+              </div>
+              
+              <!-- Description -->
+              <div class="col-12">
+                <label class="form-label">Description <span class="text-danger">*</span></label>
+                <textarea class="form-control" rows="4" formControlName="description" 
+                          placeholder="Describe the property features, amenities, and neighborhood"></textarea>
+                <div *ngIf="f['description'].invalid && (f['description'].dirty || f['description'].touched)" class="text-danger small mt-1">
+                  <div *ngIf="f['description'].errors?.['required']"><i class="bi bi-exclamation-circle"></i> Description is required</div>
+                  <div *ngIf="f['description'].errors?.['minlength']"><i class="bi bi-exclamation-circle"></i> Minimum 20 characters required</div>
+                </div>
+              </div>
+              
+              <!-- Location -->
+              <div class="col-md-6">
+                <label class="form-label">Location <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" formControlName="location" placeholder="Enter full address">
+                <div *ngIf="f['location'].invalid && (f['location'].dirty || f['location'].touched)" class="text-danger small mt-1">
+                  <div *ngIf="f['location'].errors?.['required']"><i class="bi bi-exclamation-circle"></i> Location is required</div>
+                </div>
+              </div>
+              
+              <!-- Property Details -->
+              <div class="col-md-2">
+                <label class="form-label">Bedrooms <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" formControlName="bedrooms" placeholder="3">
+                <div *ngIf="f['bedrooms'].invalid && (f['bedrooms'].dirty || f['bedrooms'].touched)" class="text-danger small mt-1">
+                  <div *ngIf="f['bedrooms'].errors?.['required']"><i class="bi bi-exclamation-circle"></i> Required</div>
+                  <div *ngIf="f['bedrooms'].errors?.['min']"><i class="bi bi-exclamation-circle"></i> Cannot be negative</div>
+                </div>
+              </div>
+              
+              <div class="col-md-2">
+                <label class="form-label">Bathrooms <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" formControlName="bathrooms" placeholder="2">
+                <div *ngIf="f['bathrooms'].invalid && (f['bathrooms'].dirty || f['bathrooms'].touched)" class="text-danger small mt-1">
+                  <div *ngIf="f['bathrooms'].errors?.['required']"><i class="bi bi-exclamation-circle"></i> Required</div>
+                  <div *ngIf="f['bathrooms'].errors?.['min']"><i class="bi bi-exclamation-circle"></i> Cannot be negative</div>
+                </div>
+              </div>
+              
+              <div class="col-md-2">
+                <label class="form-label">Sq Ft <span class="text-danger">*</span></label>
+                <input type="number" class="form-control" formControlName="squareFeet" placeholder="1500">
+                <div *ngIf="f['squareFeet'].invalid && (f['squareFeet'].dirty || f['squareFeet'].touched)" class="text-danger small mt-1">
+                  <div *ngIf="f['squareFeet'].errors?.['required']"><i class="bi bi-exclamation-circle"></i> Required</div>
+                  <div *ngIf="f['squareFeet'].errors?.['min']"><i class="bi bi-exclamation-circle"></i> Must be at least 1</div>
+                </div>
+              </div>
+              
+              <!-- Dropdown Selections -->
+              <div class="col-md-4">
+                <label class="form-label">Property Type <span class="text-danger">*</span></label>
+                <select class="form-select" formControlName="propertyType">
+                  <option value="" disabled selected>Select type</option>
+                  <option *ngFor="let type of propertyTypes" [value]="type">{{type}}</option>
+                </select>
+              </div>
+              
+              <div class="col-md-4">
+                <label class="form-label">Listing Type <span class="text-danger">*</span></label>
+                <select class="form-select" formControlName="listingType">
+                  <option value="" disabled selected>Select type</option>
+                  <option *ngFor="let type of listingTypes" [value]="type">{{type}}</option>
+                </select>
+              </div>
+              
+              <div class="col-md-4">
+                <label class="form-label">Status <span class="text-danger">*</span></label>
+                <select class="form-select" formControlName="status">
+                  <option value="" disabled selected>Select status</option>
+                  <option *ngFor="let status of statusOptions" [value]="status">{{status}}</option>
+                </select>
+              </div>
+              
+              <!-- Toggle Switches -->
+              <div class="col-md-6">
+                <div class="form-check form-switch mt-3">
+                  <input class="form-check-input" type="checkbox" id="petsAllowed" formControlName="isPetsAllowed">
+                  <label class="form-check-label" for="petsAllowed">Pets Allowed</label>
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <div class="form-check form-switch mt-3">
+                  <input class="form-check-input" type="checkbox" id="hasParking" formControlName="hasParking">
+                  <label class="form-check-label" for="hasParking">Parking Available</label>
+                </div>
+              </div>
+              
+              <!-- Submit Button -->
+              <div class="col-12 text-end mt-4">
+                <button type="submit" class="btn btn-primary px-4" [disabled]="isSubmitting || listingForm.invalid">
+                  <i class="bi" [class.bi-save]="!isSubmitting" [class.bi-arrow-repeat]="isSubmitting"></i>
+                  {{ isSubmitting ? ' Saving...' : ' Update Listing' }}
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <!-- View Mode -->
+          <div *ngIf="!isEditing" class="view-mode">
+            <div class="d-flex justify-content-between align-items-start mb-4">
+              <div>
+                <h4 class="mb-1">{{ listingData?.title }}</h4>
+                <div class="d-flex align-items-center text-muted mb-3">
+                  <i class="bi bi-geo-alt-fill me-2"></i>
+                  <span>{{ listingData?.location }}</span>
+                </div>
+              </div>
+              <div class="text-end">
+                <h3 class="text-primary mb-0">₹{{ listingData?.price | number }}</h3>
+                <div class="badge bg-success mt-1">{{ listingData?.status }}</div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Property Type</span>
+                    <span class="fw-medium">{{ listingData?.propertyType }}</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Listing Type</span>
+                    <span class="fw-medium">{{ listingData?.listingType }}</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Bedrooms</span>
+                    <span class="fw-medium">{{ listingData?.bedrooms }}</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <ul class="list-group list-group-flush">
+                  <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Bathrooms</span>
+                    <span class="fw-medium">{{ listingData?.bathrooms }}</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Square Feet</span>
+                    <span class="fw-medium">{{ listingData?.squareFeet | number }}</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Pets Allowed</span>
+                    <span class="fw-medium">{{ listingData?.isPetsAllowed ? 'Yes' : 'No' }}</span>
+                  </li>
+                  <li class="list-group-item d-flex justify-content-between">
+                    <span class="text-muted">Parking</span>
+                    <span class="fw-medium">{{ listingData?.hasParking ? 'Yes' : 'No' }}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="mt-4">
+              <h6 class="border-bottom pb-2">Description</h6>
+              <p class="mt-3">{{ listingData?.description }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

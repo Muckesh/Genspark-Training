@@ -1,0 +1,9 @@
+<!-- inquiry-card.component.html -->
+<div class="card mb-3" (click)="select()" style="cursor:pointer;">
+  <div class="card-body">
+    <h5 class="card-title">{{ inquiry.listingTitle }}</h5>
+    <p class="card-subtitle text-muted" *ngIf="showAgent">Agent: {{ inquiry.agentName }}</p>
+    <p class="card-subtitle text-muted" *ngIf="showBuyer">Buyer: {{ inquiry.buyerName }}</p>
+    <p class="card-text mt-2">{{ inquiry.message }}</p>
+  </div>
+</div>

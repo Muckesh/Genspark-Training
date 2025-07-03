@@ -1,0 +1,66 @@
+<header class="bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" routerLink="/">Real Estate App</a>
+      
+      <button class="navbar-toggler" type="button" 
+              data-bs-toggle="collapse" data-bs-target="#navbarNav"
+              aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+              Home
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/properties" routerLinkActive="active">
+              Properties
+            </a>
+          </li>
+        </ul>
+        
+        <ul class="navbar-nav">
+          <ng-container *ngIf="authService.isAuthenticated(); else authLinks">
+            <li class="nav-item" *ngIf="authService.hasRole('Agent')">
+              <a class="nav-link" routerLink="/agent" routerLinkActive="active">
+                <i class="bi bi-person-badge me-1"></i>Agent Dashboard
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="authService.hasRole('Buyer')">
+              <a class="nav-link" routerLink="/buyer" routerLinkActive="active">
+                <i class="bi bi-house-heart me-1"></i>Buyer Dashboard
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="authService.hasRole('Admin')">
+              <a class="nav-link" routerLink="/admin" routerLinkActive="active">
+                <i class="bi bi-shield-lock me-1"></i>Admin Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <button class="btn btn-outline-light" (click)="logout()">
+                <i class="bi bi-box-arrow-right me-1"></i>Logout
+              </button>
+            </li>
+          </ng-container>
+          
+          <ng-template #authLinks>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/login" routerLinkActive="active">
+                <i class="bi bi-box-arrow-in-right me-1"></i>Login
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/register" routerLinkActive="active">
+                <i class="bi bi-person-plus me-1"></i>Register
+              </a>
+            </li>
+          </ng-template>
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>

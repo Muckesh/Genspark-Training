@@ -1,0 +1,365 @@
+/* Enhanced Property Card Styles */
+.property-card {
+  transition: all 0.3s ease;
+  border: none;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+}
+
+.property-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+}
+
+.property-image-container {
+  position: relative;
+  overflow: hidden;
+  height: 240px;
+}
+
+.property-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  cursor: pointer;
+}
+
+.property-image:hover {
+  transform: scale(1.08);
+}
+
+.property-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.property-card:hover .property-overlay {
+  opacity: 1;
+}
+
+.property-badges {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+}
+
+.property-badge {
+  background: rgba(255, 255, 255, 0.95);
+  color: #333;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.favorite-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.favorite-btn:hover {
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+  transform: scale(1.1);
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.property-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  /* -webkit-line-clamp: 2; */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.property-location {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.property-location i {
+  color: #0d6efd;
+  margin-right: 0.5rem;
+}
+
+.property-features {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.feature-badge {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  color: #495057;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  border: 1px solid #dee2e6;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.feature-badge i {
+  color: #0d6efd;
+  font-size: 0.8rem;
+}
+
+.property-price {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #0d6efd;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.property-actions {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.btn-view {
+  background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  flex: 1;
+}
+
+.btn-view:hover {
+  background: linear-gradient(135deg, #0b5ed7 0%, #0a58ca 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+  color: white;
+}
+
+.btn-action {
+  background: rgba(108, 117, 125, 0.1);
+  border: 1px solid rgba(108, 117, 125, 0.2);
+  color: #6c757d;
+  font-weight: 600;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 0.85rem;
+}
+
+.btn-action.btn-inquire {
+  background: rgba(25, 135, 84, 0.1);
+  border-color: rgba(25, 135, 84, 0.2);
+  color: #198754;
+}
+
+.btn-action.btn-inquire:hover {
+  background: #198754;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.btn-action.btn-edit {
+  background: rgba(255, 193, 7, 0.1);
+  border-color: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+.btn-action.btn-edit:hover {
+  background: #ffc107;
+  color: #000;
+  transform: translateY(-1px);
+}
+
+.btn-action.btn-delete {
+  background: rgba(220, 53, 69, 0.1);
+  border-color: rgba(220, 53, 69, 0.2);
+  color: #dc3545;
+}
+
+.btn-action.btn-delete:hover {
+  background: #dc3545;
+  color: white;
+  transform: translateY(-1px);
+}
+
+.manage-actions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+
+.property-card:hover .manage-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.manage-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.25rem;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.manage-btn:hover {
+  transform: scale(1.1);
+}
+
+.manage-btn.edit:hover {
+  background: rgba(255, 193, 7, 0.9);
+  color: white;
+}
+
+.manage-btn.delete:hover {
+  background: rgba(220, 53, 69, 0.9);
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .property-image-container {
+    height: 200px;
+  }
+  
+  .card-body {
+    padding: 1.25rem;
+  }
+  
+  .property-price {
+    font-size: 1.2rem;
+  }
+  
+  .property-actions {
+    flex-direction: column;
+  }
+  
+  .btn-view {
+    width: 100%;
+  }
+  
+  .property-features {
+    gap: 0.25rem;
+  }
+  
+  .feature-badge {
+    font-size: 0.7rem;
+    padding: 0.3rem 0.6rem;
+  }
+}
+
+/* Animation for card entrance */
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.property-card {
+  animation: cardFadeIn 0.6s ease-out;
+}
+
+/* Loading state */
+.property-card.loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .property-card {
+    border: 2px solid #000;
+  }
+  
+  .feature-badge {
+    border-width: 2px;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .property-card,
+  .property-image,
+  .btn-view,
+  .btn-action {
+    transition: none;
+  }
+  
+  .property-card:hover {
+    transform: none;
+  }
+  
+  .property-image:hover {
+    transform: none;
+  }
+}

@@ -1,0 +1,32 @@
+<div class="card">
+  <div class="card-header">
+    <h5 class="card-title mb-0">Image Cleanup</h5>
+    <p class="card-subtitle text-muted">Remove deleted images older than 1 day</p>
+  </div>
+  
+  <div class="card-body">
+    <p class="card-text">This will permanently delete all images marked as deleted more than 1 day ago.</p>
+    
+    <div *ngIf="resultMessage" class="alert alert-success mt-3">
+      {{ resultMessage }}
+    </div>
+    
+    <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+      {{ errorMessage }}
+    </div>
+  </div>
+  
+  <div class="card-footer">
+    <button 
+      class="btn btn-danger"
+      (click)="runCleanup()"
+      [disabled]="isCleaning">
+      
+      <span *ngIf="!isCleaning">Run Cleanup</span>
+      <span *ngIf="isCleaning">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Cleaning...
+      </span>
+    </button>
+  </div>
+</div>
