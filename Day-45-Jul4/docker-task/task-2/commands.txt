@@ -1,0 +1,55 @@
+Task: Run a MySQL Container with Persistent Data Using Docker Volumes
+
+1 -> pulling mysql image
+docker pull mysql:latest
+
+2 -> running mysql with named Volume
+
+docker run -d --name mysql-container \
+            -e MYSQL_ROOT_PASSWORD=rootpassword \
+            -e MYSQL_DATABASE=testdb \
+            -v mydbdata:/var/lib/mysql \
+            -p 3306:3306 \
+            mysql:latest
+
+3 -> using temp mysql client comtainer
+
+docker run -it --rm \ (--rm removes comtainer on exit)
+            --network host \
+            mysql:latest \
+            mysql -h 127.0.0.1 -P 3306 \
+            -u root \
+            -p
+4 -> insert some data to testdb
+use testdb
+create table users (id int primary key auto_increment.
+                    name varchar(100),
+                    email varchar(100)
+                    );
+insert into users (name,email) values ('Alice','alice@gmail.com'), ('Bob','bob@gmail.com') ;
+
+5 -> stop and remove comtainer
+docker stop mysql-container
+docker rm mysql-container
+
+We are NOT removing the volume (mydbdata), so data persists.
+
+6 -> Starting a New Container with Same Volume
+
+docker run -d \
+  --name mysql-container-1 \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -v mydbdata:/var/lib/mysql \
+  -p 3306:3306 \
+  mysql:latest
+We can omit MYSQL_DATABASE this time — it’s already in the volume.
+
+7 ->  Reconnect and Verify Data
+
+docker run -it --rm \ (--rm removes comtainer on exit)
+            --network host \
+            mysql:latest \
+            mysql -h 127.0.0.1 -P 3306 \
+            -u root \
+            -p
+            (old passwd)

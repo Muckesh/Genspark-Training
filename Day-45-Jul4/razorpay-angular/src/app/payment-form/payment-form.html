@@ -1,0 +1,59 @@
+<div class="payment-container">
+  <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()" class="payment-form">
+    <h2>UPI Payment Simulator</h2>
+    
+    <div class="form-group">
+      <label for="amount">Amount (₹)</label>
+      <input type="number" id="amount" formControlName="amount" placeholder="Enter amount">
+      <div *ngIf="paymentForm.get('amount')?.invalid && paymentForm.get('amount')?.touched" class="error-message">
+        Valid amount greater than 0 is required
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="name">Customer Name</label>
+      <input type="text" id="name" formControlName="name" placeholder="Enter your name">
+      <div *ngIf="paymentForm.get('name')?.invalid && paymentForm.get('name')?.touched" class="error-message">
+        Name is required
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" formControlName="email" placeholder="Enter your email">
+      <div *ngIf="paymentForm.get('email')?.invalid && paymentForm.get('email')?.touched" class="error-message">
+        Valid email is required
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="contact">Contact Number</label>
+      <input type="tel" id="contact" formControlName="contact" placeholder="Enter 10-digit mobile number">
+      <div *ngIf="paymentForm.get('contact')?.invalid && paymentForm.get('contact')?.touched" class="error-message">
+        10-digit mobile number is required
+      </div>
+    </div>
+    
+    <button type="submit" [disabled]="paymentForm.invalid || isProcessing" class="submit-btn">
+      {{ isProcessing ? 'Processing...' : 'Proceed to Pay' }}
+    </button>
+    
+    <div class="test-upi-hint">
+      <p>Test UPI IDs:</p>
+      <ul>
+        <li><strong>Success:</strong> success\\razorpay</li>
+        <li><strong>Failure:</strong> failure\\razorpay</li>
+      </ul>
+    </div>
+  </form>
+  
+  <div *ngIf="paymentResult" class="result-container" [ngClass]="{
+    'success': paymentResult.status === 'success',
+    'failure': paymentResult.status === 'failed' || paymentResult.status === 'cancelled'
+  }">
+    <h3>Payment {{ paymentResult.status | uppercase }}</h3>
+    <p *ngIf="paymentResult.paymentId">Payment ID: {{ paymentResult.paymentId }}</p>
+    <p>{{ paymentResult.message }}</p>
+    <button (click)="resetForm()" class="try-again-btn">Try Another Payment</button>
+  </div>
+</div>
