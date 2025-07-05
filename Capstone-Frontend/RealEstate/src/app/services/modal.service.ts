@@ -1,7 +1,7 @@
 // src/app/services/modal.service.ts
 import { Injectable } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { InquiryForm } from '../inquiry-form/inquiry-form';
+import { InquiryForm } from '../components/buyer/inquiry-form/inquiry-form';
 
 @Injectable({ providedIn: 'root' })
 export class ModalService {

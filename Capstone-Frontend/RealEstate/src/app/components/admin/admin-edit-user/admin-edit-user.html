@@ -1,0 +1,134 @@
+<div class="container py-4">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+          <h5 class="mb-0">
+            <i class="bi bi-pencil-square me-2"></i>
+            Edit User
+          </h5>
+          <span class="badge" [ngClass]="{
+            'bg-danger': user?.role === 'Admin',
+            'bg-success': user?.role === 'Agent',
+            'bg-primary': user?.role === 'Buyer'
+          }">
+            {{ user?.role }}
+          </span>
+        </div>
+
+        <div class="card-body">
+          <!-- Loading State -->
+          <div *ngIf="isLoading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading user details...</p>
+          </div>
+
+          <!-- Error State -->
+          <div *ngIf="error && !isLoading" class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            {{ error }}
+          </div>
+
+          <!-- Success Message -->
+          <div *ngIf="successMessage" class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i>
+            {{ successMessage }}
+          </div>
+
+          @if (user.role==='Admin') {
+              <div class="container">No Editable fields available</div>
+          }
+          <!-- Edit Form -->
+          <form *ngIf="!isLoading && user" [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+            <div class="row g-3">
+              <!-- <div class="col-md-6">
+                <label class="form-label">Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" formControlName="name">
+                <div *ngIf="profileForm.get('name')?.invalid && profileForm.get('name')?.touched" class="text-danger small mt-1">
+                  <i class="bi bi-exclamation-circle"></i> Name is required
+                </div>
+              </div> -->
+
+              <!-- <div class="col-md-6">
+                <label class="form-label">Email <span class="text-danger">*</span></label>
+                <input type="email" class="form-control" formControlName="email">
+                <div *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched" class="text-danger small mt-1">
+                  <div *ngIf="profileForm.get('email')?.errors?.['required']">
+                    <i class="bi bi-exclamation-circle"></i> Email is required
+                  </div>
+                  <div *ngIf="userForm.get('email')?.errors?.['email']">
+                    <i class="bi bi-exclamation-circle"></i> Please enter a valid email
+                  </div>
+                </div>
+              </div> -->
+
+              <div class="col-md-6">
+                <label class="form-label">Phone <span class="text-danger">*</span></label>
+                <input type="tel" class="form-control" formControlName="phone">
+                <div *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched" class="text-danger small mt-1">
+                  <i class="bi bi-exclamation-circle"></i> Phone is required
+                </div>
+              </div>
+
+              <!-- Buyer Specific Fields -->
+              <div *ngIf="isBuyer" class="col-md-6">
+                <label class="form-label">Preferred Location <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" formControlName="preferredLocation">
+                <div *ngIf="profileForm.get('preferredLocation')?.invalid && profileForm.get('preferredLocation')?.touched" class="text-danger small mt-1">
+                  <i class="bi bi-exclamation-circle"></i> Preferred location is required
+                </div>
+              </div>
+
+              <div *ngIf="isBuyer" class="col-md-6">
+                <label class="form-label">Budget (₹) <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text">₹</span>
+                  <input type="number" class="form-control" formControlName="budget">
+                </div>
+                <div *ngIf="profileForm.get('budget')?.invalid && profileForm.get('budget')?.touched" class="text-danger small mt-1">
+                  <div *ngIf="profileForm.get('budget')?.errors?.['required']">
+                    <i class="bi bi-exclamation-circle"></i> Budget is required
+                  </div>
+                  <div *ngIf="profileForm.get('budget')?.errors?.['min']">
+                    <i class="bi bi-exclamation-circle"></i> Budget must be positive
+                  </div>
+                </div>
+              </div>
+
+              <!-- Agent Specific Fields -->
+              <div *ngIf="isAgent" class="col-md-6">
+                <label class="form-label">Agency Name <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" formControlName="agencyName">
+                <div *ngIf="profileForm.get('agencyName')?.invalid && profileForm.get('agencyName')?.touched" class="text-danger small mt-1">
+                  <i class="bi bi-exclamation-circle"></i> Agency name is required
+                </div>
+              </div>
+
+              <div *ngIf="isAgent" class="col-md-6">
+                <label class="form-label">License Number <span class="text-danger">*</span></label>
+                <input type="text" class="form-control" formControlName="licenseNumber">
+                <div *ngIf="profileForm.get('licenseNumber')?.invalid && profileForm.get('licenseNumber')?.touched" class="text-danger small mt-1">
+                  <i class="bi bi-exclamation-circle"></i> License number is required
+                </div>
+              </div>
+
+              <div class="col-12 mt-4">
+                <div class="d-flex justify-content-between">
+                  <button type="button" class="btn btn-outline-secondary" (click)="router.navigate(['/admin/users'])">
+                    <i class="bi bi-arrow-left me-2"></i>Cancel
+                  </button>
+                  <button type="submit" class="btn btn-primary px-4" [disabled]="isSubmitting || profileForm.invalid">
+                    <i class="bi" [class.bi-save]="!isSubmitting" [class.bi-arrow-repeat]="isSubmitting"></i>
+                    {{ isSubmitting ? ' Saving...' : ' Save Changes' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
