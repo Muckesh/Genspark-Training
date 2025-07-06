@@ -161,20 +161,7 @@ export class CreateListing implements OnInit{
           });
         });
 
-        // wait for all images to upload
-        // Promise.all(uploadObservables.map(obs=> obs.toPromise()))
-        //   .then(()=>{
-        //     this.successMessage='Listing created successfully with images!';
-        //     setTimeout(()=> this.router.navigate(['/agent/listings']),1500)
-        //   })
-        //   .catch(error=>{
-        //     console.log(error);
-        //     this.errorMessage='Listing created but failed to upload some images.'
-        //     this.isSubmitting=false;
-        //   })
-
-        // this.successMessage = 'Listing created successfully!';
-        // setTimeout(() => this.router.navigate(['/agent/listings']), 1500);
+        
       },
       error: (error) => {
         this.errorMessage = error.message || 'Failed to create listing';

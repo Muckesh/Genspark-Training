@@ -41,11 +41,25 @@ export class LoginForm {
 
     this.authService.login(credentials).subscribe({
       next:()=>{
-        this.router.navigate(['']);
+        // this.router.navigate([`/${(this.authService.getCurrentUser().role).toString().toLower()}`]);
+        if(this.authService.hasRole('Admin')){
+          this.router.navigate(['/admin']);
+        }else if(this.authService.hasRole('Agent')){
+          this.router.navigate(['/agent']);
+        }else if(this.authService.hasRole('Buyer')){
+          this.router.navigate(['/buyer']);
+        }
       },
       error:(error)=>{
-        this.errorMessage=error.message || 'Login Failed. Please try again.';
+        // this.errorMessage=error.message || 'Login Failed. Please try again.';
         this.loading=false;
+        if (error.error && error.error.error) {
+          this.errorMessage = error.error.error;
+        } else if (error.status === 0) {
+          this.errorMessage = 'Server is unreachable. Please try again later.';
+        } else {
+          this.errorMessage = 'Login failed. Please try again.';
+        }
       },
       complete:()=>{
         this.loading=false;

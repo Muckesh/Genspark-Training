@@ -24,17 +24,7 @@ export class PropertyCard {
 
   @Output() listingDeleted = new EventEmitter<string>();
   user!:User;
-  // errorMessage:string|null=null;
-  // isInquiring = false;
-  // imageUrls$!: Observable<string[]>;
-
-  // constructor(private propertyImageService: PropertyImageService) {}
-
-  // ngOnChanges(changes: SimpleChanges): void {
-  //   if (changes['listing'] && this.listing?.id) {
-  //     this.imageUrls$ = this.propertyImageService.getImageUrls(this.listing.id) ?? [];
-  //   }
-  // }
+  
 
   constructor(private modalService:ModalService,private router:Router,private authService:AuthService,private listingService:PropertyListingService,private inquiryService:InquiryService){
     // this.user=authService.getCurrentUser();
@@ -85,17 +75,6 @@ export class PropertyCard {
     return this.authService.hasRole('Buyer');
   }
 
-  //  deleteListing(id: string) {
-  //   if (confirm('Are you sure you want to delete this listing?')) {
-  //     this.listingService.deleteListing(id).subscribe({
-  //       next: () => {
-  //         // this.listings = this.listings.filter(listing => listing.id !== id);
-  //       },
-  //       error: (error) => {
-  //         this.errorMessage = error.message || 'Failed to delete listing';
-  //       }
-  //     });
-  //   }
-  // }
+  
 
 }

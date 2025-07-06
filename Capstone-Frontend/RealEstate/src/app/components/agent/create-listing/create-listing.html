@@ -124,8 +124,8 @@
                     <option value="Apartment">Apartment</option>
                     <option value="Villa">Villa</option>
                     <option value="Independent House">Independent House</option>
-                    <option value="Studio">Studio</option>
-                    <option value="Land">Land</option>
+                    <!-- <option value="Studio">Studio</option> -->
+                    <!-- <option value="Land">Land</option> -->
                   </select>
                   <div *ngIf="f['propertyType'].invalid && (f['propertyType'].dirty || f['propertyType'].touched)" class="invalid-feedback">
                     Property type is required
@@ -209,19 +209,6 @@
                 </div>
               </div>
 
-              <!-- Image Previews -->
-              <!-- <div class="row g-2 mb-3" *ngIf="previewUrls.length > 0">
-                <div class="col-6 col-md-4 col-lg-3" *ngFor="let url of previewUrls; let i = index">
-                  <div class="image-preview-container">
-                    <div class="row">
-                      <img [src]="url" class="img-thumbnail" alt="Preview">
-                    <button type="button" class="btn btn-danger btn-sm remove-btn" (click)="removeImage(i)">
-                      <i class="bi bi-x"></i>
-                    </button>
-                    </div>
-                  </div>
-                </div>
-              </div> -->
               <!-- Image Previews -->
               <div class="row g-2 mb-3" *ngIf="previewUrls.length > 0">
                 <div class="col-6 col-md-4 col-lg-3" *ngFor="let url of previewUrls; let i = index">

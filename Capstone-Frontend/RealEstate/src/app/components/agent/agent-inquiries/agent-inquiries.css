@@ -1,40 +1,4 @@
-/* .chat-box {
-  border: 1px solid #ccc;
-  padding: 12px;
-  margin-top: 20px;
-  border-radius: 8px;
-  max-width: 600px;
-}
 
-.messages {
-  max-height: 300px;
-  overflow-y: auto;
-  margin-bottom: 12px;
-  padding-right: 10px;
-}
-
-.message {
-  padding: 6px 10px;
-  margin: 6px 0;
-  border-radius: 8px;
-  max-width: 70%;
-}
-
-.message-incoming {
-  background-color: #f1f1f1;
-  align-self: flex-start;
-}
-
-.message-outgoing {
-  background-color: #d1e7dd;
-  align-self: flex-end;
-  margin-left: auto;
-}
-
-.chat-input {
-  display: flex;
-  gap: 10px;
-} */
 /* Shared Inquiry Styles */
 .inquiry-container {
   display: flex;

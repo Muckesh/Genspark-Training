@@ -58,12 +58,7 @@ export class AdminEditUser implements OnInit{
   }
 
   initializeForm(): void {
-    // this.userForm = this.fb.group({
-    //   name: [this.user.name, [Validators.required]],
-    //   email: [this.user.email, [Validators.required, Validators.email]],
-    //   // Common fields
-    //   phone: [this.user.buyerProfile?.phone || this.user.agentProfile?.phone || '', [Validators.required]],
-    // });
+   
 
     if (this.isBuyer) {
       this.profileForm=this.fb.group({
@@ -87,28 +82,7 @@ export class AdminEditUser implements OnInit{
     this.error = null;
     this.successMessage = null;
 
-    // Update base user info
-    // const userUpdate = {
-    //   name: this.userForm.value.name,
-    //   email: this.userForm.value.email
-    // };
-
-
-
-    // this.userService.updateUser(this.user.id, userUpdate).subscribe({
-    //   next: () => {
-    //     if (this.isBuyer) {
-    //       this.updateBuyerProfile();
-    //     } else if (this.isAgent) {
-    //       this.updateAgentProfile();
-    //     } else {
-    //       this.onUpdateSuccess();
-    //     }
-    //   },
-    //   error: (err) => {
-    //     this.handleError('Failed to update user information', err);
-    //   }
-    // });
+    
 
     if(this.isBuyer){
       this.updateBuyerProfile();

@@ -48,18 +48,7 @@ export class Profile implements OnInit,OnDestroy{
 
 
   ngOnInit(): void {
-    // this.user = this.authService.getCurrentUser();
-
-    // this.profileForm = this.fb.group({
-    //   preferredLocation:[this.user.buyerProfile?.preferredLocation || ''],
-    //   budget:[this.user.buyerProfile?.budget || 0]
-    // });
-
-    // this.passwordForm = this.fb.group({
-    //   oldPassword:[''],
-    //   newPassword:['']
-    // });
-    // this.loadUserProfile();
+   
     this.isLoading=true;
     this.authService.currentUser$
     .pipe(takeUntil(this.destroy$))
@@ -94,12 +83,7 @@ export class Profile implements OnInit,OnDestroy{
   // }
 
   initializeForms(){
-    // this.profileForm = this.fb.group({
-    //   // name:[this.user.name||'',[Validators.required]],
-    //   // email:[this.user.email||'',[Validators.required,Validators.email]],
-    //   preferredLocation:[this.user.buyerProfile?.preferredLocation || '',[Validators.required]],
-    //   budget:[this.user.buyerProfile?.budget || 0,[Validators.required,Validators.min(0)]]
-    // });
+    
 
     // common password form for both roles
     this.passwordForm = this.fb.group({
@@ -139,29 +123,7 @@ export class Profile implements OnInit,OnDestroy{
     this.profileUpdateMessage = 'Updating profile...';
     this.profileUpdateError = null;
 
-    // this.updateDto.budget=this.profileForm.value.budget;
-    // this.updateDto.preferredLocation=this.profileForm.value.preferredLocation
-
-    // this.buyerService.updateBuyer(this.user.id,this.profileForm.value)
-    // .subscribe({
-    //   next: (updatedProfile) => {
-    //     const updatedUser = {
-    //       ...this.user,
-    //       buyerProfile: updatedProfile
-    //     };
-
-    //     this.authService.setCurrentUser(updatedUser);
-    //     // this.user.buyerProfile=updatedUser;
-    //     // this.authService.currentUserSubject.value.buyerProfile=updatedUser;
-    //     this.profileUpdateMessage = 'Profile updated successfully';
-    //     this.isProfileEditing = false;
-    //     setTimeout(() => this.profileUpdateMessage = null, 3000);
-    //   },
-    //   error:()=> {
-    //     this.profileUpdateError = 'Failed to update profile';
-    //     setTimeout(() => this.profileUpdateError = null, 3000);
-    //   }
-    // })
+    
     if(this.isBuyer){
       const updateData:UpdateBuyerDto={
         phone:this.profileForm.value.phone,

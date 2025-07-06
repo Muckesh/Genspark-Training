@@ -46,7 +46,7 @@ export class RegisterBuyer {
 
     this.authService.registerBuyer(registerData).subscribe({
       next:()=>{
-        this.router.navigate(['dashboard/buyer']);
+        this.router.navigate(['/buyer']);
       },
       error:(error)=>{
         this.errorMessage=error.message || 'Registration failed. Please try again.';

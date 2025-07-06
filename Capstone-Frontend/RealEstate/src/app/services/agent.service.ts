@@ -12,10 +12,6 @@ export class AgentService{
 
     constructor(private http:HttpClient){}
 
-    // getAllAgents():Observable<Agent[]>{
-    //     return this.http.get<Agent[]>(this.baseUrl);
-    // }
-
     getAllAgents(params?: any):Observable<PagedResult<Agent>>{
         const cleanParams: any = {};
         for (const key in params) {

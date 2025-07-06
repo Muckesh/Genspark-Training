@@ -53,13 +53,6 @@ export class BrowseListings {
         error:()=>this.isLoading=false
       });
 
-    // this.listingService.getListings({pageNumber:1,pageSize:20}).subscribe({
-    //   next: (res) => {
-    //     console.log('Listings response:',res.items);
-    //     // console.log(res.items?.$values[1].images.$values[0])
-    //     this.listings=res.items??[];
-    //   }
-    // });
   }
   private updatePaginationInfo(res: PagedResult<PropertyListing>) {
     this.paginationInfo = {

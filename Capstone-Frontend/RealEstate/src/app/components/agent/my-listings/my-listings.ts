@@ -20,12 +20,7 @@ export class MyListings implements OnInit {
   constructor(private listingService:PropertyListingService){}
 
   ngOnInit(): void {
-    // this.listingService.getMyListings().subscribe({
-    //   next:(res)=>{
-    //     this.listings=res.items;
-    //     console.log(this.listings);
-    //   }
-    // });
+    
     this.loadListings();
   }
 
@@ -45,18 +40,7 @@ export class MyListings implements OnInit {
     });
   }
 
-  //   deleteListing(id: string) {
-  //   if (confirm('Are you sure you want to delete this listing?')) {
-  //     this.listingService.deleteListing(id).subscribe({
-  //       next: () => {
-  //         this.listings = this.listings.filter(listing => listing.id !== id);
-  //       },
-  //       error: (error) => {
-  //         this.errorMessage = error.message || 'Failed to delete listing';
-  //       }
-  //     });
-  //   }
-  // }
+  
 
   handleListingDeleted(listingId: string) {
     this.listingService.deleteListing(listingId).subscribe({

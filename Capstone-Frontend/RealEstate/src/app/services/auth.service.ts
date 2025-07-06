@@ -61,14 +61,6 @@ export class AuthService{
         return this.http.post<AuthResponseDto>(`${this.baseUrl}/auth/login`,credentials).pipe(
             tap(response=>{
                 this.storeTokens(response);
-                // return this.http.get<any>(`${this.baseUrl}/auth/me`,{headers:{Authorization:`Bearer ${this.getAccessToken()}`}}).pipe(
-                //     tap(user=>{
-                //         this.storeUser(user);
-                //         this.currentUserSubject.next(user);
-                //     })
-                // );
-                // const user = this.decodeToken(response.token);
-                // this.currentUserSubject.next(user);
             }),
             switchMap(() => this.http.get<any>(`${this.baseUrl}/auth/me`)),
             tap(user=>{
@@ -83,14 +75,7 @@ export class AuthService{
             .pipe(
                 tap(response=>{
                     this.storeTokens(response);
-                    // return this.http.get<any>(`${this.baseUrl}/auth/me`).pipe(
-                    //     tap(user=>{
-                    //         this.storeUser(user);
-                    //         this.currentUserSubject.next(user);
-                    //     })
-                    // );
-                    // const user = this.decodeToken(response.token);
-                    // this.currentUserSubject.next(user);
+                   
                 }),
                 switchMap(() => this.http.get<any>(`${this.baseUrl}/auth/me`)),
                 tap(user=>{
@@ -106,14 +91,7 @@ export class AuthService{
             .pipe(
                 tap(response=>{
                     this.storeTokens(response);
-                    // return this.http.get<any>(`${this.baseUrl}/auth/me`).pipe(
-                    //     tap(user=>{
-                    //         this.storeUser(user);
-                    //         this.currentUserSubject.next(user);
-                    //     })
-                    // );
-                    // const user = this.decodeToken(response.token);
-                    // this.currentUserSubject.next(user);
+                   
                 }),
                 switchMap(() => this.http.get<any>(`${this.baseUrl}/auth/me`)),
                 tap(user=>{
@@ -135,7 +113,10 @@ export class AuthService{
         const refreshToken = this.getRefreshToken();
         if(refreshToken){
             const request:LogoutRequestDto = {refreshToken};
-            this.http.post(`${this.baseUrl}/auth/logout`,request).subscribe();
+            this.http.post(`${this.baseUrl}/auth/logout`,request).subscribe({
+                error:err=>{console.log(err);
+                }
+            });
         }
         // this.clearTokens();
         // this.currentUserSubject.next(null);

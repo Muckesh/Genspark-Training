@@ -1,4 +1,4 @@
-/* Enhanced Property Detail Styles */
+/*  Property Detail Styles */
 .property-detail-container {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -181,7 +181,7 @@
   margin: 0 4px;
 }
 
-/* Agent card enhancements */
+/* Agent card  */
 .rounded-circle {
   border: 3px solid #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

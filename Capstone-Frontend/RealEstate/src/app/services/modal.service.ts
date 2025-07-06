@@ -13,7 +13,7 @@ export class ModalService {
     
     modalRef.componentInstance.inquirySubmitted.subscribe(() => {
       modalRef.close();
-      // You can add a toast notification here
+      //  add a toast notification here
     });
     
     modalRef.componentInstance.cancel.subscribe(() => {

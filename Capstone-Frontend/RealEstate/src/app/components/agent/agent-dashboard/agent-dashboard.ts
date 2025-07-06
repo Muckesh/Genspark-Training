@@ -137,20 +137,6 @@ export class AgentDashboard implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    // this.userService.getAllUsers().subscribe({
-    //   next:(users)=>{
-    //     this.users=users.items;
-    //     console.log(this.users);
-    //     this.filteredUsers=[...users.items];
-    //     this.updateStats(users.items);
-    //     this.isLoading=false;
-    //   },
-    //   error:(err)=>{
-    //     this.error = 'Failed to load users. Please try again later.';
-    //     this.isLoading = false;
-    //     console.error('Error loading users:', err);
-    //   }
-    // });
   }
 
 

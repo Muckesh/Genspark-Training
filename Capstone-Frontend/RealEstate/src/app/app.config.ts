@@ -18,6 +18,7 @@ import { SignalRService } from './services/signalr.service';
 import { TokenService } from './services/token.service';
 import { UserService } from './services/user.service';
 import { RoleGuard } from './guards/role.guard';
+import { NoAuthGuard } from './guards/no-auth.guard';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -39,6 +40,7 @@ export const appConfig: ApplicationConfig = {
     PropertyListingService,
     UserService,
     AuthGuard,
-    RoleGuard
+    RoleGuard,
+    NoAuthGuard
   ]
 };

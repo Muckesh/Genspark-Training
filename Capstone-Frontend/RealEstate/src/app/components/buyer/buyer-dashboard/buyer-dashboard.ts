@@ -80,13 +80,6 @@ export class BuyerDashboard implements OnInit {
         error:()=>this.isLoading=false
       });
 
-    // this.listingService.getListings({pageNumber:1,pageSize:20}).subscribe({
-    //   next: (res) => {
-    //     console.log('Listings response:',res.items);
-    //     // console.log(res.items?.$values[1].images.$values[0])
-    //     this.listings=res.items??[];
-    //   }
-    // });
   }
 
   loadDashboardData(): void {
@@ -172,12 +165,7 @@ export class BuyerDashboard implements OnInit {
     });
   }
 
-  // updateStats(propertiesWithinBudget: PropertyListing[],inquiries:InquiryResponseDto[],relatedProperties:PropertyListing[],listings:PropertyListing[]): void {
-  //   this.stats[0].value = inquiries.length;
-  //   this.stats[1].value = listings.length;
-  //   this.stats[2].value = relatedProperties.length;
-  //   this.stats[3].value = propertiesWithinBudget.length;
-  // }
+
 
   private updatePaginationInfo(res: PagedResult<PropertyListing>) {
     this.paginationInfo = {
@@ -229,27 +217,8 @@ export class BuyerDashboard implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    // this.userService.getAllUsers().subscribe({
-    //   next:(users)=>{
-    //     this.users=users.items;
-    //     console.log(this.users);
-    //     this.filteredUsers=[...users.items];
-    //     this.updateStats(users.items);
-    //     this.isLoading=false;
-    //   },
-    //   error:(err)=>{
-    //     this.error = 'Failed to load users. Please try again later.';
-    //     this.isLoading = false;
-    //     console.error('Error loading users:', err);
-    //   }
-    // });
+    
   }
 
-  // loadMore(){
-  //   const current = this.filtersSubject.value;
-  //   this.filtersSubject.next({
-  //     ...current,
-  //     pageNumber: current.pageNumber + 1
-  //   });
-  // }
+  
 }

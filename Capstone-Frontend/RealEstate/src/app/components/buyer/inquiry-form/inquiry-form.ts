@@ -28,25 +28,7 @@ export class InquiryForm {
       message: ['',[Validators.required,Validators.minLength(10)]]
     });
   }
-// async createInquiryOrOpenExisting(listingId: string) {
-//   const currentUser = this.authService.getCurrentUser();
 
-//   const existingInquiry = await this.http.get<Inquiry>(
-//     `${environment.apiUrl}/inquiries/existing?listingId=${listingId}&buyerId=${currentUser.id}`
-//   ).toPromise().catch(() => null);
-
-//   if (existingInquiry) {
-//     this.router.navigate(['/inquiries', existingInquiry.id]);
-//   } else {
-//     const inquiry: Inquiry = {
-//       listingId,
-//       buyerId: currentUser.id,
-//       message: 'Hello, I’m interested in this listing.'
-//     };
-//     const created = await this.inquiryService.createInquiry(inquiry).toPromise();
-//     this.router.navigate(['/inquiries', created.id]);
-//   }
-// }
 
   onSubmit(){
     if(this.inquiryForm.valid){

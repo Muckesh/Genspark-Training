@@ -47,7 +47,7 @@ export class RegisterAgent {
 
     this.authService.registerAgent(registerData).subscribe({
       next:()=>{
-        this.router.navigate(['']);
+        this.router.navigate(['/agent']);
       },
       error:(error)=>{
         this.errorMessage=error.message|| "Registration failed. Please try again."

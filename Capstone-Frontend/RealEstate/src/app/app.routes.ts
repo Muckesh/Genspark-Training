@@ -26,18 +26,16 @@ import { Unauthorized } from './components/shared/unauthorized/unauthorized';
 import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 import { Home } from './components/shared/home/home';
+import { NoAuthGuard } from './guards/no-auth.guard';
 
 export const routes: Routes = [
-    {path:'login',component:LoginForm},
-    // {path:'',component:Home,canActivate:[AuthGuard,RoleGuard],data:{roles:['Agent']}},
-    {path:'',component:Home,canActivate:[AuthGuard,RoleGuard],data:{roles:['Agent','Admin','Buyer']}},
-    {path:'register/buyer',component:RegisterBuyer},
-    {path:'register/agent',component:RegisterAgent},
+    {path:'login',component:LoginForm, canActivate:[NoAuthGuard]},
+    
+    {path:'register/buyer',component:RegisterBuyer, canActivate:[NoAuthGuard]},
+    {path:'register/agent',component:RegisterAgent, canActivate:[NoAuthGuard]},
+    
     {path:'unauthorized',component:Unauthorized,canActivate:[AuthGuard]},
-    {path:'dashboard/buyer',component:BuyerDashboard,canActivate:[AuthGuard,RoleGuard],data:{roles:['Buyer']}},
-    {path:'my-inquiries',component:MyInquiries,canActivate:[AuthGuard,RoleGuard],data:{roles:['Buyer']}},
-    {path:'property/:id',component:PropertyDetail, canActivate:[AuthGuard,RoleGuard],data:{roles:['Admin','Agent','Buyer']},},
-    {path:'profile',component:Profile,canActivate:[AuthGuard]},
+    
     { path: 'agent', component: AgentLayout,canActivate:[AuthGuard,RoleGuard],data:{roles:['Agent']}, children: [
         { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
         { path: 'dashboard', component: AgentDashboard },

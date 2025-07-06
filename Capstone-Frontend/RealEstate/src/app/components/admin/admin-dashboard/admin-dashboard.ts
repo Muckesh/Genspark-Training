@@ -94,24 +94,7 @@ export class AdminDashboard implements OnInit {
 
   ngOnInit(): void {
     this.loadDashboardData();
-    // this.loadStats();
-    // this.loadUsers();
-    // this.usersSubject.pipe(
-    //   debounceTime(300),
-    //   distinctUntilChanged(),
-    //   switchMap(params => {
-    //     this.isLoading = true;
-    //     return this.userService.getAllUsers(params);
-    //   })
-    // ).subscribe({
-    //   next:(response)=>{
-    //     this.users=response.items??[],
-    //     this.filteredUsers=[...this.users];
-    //     this.updateStats(this.users);
-    //     this.updatePaginationInfo(response);
-    //     this.isLoading = false;
-    //   }
-    // });
+   
   }
 
   loadDashboardData(): void {
@@ -214,28 +197,6 @@ export class AdminDashboard implements OnInit {
   }
 
 
-
-
-  // loadStats(){
-  //   this.userService.getStats().subscribe(data=>{
-  //     this.stats=[
-  //       { label: 'Total Users', value: data.totalUsers },
-  //       { label: 'Total Agents', value: data.totalAgents },
-  //       { label: 'Total Buyers', value: data.totalBuyers },
-  //       { label: 'Total Listings', value: data.totalListings },
-  //       { label: 'Total Inquiries', value: data.totalInquiries }
-  //     ];
-  //   });
-  // }
-
-  // loadUsers(){
-  //   this.userService.getAllUsers().subscribe(users=>{
-  //     this.users = users.items;
-  //     console.log(this.users);
-  //     this.filteredUsers = [...users.items];
-  //   });
-  // }
-
   loadUsers(){
     this.isLoading = true;
     this.error = null;
@@ -264,19 +225,6 @@ export class AdminDashboard implements OnInit {
   }
 
 
-  // filterUsers(){
-  //   if (!this.searchTerm) {
-  //     this.filteredUsers = [...this.users];
-  //     return;
-  //   }
-
-  //   const term = this.searchTerm.toLowerCase();
-  //   this.filteredUsers = this.users.filter(u =>
-  //     u.name.toLowerCase().includes(term) ||
-  //     u.email.toLowerCase().includes(term) ||
-  //     u.role.toLowerCase().includes(term)
-  //   );
-  // }
 
     filterUsers(): void {
     this.usersSubject.next({

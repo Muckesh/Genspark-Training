@@ -22,16 +22,23 @@ export class AdminImageCleanup {
     this.resultMessage = '';
     this.errorMessage = '';
 
-    this.cleanupService.cleanupDeletedImages().subscribe({
-      next: (response) => {
-        this.resultMessage = response.message;
-        this.cleanedCount=response.imagesCleaned;
-        this.isCleaning = false;
-      },
-      error: (err) => {
-        this.errorMessage = err.error?.message || 'An error occurred during cleanup';
-        this.isCleaning = false;
-      }
-    });
+    if(confirm("Are you sure you want to cleanup the images?")){
+        this.cleanupService.cleanupDeletedImages().subscribe({
+        next: (response) => {
+          this.resultMessage = response.message;
+          this.cleanedCount=response.imagesCleaned;
+          this.isCleaning = false;
+        },
+        error: (err) => {
+          this.errorMessage = err.error?.message || 'An error occurred during cleanup';
+          this.isCleaning = false;
+        }
+      });
+    }else{
+      this.errorMessage="Cleanup action cancelled";
+      this.isCleaning=false;
+    }
+
+    
   }
 }

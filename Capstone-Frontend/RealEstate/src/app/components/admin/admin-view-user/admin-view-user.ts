@@ -25,15 +25,6 @@ export class AdminViewUser implements OnInit {
   isLoading = false;
   error: string | null = null;
 
-  // ngOnInit(): void {
-  //   // This component expects the parent to pass the complete user object
-  //   // including either buyerProfile or agentProfile
-  //   if (this.user.buyerProfile) {
-  //     this.userDetails = this.user.buyerProfile;
-  //   } else if (this.user.agentProfile) {
-  //     this.userDetails = this.user.agentProfile;
-  //   }
-  // }
 
   constructor(
       private route: ActivatedRoute,

@@ -1,11 +1,11 @@
 <div class="card">
   <div class="card-header">
     <h5 class="card-title mb-0">Image Cleanup</h5>
-    <p class="card-subtitle text-muted">Remove deleted images older than 1 day</p>
+    <p class="card-subtitle text-muted">Remove deleted images older than 30 days</p>
   </div>
   
   <div class="card-body">
-    <p class="card-text">This will permanently delete all images marked as deleted more than 1 day ago.</p>
+    <p class="card-text">This will permanently delete all images marked as deleted more than 30 days ago.</p>
     
     @if (cleanedCount) {
       <div *ngIf="resultMessage" class="alert alert-success mt-3">

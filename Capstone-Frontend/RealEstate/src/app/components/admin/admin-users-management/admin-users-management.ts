@@ -71,29 +71,7 @@ export class AdminUsersManagement {
         totalPages: Math.ceil(response.totalCount / response.pageSize)
       };
     }
-  
-  
-  
-  
-    // loadStats(){
-    //   this.userService.getStats().subscribe(data=>{
-    //     this.stats=[
-    //       { label: 'Total Users', value: data.totalUsers },
-    //       { label: 'Total Agents', value: data.totalAgents },
-    //       { label: 'Total Buyers', value: data.totalBuyers },
-    //       { label: 'Total Listings', value: data.totalListings },
-    //       { label: 'Total Inquiries', value: data.totalInquiries }
-    //     ];
-    //   });
-    // }
-  
-    // loadUsers(){
-    //   this.userService.getAllUsers().subscribe(users=>{
-    //     this.users = users.items;
-    //     console.log(this.users);
-    //     this.filteredUsers = [...users.items];
-    //   });
-    // }
+
   
     loadUsers(){
       this.isLoading = true;
