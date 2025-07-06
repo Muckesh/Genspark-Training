@@ -1,0 +1,20 @@
+docker network create app-network
+
+docker build -t my-backend ./backend
+
+docker run -d \
+  --name backend \
+  --network app-network \
+  my-backend
+
+docker build -t my-frontend ./frontend
+
+docker run -d \
+  --name frontend \
+  -p 8080:80 \
+  --network app-network \
+  my-frontend
+
+docker logs frontend
+
+docker exec -it frontend ping backend

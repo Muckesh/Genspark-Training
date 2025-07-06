@@ -6,6 +6,7 @@ function App() {
   const [message,setMessage]=useState('');
 
   useEffect(()=>{
+    // fetch('http://backend:5000/hello')
     fetch('/hello')
     .then(res=>res.json())
     .then(data=>setMessage(data.message))

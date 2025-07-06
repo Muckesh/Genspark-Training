@@ -1,0 +1,40 @@
+Rolling Update with Delay in Docker Swarm using a simple httpd (Apache) service.
+
+docker service create --name webapp \
+    --replicas 3
+    --update-delay 10s
+    -p 9090:80
+    httpd:latest
+
+docker service ls
+ID             NAME        MODE         REPLICAS   IMAGE          PORTS
+t2ql7ue7gb6v   nginx-web   replicated   5/5        nginx:alpine   *:8080->80/tcp
+vj2ay5j91tby   webapp      replicated   3/3        httpd:latest   *:9090->80/tcp
+
+docker service update --image httpd:alpine webapp
+
+Docker will now:
+1.Pull the new image
+2.Stop one replica
+3.Start a new one with the updated image
+4.Wait 10 seconds
+5.Repeat for next replica
+
+docker service ps webapp
+
+ID             NAME           IMAGE          NODE             DESIRED STATE   CURRENT STATE             ERROR     PORTS
+xifirwzdgvk9   webapp.1       httpd:alpine   docker-desktop   Running         Running 31 seconds ago              
+19v3x8odqdfn    \_ webapp.1   httpd:latest   docker-desktop   Shutdown        Shutdown 31 seconds ago             
+t2f68g3u2j6y   webapp.2       httpd:alpine   docker-desktop   Running         Running 16 seconds ago              
+j3twwcmw4gbc    \_ webapp.2   httpd:latest   docker-desktop   Shutdown        Shutdown 16 seconds ago             
+v549noi42u2g   webapp.3       httpd:alpine   docker-desktop   Running         Running 46 seconds ago              
+o35gvqi4m35e    \_ webapp.3   httpd:latest   docker-desktop   Shutdown        Shutdown 54 seconds ago             
+
+curl localhost:9090
+
+docker service update \
+  --image myapp:v2 \
+  --update-parallelism 2 \
+  --update-delay 5s \
+  --update-failure-action rollback(pause/continue) \
+  my-service

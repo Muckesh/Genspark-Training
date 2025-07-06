@@ -1,0 +1,20 @@
+when updating the running Nginx service (nginx-web) to use the nginx:alpine image,
+
+Swarm will handle rolling updates — meaning containers are updated one-by-one with zero downtime.
+
+updating the image of previous task
+
+docker service ls
+
+docker service update --image nginx:alpine nginx-web
+
+
+docker service ps nginx-web
+
+ID             NAME              IMAGE          NODE             DESIRED STATE   CURRENT STATE             ERROR     PORTS
+40498gnvdv7q   nginx-web.1       nginx:alpine   docker-desktop   Running         Running 44 seconds ago              
+20snv7mure2m    \_ nginx-web.1   nginx:latest   docker-desktop   Shutdown        Shutdown 47 seconds ago             
+b21yrihxhp10   nginx-web.2       nginx:alpine   docker-desktop   Running         Running 36 seconds ago              
+oa2b82adt8ha    \_ nginx-web.2   nginx:latest   docker-desktop   Shutdown        Shutdown 37 seconds ago             
+frozqh6bbf52   nginx-web.3       nginx:alpine   docker-desktop   Running         Running 40 seconds ago              
+lfo9skivaovi    \_ nginx-web.3   nginx:latest   docker-desktop   Shutdown        Shutdown 41 seconds ago             

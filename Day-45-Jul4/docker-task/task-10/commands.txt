@@ -1,0 +1,44 @@
+docker swarm init
+
+docker service create \
+    --name=visualizer \
+    --publish=8081:8080 \
+    --constraint=node.role==manager \
+    --mount=type=bind,src=/var/run/docker.sock,dst=/var/run/docker.sock \
+    dockersamples/visualizer
+
+http://localhost:8081
+this will display a graphical dashboard showing
+-> Nodes here - manager (e.g., manager, worker)
+-> Running services and tasks on each node
+-> Task status and service distribution
+
+--------------
+docker stack deploy
+=> is a docker cli command 
+    used to deploy multi-service applications to a Docker Swarm cluster 
+    using a Compose file (docker-compose.yml).
+
+Docker Stack
+A stack is a group of interconnected services (containers)
+ defined in a YAML file,
+ deployed and managed together.
+
+version: "3"
+
+services:
+  visualizer:
+    image: dockersamples/visualizer
+    ports:
+      - "8081:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+docker stack deploy -c docker-compose.yml visualizer-stack
+
+-c: Specify the Compose file
+
+visualizer-stack: Name of the stack

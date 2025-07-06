@@ -1,0 +1,29 @@
+scaling the existing docker service nginx-web 
+    from 3 replicas to 5 replicas
+
+docker service ls
+ID             NAME        MODE         REPLICAS   IMAGE          PORTS
+t2ql7ue7gb6v   nginx-web   replicated   3/3        nginx:alpine   *:8080->80/tcp
+
+
+docker service scale nginx-web=5
+
+nginx-web scaled to 5
+overall progress: 5 out of 5 tasks 
+1/5: running   
+2/5: running   
+3/5: running   
+4/5: running   
+5/5: running   
+verify: Service nginx-web converged 
+
+docker service ps nginx-web
+ID             NAME              IMAGE          NODE             DESIRED STATE   CURRENT STATE            ERROR     PORTS
+40498gnvdv7q   nginx-web.1       nginx:alpine   docker-desktop   Running         Running 8 minutes ago              
+20snv7mure2m    \_ nginx-web.1   nginx:latest   docker-desktop   Shutdown        Shutdown 8 minutes ago             
+b21yrihxhp10   nginx-web.2       nginx:alpine   docker-desktop   Running         Running 8 minutes ago              
+oa2b82adt8ha    \_ nginx-web.2   nginx:latest   docker-desktop   Shutdown        Shutdown 8 minutes ago             
+frozqh6bbf52   nginx-web.3       nginx:alpine   docker-desktop   Running         Running 8 minutes ago              
+lfo9skivaovi    \_ nginx-web.3   nginx:latest   docker-desktop   Shutdown        Shutdown 8 minutes ago             
+yjk4r8qlvd96   nginx-web.4       nginx:alpine   docker-desktop   Running         Running 52 seconds ago             
+mkcsi3qus1jf   nginx-web.5       nginx:alpine   docker-desktop   Running         Running 51 seconds ago             

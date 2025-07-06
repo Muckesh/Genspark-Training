@@ -1,0 +1,17 @@
+docker swarm init
+
+docker service create \
+        --name nginx-web \
+        --replicas 3 \
+        -p 8080:80 \
+        nginx:latest
+
+docker service ls
+
+docker service ps nginx-web
+
+curl localhost:8080
+
+docker service rm nginx-web
+
+docker swarm leave --force
