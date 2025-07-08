@@ -144,6 +144,12 @@ In production:
 077: removes all group and others permissions (most secure).
 Used to protect sensitive files and limit access.
 
+Environment	    Umask	Resulting File Perm	    Use Case
+Development	    002	    664 (rw-rw-r--)	        Group editing allowed
+Production	    027	    640 (rw-r-----)	        Secure, some group access
+High-security	077	    600 (rw-------)	        User-only, very restricted
+ 
+
 8. useradd vs adduser
 
 useradd	-> Low-level -> Native binary utility, non-interactive.
