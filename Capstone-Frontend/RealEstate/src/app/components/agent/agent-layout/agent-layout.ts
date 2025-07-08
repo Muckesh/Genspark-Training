@@ -12,7 +12,7 @@ import { Sidebar } from '../../shared/sidebar/sidebar';
   styleUrl: './agent-layout.css'
 })
 export class AgentLayout {
-  isSidebarCollapsed = false;
+  isSidebarCollapsed = true;
 
   onSidebarToggle(collapsed: boolean) {
     this.isSidebarCollapsed = collapsed;

@@ -27,12 +27,15 @@ import { AuthGuard } from './guards/auth.guard';
 import { RoleGuard } from './guards/role.guard';
 import { Home } from './components/shared/home/home';
 import { NoAuthGuard } from './guards/no-auth.guard';
+import { Notifications } from './components/shared/notifications/notifications';
 
 export const routes: Routes = [
     {path:'login',component:LoginForm, canActivate:[NoAuthGuard]},
+    {path:'',component:LoginForm, canActivate:[NoAuthGuard]},
     
     {path:'register/buyer',component:RegisterBuyer, canActivate:[NoAuthGuard]},
     {path:'register/agent',component:RegisterAgent, canActivate:[NoAuthGuard]},
+    {path:'notifications',component:Notifications},
     
     {path:'unauthorized',component:Unauthorized,canActivate:[AuthGuard]},
     

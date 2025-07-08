@@ -19,6 +19,7 @@ import { TokenService } from './services/token.service';
 import { UserService } from './services/user.service';
 import { RoleGuard } from './guards/role.guard';
 import { NoAuthGuard } from './guards/no-auth.guard';
+import { NotificationService } from './services/notification.service';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -39,6 +40,7 @@ export const appConfig: ApplicationConfig = {
     PropertyImageService,
     PropertyListingService,
     UserService,
+    NotificationService,
     AuthGuard,
     RoleGuard,
     NoAuthGuard

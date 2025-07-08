@@ -11,7 +11,7 @@ import { Sidebar } from '../../shared/sidebar/sidebar';
   styleUrl: './buyer-layout.css'
 })
 export class BuyerLayout {
-  isSidebarCollapsed = false;
+  isSidebarCollapsed = true;
 
   onSidebarToggle(collapsed: boolean) {
     this.isSidebarCollapsed = collapsed;

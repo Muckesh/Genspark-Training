@@ -14,7 +14,7 @@ import { User } from '../../../models/user.model';
 export class Sidebar {
   user!: User;
   role!: string;
-  isCollapsed = false;
+  isCollapsed = true;
   activeSubmenu: string | null = null;
   // Add this inside your Sidebar component class
   @Output() sidebarToggled = new EventEmitter<boolean>(); // Renamed the output

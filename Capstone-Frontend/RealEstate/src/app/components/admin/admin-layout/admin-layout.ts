@@ -11,7 +11,7 @@ import { Sidebar } from '../../shared/sidebar/sidebar';
   styleUrl: './admin-layout.css'
 })
 export class AdminLayout {
-  isSidebarCollapsed = false;
+  isSidebarCollapsed = true;
 
   onSidebarToggle(collapsed: boolean) {
     this.isSidebarCollapsed = collapsed;

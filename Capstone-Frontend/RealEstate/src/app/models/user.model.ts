@@ -7,7 +7,7 @@ export interface User {
   email: string;
   passwordHash?: string;
   role: 'Admin' | 'Agent' | 'Buyer';
-  createdAt: Date;
+  createdAt?: Date;
   isDeleted: boolean;
   refreshToken?: string;
   refreshTokenExpiryTime?: Date;
