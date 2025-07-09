@@ -1,0 +1,79 @@
+Assignment: Deploy a .NET API on Azure Virtual Machine Using Docker 
+Objective: 
+Provision an Azure Virtual Machine, install Docker, deploy a .NET Web API in a container, and expose it publicly using the VM’s IP address. 
+ 
+Instructions 
+Create a Virtual Machine on Azure 
+Sign in to the Azure Portal. 
+Provision a Linux Virtual Machine (Ubuntu 20.04 LTS). 
+Configuration: 
+Public IP Address: Static 
+Inbound Ports: Allow SSH (port 22) and HTTP (port 80) 
+Size: B1s or larger 
+Download the SSH key or note your login credentials. 
+Install Docker 
+Connect to your VM using SSH: 
+ssh azureuser@<public-ip> 
+Install Docker: 
+sudo apt-get update 
+sudo apt-get install -y docker.io 
+Start Docker and enable it on boot: 
+sudo systemctl start docker 
+sudo systemctl enable docker 
+Verify Docker installation: 
+docker --version 
+Create a Simple .NET Web API 
+On your local machine, create a new .NET Web API project: 
+dotnet new webapi -o MyApiApp 
+cd MyApiApp 
+Test locally with: 
+dotnet run 
+Create a Dockerfile in the project root: 
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base 
+WORKDIR /app 
+EXPOSE 80 
+ 
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build 
+WORKDIR /src 
+COPY . . 
+RUN dotnet publish -c Release -o /app/publish 
+ 
+FROM base AS final 
+WORKDIR /app 
+COPY --from=build /app/publish . 
+ENTRYPOINT ["dotnet", "MyApiApp.dll"] 
+Build the Docker image locally: 
+docker build -t my-dotnet-api . 
+Push the image to Docker Hub (create a free account if needed): 
+docker login 
+docker tag my-dotnet-api <your-dockerhub-username>/my-dotnet-api:latest 
+docker push <your-dockerhub-username>/my-dotnet-api:latest 
+Pull and Run the API on Azure VM 
+Back in your SSH session: 
+Pull the Docker image: 
+sudo docker pull <your-dockerhub-username>/my-dotnet-api:latest 
+Run the container exposing port 80: 
+sudo docker run -d -p 80:80 <your-dockerhub-username>/my-dotnet-api:latest 
+Verify the container is running: 
+sudo docker ps 
+Test the API 
+From your browser or Postman: 
+http://<your-vm-public-ip>/weatherforecast 
+You should see the default .NET WeatherForecast JSON response. 
+ 
+Deliverables 
+A document or presentation including: 
+Screenshots of: 
+Azure VM creation 
+Docker installation verification 
+Docker container running 
+API response in the browser 
+The commands you used to: 
+Build and push the Docker image 
+Run the container on Azure 
+The public URL to access your API. 
+ 
+✅ Bonus Challenge (Optional): 
+Create an Azure Resource Group and automate deployment using Azure CLI. 
+Configure a custom domain with Azure DNS to point to your VM. 
+ 
