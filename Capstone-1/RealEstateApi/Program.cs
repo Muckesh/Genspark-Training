@@ -25,7 +25,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(5009); 
+    options.ListenAnyIP(5011); 
 });
 
 builder.Host.UseSerilog();
@@ -85,6 +85,7 @@ builder.Services.AddTransient<IRepository<Guid,User>,UserRepository>();
 builder.Services.AddTransient<IRepository<Guid,Agent>,AgentRepository>();
 builder.Services.AddTransient<IRepository<Guid,Buyer>,BuyerRepository>();
 builder.Services.AddTransient<IRepository<Guid,Inquiry>,InquiryRepository>();
+builder.Services.AddTransient<IRepository<Guid,InquiryReply>,InquiryReplyRepository>();
 builder.Services.AddTransient<IRepository<Guid,PropertyImage>,PropertyImageRepository>();
 builder.Services.AddTransient<IRepository<Guid,PropertyListing>,PropertyListingRepository>();
 #endregion
@@ -114,6 +115,23 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Keys:JwtTokenKey"]))
+                    };
+
+                    // Add this for SignalR JWT support
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+                            
+                            if (!string.IsNullOrEmpty(accessToken) && 
+                                path.StartsWithSegments("/hubs/inquiries"))
+                            {
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
                     };
                 });
 #endregion
@@ -163,13 +181,18 @@ builder.Services.AddCors(opts =>
 {
     opts.AddDefaultPolicy(policy =>
     {
-        policy.WithOrigins("http://127.0.0.1:5500")
+        policy.WithOrigins(
+            "http://localhost:4200",  // Angular dev server
+            "http://127.0.0.1:4200", // Alternative Angular URL
+            "http://127.0.0.1:5500" 
+            )
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
     });
 });
 #endregion
+
 
 
 var app = builder.Build();
@@ -201,7 +224,10 @@ app.UseAuthentication();
 app.UseMiddleware<TokenBlacklistMiddleware>();
 app.UseAuthorization();
 app.UseCors();
+app.UseWebSockets();
 app.MapHub<NotificationHub>("/hubs/notifications");
+
+app.MapHub<InquiryHub>("/hubs/inquiries");
 
 app.MapControllers().RequireRateLimiting("PerUserPolicy");
 

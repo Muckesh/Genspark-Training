@@ -19,6 +19,8 @@ namespace RealEstateApi.Interfaces
         Task<User> UpdateUserAsync(Guid id, UpdateUserDto userDto);
         Task<bool> ChangePasswordAsync(Guid userId, ChangePasswordDto dto);
 
+        Task<DashboardStatsDto> GetDashboardStatsAsync();
+
 
     }
 }

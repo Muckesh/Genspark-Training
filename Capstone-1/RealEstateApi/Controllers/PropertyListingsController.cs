@@ -53,6 +53,7 @@ namespace RealEstateApi.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Agent,Admin")]
         public async Task<IActionResult> CreateListing(CreatePropertyListingDto listingDto)
         {
             try
@@ -79,7 +80,7 @@ namespace RealEstateApi.Controllers
         }
         
         [HttpPost("images/upload")]
-        [Authorize(Roles = "Agent")]
+        [Authorize(Roles = "Agent,Admin")]
         public async Task<IActionResult> UploadImage([FromForm] AddPropertyImageDto dto)
         {
             try
@@ -108,11 +109,13 @@ namespace RealEstateApi.Controllers
 
         
         [HttpPut("{id}")]
-        [Authorize(Roles = "Agent")]
+        [Authorize(Roles = "Agent,Admin")]
         public async Task<ActionResult<PropertyListing>> UpdateListing(Guid id, [FromBody] UpdatePropertyListingDto listingDto)
         {
             try
             {
+                var role = User.FindFirst(ClaimTypes.Role)?.Value;
+
                 // Get current agent ID from JWT
                 var agentId = User.GetUserId();
                 if (!agentId.HasValue)
@@ -128,7 +131,7 @@ namespace RealEstateApi.Controllers
                 }
 
                 // Check if the current agent owns the listing
-                if (listing.AgentId != agentId)
+                if (listing.AgentId != agentId && role!="Admin")
                 {
                     return Forbid("You are not authorized to update this listing.");
                 }
@@ -144,11 +147,12 @@ namespace RealEstateApi.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Agent")]
+        [Authorize(Roles = "Agent,Admin")]
         public async Task<ActionResult<PropertyListing>> DeleteListing(Guid id)
         {
             try
             {
+                var role = User.FindFirst(ClaimTypes.Role)?.Value;
                 // Get agent ID from JWT token
                 var agentId = User.GetUserId();
                 if (!agentId.HasValue)
@@ -164,7 +168,7 @@ namespace RealEstateApi.Controllers
                 }
 
                 // Ensure only the owning agent can delete it
-                if (listing.AgentId != agentId)
+                if (listing.AgentId != agentId && role!="Admin")
                 {
                     return Forbid("You are not authorized to delete this listing.");
                 }

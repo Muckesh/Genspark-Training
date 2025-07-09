@@ -13,14 +13,21 @@ namespace RealEstateApi.Repositories
         }
         public override async Task<IEnumerable<User>> GetAllAsync()
         {
-            var users = await _realEstateDbContext.Users.Where(u=>u.IsDeleted==false).ToListAsync();
+            var users = await _realEstateDbContext.Users
+            .Include(u => u.AgentProfile)
+            .Include(u=>u.BuyerProfile)
+            .Where(u => u.IsDeleted == false)
+            .ToListAsync();
             // return users.Count == 0 ? throw new Exception("No users found") : users;
             return users;
         }
 
         public override async Task<User> GetByIdAsync(Guid id)
         {
-            var user = await _realEstateDbContext.Users.SingleOrDefaultAsync(u => u.IsDeleted==false &&u.Id == id);
+            var user = await _realEstateDbContext.Users
+            .Include(u => u.AgentProfile)
+            .Include(u=>u.BuyerProfile)
+            .SingleOrDefaultAsync(u => u.IsDeleted==false &&u.Id == id);
             return user ?? throw new UserNotFoundException("User not found");
         }
     }

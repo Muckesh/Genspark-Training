@@ -16,6 +16,7 @@ namespace RealEstateApi.Repositories
         {
             var listings = await _realEstateDbContext.PropertyListings
                             .Include(l => l.Agent)
+                                .ThenInclude(a=>a.User)
                             .Include(l => l.Images.Where(i=>i.IsDeleted==false))
                             .Include(l => l.Inquiries)
                             .Where(l=>l.IsDeleted==false)
@@ -28,6 +29,7 @@ namespace RealEstateApi.Repositories
         {
             var listing = await _realEstateDbContext.PropertyListings
                             .Include(l => l.Agent)
+                                .ThenInclude(a=>a.User)
                             .Include(l => l.Images.Where(i=>i.IsDeleted==false))
                             .Include(l => l.Inquiries)
                             .FirstOrDefaultAsync(l => l.IsDeleted==false&& l.Id == id);

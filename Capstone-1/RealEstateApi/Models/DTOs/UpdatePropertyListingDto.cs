@@ -9,6 +9,12 @@ namespace RealEstateApi.Models.DTOs
         public int? Bedrooms { get; set; }
         public int? Bathrooms { get; set; }
         public int? SquareFeet { get; set; }
+
+        public string? PropertyType { get; set; } // flat, apartments
+        public string? ListingType { get; set; } //rent,buy
+        public bool? IsPetsAllowed { get; set; }
+        public string? status { get; set; } // sold, available
+        public bool? HasParking { get; set; } 
     }
 
 }

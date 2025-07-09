@@ -9,6 +9,8 @@ namespace RealEstateApi.Models
         public string Role { get; set; } = string.Empty;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime PasswordUpdatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; }
         public bool IsDeleted { get; set; } = false;
 
         public string? RefreshToken { get; set; }

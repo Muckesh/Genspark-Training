@@ -15,7 +15,7 @@ namespace RealEstateApi.Services
             _realEstateDbContext = realEstateDbContext;
             _propertyImageRepository = propertyImageRepository;
         }
-        public async Task CleanOldDeletedImagesAsync(string basePath, int retentionDays = 1)
+        public async Task<int> CleanOldDeletedImagesAsync(string basePath, int retentionDays = 1)
         {
             var allImages = await _realEstateDbContext.PropertyImages.ToListAsync();
             var cutoffDate = DateTime.UtcNow.AddMinutes(-1);
@@ -23,8 +23,11 @@ namespace RealEstateApi.Services
             Console.WriteLine($"[Cleanup] Cutoff date is {cutoffDate}");
 
             var imagesToDelete = allImages
-                .Where(i => i.IsDeleted && i.DeletedAt.HasValue && i.DeletedAt.Value <= cutoffDate);
+                .Where(i => !i.IsHardDeleted && i.IsDeleted && i.DeletedAt.HasValue && i.DeletedAt.Value <= cutoffDate);
             Console.WriteLine($"[Cleanup] Found {imagesToDelete.Count()} images to delete.");
+
+            int successCount = 0;
+            int failCount = 0;
 
             foreach (var image in imagesToDelete)
             {
@@ -40,20 +43,30 @@ namespace RealEstateApi.Services
 
                         File.Delete(filePath);
                         Console.WriteLine("Deleted successfully.");
+                        successCount++;
                     }
                     else
                     {
                         Console.WriteLine("File not found: " + filePath);
+                        failCount++;
                     }
 
+                    image.IsHardDeleted = true;
+
+                    var deleted = await _propertyImageRepository.UpdateAsync(image.Id, image);
+
                     // deleted = await _propertyImageRepository.DeleteAsync(image.Id); // Hard delete from DB
+
                 }
                 catch (Exception ex)
                 {
-                   
+
                     Console.WriteLine($"Error deleting image {image.Id}: {ex.Message}");
+                    failCount++;
                 }
+
             }
+            return successCount;
         }
     }
 }

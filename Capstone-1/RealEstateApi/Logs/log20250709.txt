@@ -1,0 +1,1292 @@
+2025-07-09 11:46:56.141 +05:30 [ERR] An error occurred using the connection to database 'RealEstateDbTest' on server 'tcp://localhost:5432'.
+2025-07-09 11:46:56.574 +05:30 [INF] Executed DbCommand (258ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE DATABASE "RealEstateDbTest";
+2025-07-09 11:46:56.774 +05:30 [INF] Executed DbCommand (15ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE IF NOT EXISTS "__EFMigrationsHistory" (
+    "MigrationId" character varying(150) NOT NULL,
+    "ProductVersion" character varying(32) NOT NULL,
+    CONSTRAINT "PK___EFMigrationsHistory" PRIMARY KEY ("MigrationId")
+);
+2025-07-09 11:46:56.785 +05:30 [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long.
+2025-07-09 11:46:56.789 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+LOCK TABLE "__EFMigrationsHistory" IN ACCESS EXCLUSIVE MODE
+2025-07-09 11:46:56.793 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT "MigrationId", "ProductVersion"
+FROM "__EFMigrationsHistory"
+ORDER BY "MigrationId";
+2025-07-09 11:46:56.814 +05:30 [INF] Applying migration '20250612180343_init'.
+2025-07-09 11:46:56.861 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "AuditLogs" (
+    "Id" uuid NOT NULL,
+    "TableName" text NOT NULL,
+    "UserId" text,
+    "ActionType" text NOT NULL,
+    "OldValues" text,
+    "NewValues" text,
+    "PrimaryKey" text,
+    "Timestamp" timestamp with time zone NOT NULL,
+    CONSTRAINT "PK_AuditLogs" PRIMARY KEY ("Id")
+);
+2025-07-09 11:46:56.863 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Users" (
+    "Id" uuid NOT NULL,
+    "Name" text NOT NULL,
+    "Email" text NOT NULL,
+    "PasswordHash" text NOT NULL,
+    "Role" text NOT NULL,
+    "CreatedAt" timestamp with time zone NOT NULL,
+    "IsDeleted" boolean NOT NULL,
+    "RefreshToken" text,
+    "RefreshTokenExpiryTime" timestamp with time zone,
+    CONSTRAINT "PK_Users" PRIMARY KEY ("Id")
+);
+2025-07-09 11:46:56.869 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Agents" (
+    "Id" uuid NOT NULL,
+    "LicenseNumber" text NOT NULL,
+    "AgencyName" text NOT NULL,
+    "Phone" text NOT NULL,
+    CONSTRAINT "PK_Agents" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_Agents_Users_Id" FOREIGN KEY ("Id") REFERENCES "Users" ("Id") ON DELETE RESTRICT
+);
+2025-07-09 11:46:56.872 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Buyers" (
+    "Id" uuid NOT NULL,
+    "PreferredLocation" text NOT NULL,
+    "Budget" double precision NOT NULL,
+    CONSTRAINT "PK_Buyers" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_Buyers_Users_Id" FOREIGN KEY ("Id") REFERENCES "Users" ("Id") ON DELETE RESTRICT
+);
+2025-07-09 11:46:56.875 +05:30 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "PropertyListings" (
+    "Id" uuid NOT NULL,
+    "Title" text NOT NULL,
+    "Description" text NOT NULL,
+    "Price" double precision NOT NULL,
+    "Location" text NOT NULL,
+    "Bedrooms" integer NOT NULL,
+    "Bathrooms" integer NOT NULL,
+    "SquareFeet" integer NOT NULL,
+    "AgentId" uuid NOT NULL,
+    "CreatedAt" timestamp with time zone NOT NULL,
+    "IsDeleted" boolean NOT NULL,
+    CONSTRAINT "PK_PropertyListings" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_PropertyListings_Agents_AgentId" FOREIGN KEY ("AgentId") REFERENCES "Agents" ("Id") ON DELETE RESTRICT
+);
+2025-07-09 11:46:56.879 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "Inquiries" (
+    "Id" uuid NOT NULL,
+    "ListingId" uuid NOT NULL,
+    "BuyerId" uuid NOT NULL,
+    "Message" text NOT NULL,
+    "CreatedAt" timestamp with time zone NOT NULL,
+    CONSTRAINT "PK_Inquiries" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_Inquiries_Buyers_BuyerId" FOREIGN KEY ("BuyerId") REFERENCES "Buyers" ("Id") ON DELETE RESTRICT,
+    CONSTRAINT "FK_Inquiries_PropertyListings_ListingId" FOREIGN KEY ("ListingId") REFERENCES "PropertyListings" ("Id") ON DELETE RESTRICT
+);
+2025-07-09 11:46:56.882 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "PropertyImages" (
+    "Id" uuid NOT NULL,
+    "FileName" text NOT NULL,
+    "FileUrl" text NOT NULL,
+    "IsDeleted" boolean NOT NULL,
+    "DeletedAt" timestamp with time zone,
+    "PropertyListingId" uuid NOT NULL,
+    CONSTRAINT "PK_PropertyImages" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_PropertyImages_PropertyListings_PropertyListingId" FOREIGN KEY ("PropertyListingId") REFERENCES "PropertyListings" ("Id") ON DELETE RESTRICT
+);
+2025-07-09 11:46:56.885 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Inquiries_BuyerId" ON "Inquiries" ("BuyerId");
+2025-07-09 11:46:56.886 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Inquiries_ListingId" ON "Inquiries" ("ListingId");
+2025-07-09 11:46:56.888 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_PropertyImages_PropertyListingId" ON "PropertyImages" ("PropertyListingId");
+2025-07-09 11:46:56.890 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_PropertyListings_AgentId" ON "PropertyListings" ("AgentId");
+2025-07-09 11:46:56.892 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20250612180343_init', '9.0.5');
+2025-07-09 11:46:56.892 +05:30 [INF] Applying migration '20250701100223_testing'.
+2025-07-09 11:46:56.908 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "Inquiries" ADD "AgentId" uuid;
+2025-07-09 11:46:56.912 +05:30 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "Inquiries" ADD "Status" text NOT NULL DEFAULT '';
+2025-07-09 11:46:56.915 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE TABLE "InquiryReplies" (
+    "Id" uuid NOT NULL,
+    "InquiryId" uuid NOT NULL,
+    "AuthorId" uuid NOT NULL,
+    "AuthorType" text NOT NULL,
+    "Message" text NOT NULL,
+    "CreatedAt" timestamp with time zone NOT NULL,
+    CONSTRAINT "PK_InquiryReplies" PRIMARY KEY ("Id"),
+    CONSTRAINT "FK_InquiryReplies_Inquiries_InquiryId" FOREIGN KEY ("InquiryId") REFERENCES "Inquiries" ("Id") ON DELETE RESTRICT
+);
+2025-07-09 11:46:56.916 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_Inquiries_AgentId" ON "Inquiries" ("AgentId");
+2025-07-09 11:46:56.917 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+CREATE INDEX "IX_InquiryReplies_InquiryId" ON "InquiryReplies" ("InquiryId");
+2025-07-09 11:46:56.922 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "Inquiries" ADD CONSTRAINT "FK_Inquiries_Agents_AgentId" FOREIGN KEY ("AgentId") REFERENCES "Agents" ("Id");
+2025-07-09 11:46:56.923 +05:30 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20250701100223_testing', '9.0.5');
+2025-07-09 11:46:56.923 +05:30 [INF] Applying migration '20250701102112_testingupdate'.
+2025-07-09 11:46:56.937 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "Users" ADD "PasswordUpdatedAt" timestamp with time zone NOT NULL DEFAULT TIMESTAMPTZ '-infinity';
+2025-07-09 11:46:56.938 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "Users" ADD "UpdatedAt" timestamp with time zone NOT NULL DEFAULT TIMESTAMPTZ '-infinity';
+2025-07-09 11:46:56.939 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "PropertyListings" ADD "HasParking" boolean NOT NULL DEFAULT FALSE;
+2025-07-09 11:46:56.940 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "PropertyListings" ADD "IsPetsAllowed" boolean NOT NULL DEFAULT FALSE;
+2025-07-09 11:46:56.940 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "PropertyListings" ADD "ListingType" text NOT NULL DEFAULT '';
+2025-07-09 11:46:56.941 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "PropertyListings" ADD "PropertyType" text NOT NULL DEFAULT '';
+2025-07-09 11:46:56.943 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "PropertyListings" ADD "UpdatedAt" timestamp with time zone NOT NULL DEFAULT TIMESTAMPTZ '-infinity';
+2025-07-09 11:46:56.944 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "PropertyListings" ADD status text NOT NULL DEFAULT '';
+2025-07-09 11:46:56.944 +05:30 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "Buyers" ADD "Phone" text NOT NULL DEFAULT '';
+2025-07-09 11:46:56.945 +05:30 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20250701102112_testingupdate', '9.0.5');
+2025-07-09 11:46:56.945 +05:30 [INF] Applying migration '20250701181616_testingupdatemodel'.
+2025-07-09 11:46:56.957 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "PropertyListings" RENAME COLUMN status TO "Status";
+2025-07-09 11:46:56.958 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20250701181616_testingupdatemodel', '9.0.5');
+2025-07-09 11:46:56.958 +05:30 [INF] Applying migration '20250702204042_harddelete'.
+2025-07-09 11:46:56.969 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+ALTER TABLE "PropertyImages" ADD "IsHardDeleted" boolean NOT NULL DEFAULT FALSE;
+2025-07-09 11:46:56.970 +05:30 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20250702204042_harddelete', '9.0.5');
+2025-07-09 11:46:56.970 +05:30 [INF] Applying migration '20250709061627_new'.
+2025-07-09 11:46:56.981 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+VALUES ('20250709061627_new', '9.0.5');
+2025-07-09 11:58:14.238 +05:30 [INF] User profile is available. Using '/Users/muckesh/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-07-09 11:58:14.320 +05:30 [INF] Creating key {115bcc41-7b25-4cbe-add9-12cd2b709397} with creation date 2025-07-09 06:28:14Z, activation date 2025-07-09 06:28:14Z, and expiration date 2025-10-07 06:28:14Z.
+2025-07-09 11:58:14.334 +05:30 [WRN] No XML encryptor configured. Key {115bcc41-7b25-4cbe-add9-12cd2b709397} may be persisted to storage in unencrypted form.
+2025-07-09 11:58:14.339 +05:30 [INF] Writing data to file '/Users/muckesh/.aspnet/DataProtection-Keys/key-115bcc41-7b25-4cbe-add9-12cd2b709397.xml'.
+2025-07-09 11:58:14.406 +05:30 [WRN] Overriding address(es) 'http://localhost:5009'. Binding to endpoints defined via IConfiguration and/or UseKestrel() instead.
+2025-07-09 11:58:14.418 +05:30 [INF] Now listening on: http://[::]:5011
+2025-07-09 11:58:14.418 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-07-09 11:58:14.418 +05:30 [INF] Hosting environment: Development
+2025-07-09 11:58:14.418 +05:30 [INF] Content root path: /Users/muckesh/Test/Genspark-Backup/Capstone-1/RealEstateApi
+2025-07-09 11:58:34.266 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/auth/login - null null
+2025-07-09 11:58:34.341 +05:30 [WRN] Failed to determine the https port for redirect.
+2025-07-09 11:58:34.400 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:58:34.406 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/auth/login - 204 null null 141.8619ms
+2025-07-09 11:58:34.412 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5011/api/v1/auth/login - application/json 49
+2025-07-09 11:58:34.439 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:58:34.442 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.AuthController.Login (RealEstateApi)'
+2025-07-09 11:58:34.479 +05:30 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.AuthResponseDto]] Login(RealEstateApi.Models.DTOs.LoginDto) on controller RealEstateApi.Controllers.AuthController (RealEstateApi).
+2025-07-09 11:58:36.432 +05:30 [INF] Executed DbCommand (28ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 11:58:36.467 +05:30 [INF] Executing NotFoundObjectResult, writing value of type '<>f__AnonymousType0`1[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-07-09 11:58:36.512 +05:30 [INF] Executed action RealEstateApi.Controllers.AuthController.Login (RealEstateApi) in 2029.4821ms
+2025-07-09 11:58:36.513 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.AuthController.Login (RealEstateApi)'
+2025-07-09 11:58:36.528 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5011/api/v1/auth/login - 404 null application/json; charset=utf-8 2116.1303ms
+2025-07-09 11:58:55.248 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/swagger - null null
+2025-07-09 11:58:55.258 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/swagger - 301 0 null 10.1868ms
+2025-07-09 11:58:55.262 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/swagger/index.html - null null
+2025-07-09 11:58:55.379 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/swagger/index.html - 200 null text/html;charset=utf-8 117.2041ms
+2025-07-09 11:58:55.388 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/swagger/swagger-ui.css - null null
+2025-07-09 11:58:55.395 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/swagger/swagger-ui-bundle.js - null null
+2025-07-09 11:58:55.395 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/swagger/swagger-ui-standalone-preset.js - null null
+2025-07-09 11:58:55.396 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/_framework/aspnetcore-browser-refresh.js - null null
+2025-07-09 11:58:55.399 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/_framework/aspnetcore-browser-refresh.js - 200 13732 application/javascript; charset=utf-8 3.2201ms
+2025-07-09 11:58:55.428 +05:30 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-07-09 11:58:55.428 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/swagger/swagger-ui-standalone-preset.js - 200 230280 text/javascript 32.8196ms
+2025-07-09 11:58:55.428 +05:30 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-07-09 11:58:55.428 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/swagger/swagger-ui.css - 200 152034 text/css 40.6205ms
+2025-07-09 11:58:55.435 +05:30 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-07-09 11:58:55.435 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/swagger/swagger-ui-bundle.js - 200 1456926 text/javascript 40.4158ms
+2025-07-09 11:58:55.633 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/swagger/v1/swagger.json - null null
+2025-07-09 11:58:55.655 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/swagger/favicon-32x32.png - null null
+2025-07-09 11:58:55.656 +05:30 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-07-09 11:58:55.656 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/swagger/favicon-32x32.png - 200 628 image/png 0.5305ms
+2025-07-09 11:58:55.837 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 204.0608ms
+2025-07-09 11:59:20.462 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5011/api/v1/User/create-admin - application/json 77
+2025-07-09 11:59:20.471 +05:30 [INF] CORS policy execution failed.
+2025-07-09 11:59:20.471 +05:30 [INF] Request origin http://localhost:5011 does not have permission to access the resource.
+2025-07-09 11:59:20.472 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.CreateAdmin (RealEstateApi)'
+2025-07-09 11:59:20.483 +05:30 [INF] Route matched with {action = "CreateAdmin", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateAdmin(RealEstateApi.Models.DTOs.CreateUserDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 11:59:20.522 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 11:59:20.532 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 11:59:21.177 +05:30 [INF] Executed DbCommand (59ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?' (DbType = DateTime), @p2='?', @p3='?' (DbType = Boolean), @p4='?', @p5='?', @p6='?' (DbType = DateTime), @p7='?', @p8='?' (DbType = DateTime), @p9='?', @p10='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "Users" ("Id", "CreatedAt", "Email", "IsDeleted", "Name", "PasswordHash", "PasswordUpdatedAt", "RefreshToken", "RefreshTokenExpiryTime", "Role", "UpdatedAt")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7, @p8, @p9, @p10);
+2025-07-09 11:59:21.253 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?', @p2='?', @p3='?', @p4='?', @p5='?', @p6='?' (DbType = DateTime), @p7='?'], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "AuditLogs" ("Id", "ActionType", "NewValues", "OldValues", "PrimaryKey", "TableName", "Timestamp", "UserId")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7);
+2025-07-09 11:59:21.255 +05:30 [INF] Executing CreatedResult, writing value of type 'RealEstateApi.Models.User'.
+2025-07-09 11:59:21.293 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.CreateAdmin (RealEstateApi) in 809.9129ms
+2025-07-09 11:59:21.293 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.CreateAdmin (RealEstateApi)'
+2025-07-09 11:59:21.294 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5011/api/v1/User/create-admin - 201 null application/json; charset=utf-8 831.5816ms
+2025-07-09 11:59:26.699 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5011/api/v1/User/create-admin - application/json 77
+2025-07-09 11:59:26.700 +05:30 [INF] CORS policy execution failed.
+2025-07-09 11:59:26.701 +05:30 [INF] Request origin http://localhost:5011 does not have permission to access the resource.
+2025-07-09 11:59:26.701 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.CreateAdmin (RealEstateApi)'
+2025-07-09 11:59:26.701 +05:30 [INF] Route matched with {action = "CreateAdmin", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CreateAdmin(RealEstateApi.Models.DTOs.CreateUserDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 11:59:26.797 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 11:59:26.820 +05:30 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2025-07-09 11:59:26.820 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.CreateAdmin (RealEstateApi) in 119.4669ms
+2025-07-09 11:59:26.820 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.CreateAdmin (RealEstateApi)'
+2025-07-09 11:59:26.821 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5011/api/v1/User/create-admin - 400 null text/plain; charset=utf-8 121.8079ms
+2025-07-09 11:59:47.658 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/auth/login - null null
+2025-07-09 11:59:47.658 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:47.659 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/auth/login - 204 null null 1.1935ms
+2025-07-09 11:59:47.660 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5011/api/v1/auth/login - application/json 49
+2025-07-09 11:59:47.661 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:47.661 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.AuthController.Login (RealEstateApi)'
+2025-07-09 11:59:47.661 +05:30 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.AuthResponseDto]] Login(RealEstateApi.Models.DTOs.LoginDto) on controller RealEstateApi.Controllers.AuthController (RealEstateApi).
+2025-07-09 11:59:47.666 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 11:59:48.232 +05:30 [INF] Executed DbCommand (12ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted") AND u."Id" = @__id_0
+LIMIT 2
+2025-07-09 11:59:48.250 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[@p2='?' (DbType = Guid), @p0='?', @p1='?' (DbType = DateTime)], CommandType='"Text"', CommandTimeout='30']
+UPDATE "Users" SET "RefreshToken" = @p0, "RefreshTokenExpiryTime" = @p1
+WHERE "Id" = @p2;
+2025-07-09 11:59:48.253 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[@p0='?' (DbType = Guid), @p1='?', @p2='?', @p3='?', @p4='?', @p5='?', @p6='?' (DbType = DateTime), @p7='?'], CommandType='"Text"', CommandTimeout='30']
+INSERT INTO "AuditLogs" ("Id", "ActionType", "NewValues", "OldValues", "PrimaryKey", "TableName", "Timestamp", "UserId")
+VALUES (@p0, @p1, @p2, @p3, @p4, @p5, @p6, @p7);
+2025-07-09 11:59:48.254 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.AuthResponseDto'.
+2025-07-09 11:59:48.256 +05:30 [INF] Executed action RealEstateApi.Controllers.AuthController.Login (RealEstateApi) in 594.8316ms
+2025-07-09 11:59:48.256 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.AuthController.Login (RealEstateApi)'
+2025-07-09 11:59:48.257 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5011/api/v1/auth/login - 200 null application/json; charset=utf-8 596.1921ms
+2025-07-09 11:59:48.266 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/auth/me - null null
+2025-07-09 11:59:48.266 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:48.266 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/auth/me - 204 null null 0.357ms
+2025-07-09 11:59:48.267 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/auth/me - null null
+2025-07-09 11:59:48.321 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:48.321 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.AuthController.GetCurrentUser (RealEstateApi)'
+2025-07-09 11:59:48.327 +05:30 [INF] Route matched with {action = "GetCurrentUser", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.User]] GetCurrentUser() on controller RealEstateApi.Controllers.AuthController (RealEstateApi).
+2025-07-09 11:59:48.338 +05:30 [INF] Executed DbCommand (4ms) [Parameters=[@__id_0='?' (DbType = Guid)], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted") AND u."Id" = @__id_0
+LIMIT 2
+2025-07-09 11:59:48.339 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.User'.
+2025-07-09 11:59:48.339 +05:30 [INF] Executed action RealEstateApi.Controllers.AuthController.GetCurrentUser (RealEstateApi) in 12.5649ms
+2025-07-09 11:59:48.339 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.AuthController.GetCurrentUser (RealEstateApi)'
+2025-07-09 11:59:48.339 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/auth/me - 200 null application/json; charset=utf-8 72.3354ms
+2025-07-09 11:59:48.415 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user - null null
+2025-07-09 11:59:48.415 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:48.415 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user - 204 null null 0.5036ms
+2025-07-09 11:59:48.425 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings - null null
+2025-07-09 11:59:48.425 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:48.426 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings - 204 null null 0.6976ms
+2025-07-09 11:59:48.426 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries - null null
+2025-07-09 11:59:48.426 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageSize=5 - null null
+2025-07-09 11:59:48.426 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:48.426 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries - 204 null null 0.4401ms
+2025-07-09 11:59:48.427 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageSize=5 - null null
+2025-07-09 11:59:48.434 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:48.434 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageSize=5 - 204 null null 8.0261ms
+2025-07-09 11:59:48.434 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:48.435 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageSize=5 - 204 null null 7.7499ms
+2025-07-09 11:59:48.435 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user - null null
+2025-07-09 11:59:48.435 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries?pageSize=5 - null null
+2025-07-09 11:59:48.436 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:48.437 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries?pageSize=5 - 204 null null 1.2174ms
+2025-07-09 11:59:48.439 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings - null null
+2025-07-09 11:59:48.440 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user?pageSize=5 - null null
+2025-07-09 11:59:48.440 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageSize=5 - null null
+2025-07-09 11:59:48.440 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:48.440 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 11:59:48.441 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:48.441 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 11:59:48.442 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/inquiries?pageSize=5 - null null
+2025-07-09 11:59:48.442 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/inquiries - null null
+2025-07-09 11:59:48.443 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:48.443 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:48.443 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 11:59:48.443 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 11:59:48.443 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:48.443 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 11:59:48.443 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:48.443 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 11:59:48.452 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 11:59:48.452 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 11:59:48.454 +05:30 [INF] Route matched with {action = "GetFilteredInquiries", controller = "Inquiries"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetFilteredInquiries(RealEstateApi.Models.DTOs.InquiryQueryDto) on controller RealEstateApi.Controllers.InquiriesController (RealEstateApi).
+2025-07-09 11:59:48.454 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 11:59:48.454 +05:30 [INF] Route matched with {action = "GetFilteredInquiries", controller = "Inquiries"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetFilteredInquiries(RealEstateApi.Models.DTOs.InquiryQueryDto) on controller RealEstateApi.Controllers.InquiriesController (RealEstateApi).
+2025-07-09 11:59:48.454 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 11:59:48.502 +05:30 [INF] Executed DbCommand (14ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 11:59:48.506 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 11:59:48.513 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 60.9719ms
+2025-07-09 11:59:48.513 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 11:59:48.514 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user?pageSize=5 - 200 null application/json; charset=utf-8 73.6971ms
+2025-07-09 11:59:48.525 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 11:59:48.526 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 11:59:48.527 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 74.842ms
+2025-07-09 11:59:48.528 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 11:59:48.528 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user - 200 null application/json; charset=utf-8 92.8893ms
+2025-07-09 11:59:48.577 +05:30 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2025-07-09 11:59:48.634 +05:30 [INF] Executed DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status", b."Id", b."Budget", b."Phone", b."PreferredLocation", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u0."Id", u0."CreatedAt", u0."Email", u0."IsDeleted", u0."Name", u0."PasswordHash", u0."PasswordUpdatedAt", u0."RefreshToken", u0."RefreshTokenExpiryTime", u0."Role", u0."UpdatedAt", p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", i0."Id", i0."AuthorId", i0."AuthorType", i0."CreatedAt", i0."InquiryId", i0."Message"
+FROM "Inquiries" AS i
+INNER JOIN "Buyers" AS b ON i."BuyerId" = b."Id"
+INNER JOIN "Users" AS u ON b."Id" = u."Id"
+LEFT JOIN "Agents" AS a ON i."AgentId" = a."Id"
+LEFT JOIN "Users" AS u0 ON a."Id" = u0."Id"
+INNER JOIN "PropertyListings" AS p ON i."ListingId" = p."Id"
+LEFT JOIN "InquiryReplies" AS i0 ON i."Id" = i0."InquiryId"
+ORDER BY i."Id", b."Id", u."Id", a."Id", u0."Id", p."Id"
+2025-07-09 11:59:48.634 +05:30 [INF] Executed DbCommand (11ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status", b."Id", b."Budget", b."Phone", b."PreferredLocation", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u0."Id", u0."CreatedAt", u0."Email", u0."IsDeleted", u0."Name", u0."PasswordHash", u0."PasswordUpdatedAt", u0."RefreshToken", u0."RefreshTokenExpiryTime", u0."Role", u0."UpdatedAt", p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", i0."Id", i0."AuthorId", i0."AuthorType", i0."CreatedAt", i0."InquiryId", i0."Message"
+FROM "Inquiries" AS i
+INNER JOIN "Buyers" AS b ON i."BuyerId" = b."Id"
+INNER JOIN "Users" AS u ON b."Id" = u."Id"
+LEFT JOIN "Agents" AS a ON i."AgentId" = a."Id"
+LEFT JOIN "Users" AS u0 ON a."Id" = u0."Id"
+INNER JOIN "PropertyListings" AS p ON i."ListingId" = p."Id"
+LEFT JOIN "InquiryReplies" AS i0 ON i."Id" = i0."InquiryId"
+ORDER BY i."Id", b."Id", u."Id", a."Id", u0."Id", p."Id"
+2025-07-09 11:59:48.635 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.InquiryResponseNewDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 11:59:48.635 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.InquiryResponseNewDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 11:59:48.640 +05:30 [INF] Executed action RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi) in 185.5431ms
+2025-07-09 11:59:48.640 +05:30 [INF] Executed action RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi) in 186.3052ms
+2025-07-09 11:59:48.640 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 11:59:48.640 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 11:59:48.641 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/inquiries?pageSize=5 - 200 null application/json; charset=utf-8 198.9626ms
+2025-07-09 11:59:48.641 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/inquiries - 200 null application/json; charset=utf-8 198.8236ms
+2025-07-09 11:59:48.654 +05:30 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 11:59:48.656 +05:30 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 11:59:48.656 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 11:59:48.656 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 11:59:48.659 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 204.0331ms
+2025-07-09 11:59:48.659 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 204.8443ms
+2025-07-09 11:59:48.659 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 11:59:48.659 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 11:59:48.659 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageSize=5 - 200 null application/json; charset=utf-8 219.1948ms
+2025-07-09 11:59:48.659 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings - 200 null application/json; charset=utf-8 219.8925ms
+2025-07-09 11:59:49.376 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/hubs/notifications/negotiate?negotiateVersion=1 - null null
+2025-07-09 11:59:49.378 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:49.378 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/hubs/notifications/negotiate?negotiateVersion=1 - 204 null null 2.4071ms
+2025-07-09 11:59:49.386 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5011/hubs/notifications/negotiate?negotiateVersion=1 - null 0
+2025-07-09 11:59:49.388 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:49.388 +05:30 [INF] Executing endpoint '/hubs/notifications/negotiate'
+2025-07-09 11:59:49.393 +05:30 [INF] Executed endpoint '/hubs/notifications/negotiate'
+2025-07-09 11:59:49.394 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5011/hubs/notifications/negotiate?negotiateVersion=1 - 200 316 application/json 7.8644ms
+2025-07-09 11:59:49.399 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/hubs/notifications?id=BmIc5YxfUMAJZ4X8jthTiw&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIwMTk3ZWRkZi1kZDhmLTcwMTgtOGY3Zi1hZWQ2NzBlNzgwNDMiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1MjA0MjU4OCwiZXhwIjoxNzUyMzg4MTg4LCJpYXQiOjE3NTIwNDI1ODh9.uSm6RHLvOsqSXSdJyDgfvqVpvcXI0Hs7-QC32x0T5fc - null null
+2025-07-09 11:59:49.399 +05:30 [INF] CORS policy execution successful.
+2025-07-09 11:59:49.399 +05:30 [INF] Executing endpoint '/hubs/notifications'
+2025-07-09 12:00:04.039 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - null null
+2025-07-09 12:00:04.039 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:04.040 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - 204 null null 0.9771ms
+2025-07-09 12:00:04.041 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - null null
+2025-07-09 12:00:04.044 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:04.044 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:00:04.044 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:00:04.048 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:00:04.048 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:00:04.049 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 4.601ms
+2025-07-09 12:00:04.049 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:00:04.049 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - 200 null application/json; charset=utf-8 8.2062ms
+2025-07-09 12:00:06.789 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:00:06.790 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:06.790 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageNumber=1&pageSize=10 - 204 null null 0.6053ms
+2025-07-09 12:00:06.791 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:00:06.792 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:06.792 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:00:06.792 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:00:06.794 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:00:06.795 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:00:06.795 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 3.3343ms
+2025-07-09 12:00:06.795 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:00:06.796 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user?pageNumber=1&pageSize=10 - 200 null application/json; charset=utf-8 4.337ms
+2025-07-09 12:00:08.871 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - null null
+2025-07-09 12:00:08.890 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:08.890 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:00:08.890 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:00:08.893 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:00:08.894 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:00:08.894 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 4.3216ms
+2025-07-09 12:00:08.895 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:00:08.895 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - 200 null application/json; charset=utf-8 23.6778ms
+2025-07-09 12:00:10.764 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user - null null
+2025-07-09 12:00:10.764 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:10.765 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user - 204 null null 0.5383ms
+2025-07-09 12:00:10.766 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user - null null
+2025-07-09 12:00:10.767 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:10.767 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:00:10.767 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:00:10.770 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings - null null
+2025-07-09 12:00:10.770 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:10.770 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings - 204 null null 0.4394ms
+2025-07-09 12:00:10.771 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries - null null
+2025-07-09 12:00:10.771 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:10.771 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageSize=5 - null null
+2025-07-09 12:00:10.771 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries - 204 null null 0.5719ms
+2025-07-09 12:00:10.771 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:00:10.772 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageSize=5 - null null
+2025-07-09 12:00:10.772 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:10.772 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:10.772 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageSize=5 - 204 null null 1.1463ms
+2025-07-09 12:00:10.772 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries?pageSize=5 - null null
+2025-07-09 12:00:10.772 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageSize=5 - 204 null null 0.5105ms
+2025-07-09 12:00:10.773 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:00:10.773 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:10.773 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries?pageSize=5 - 204 null null 0.3287ms
+2025-07-09 12:00:10.773 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 5.9922ms
+2025-07-09 12:00:10.773 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:00:10.773 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user - 200 null application/json; charset=utf-8 7.0338ms
+2025-07-09 12:00:10.783 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings - null null
+2025-07-09 12:00:10.783 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/inquiries - null null
+2025-07-09 12:00:10.783 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user?pageSize=5 - null null
+2025-07-09 12:00:10.783 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageSize=5 - null null
+2025-07-09 12:00:10.783 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:10.783 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:00:10.783 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:10.783 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:10.783 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 12:00:10.783 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:10.783 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:00:10.784 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:00:10.784 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:00:10.784 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:00:10.784 +05:30 [INF] Route matched with {action = "GetFilteredInquiries", controller = "Inquiries"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetFilteredInquiries(RealEstateApi.Models.DTOs.InquiryQueryDto) on controller RealEstateApi.Controllers.InquiriesController (RealEstateApi).
+2025-07-09 12:00:10.784 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 12:00:10.786 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/inquiries?pageSize=5 - null null
+2025-07-09 12:00:10.787 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:00:10.787 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:00:10.787 +05:30 [INF] Route matched with {action = "GetFilteredInquiries", controller = "Inquiries"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetFilteredInquiries(RealEstateApi.Models.DTOs.InquiryQueryDto) on controller RealEstateApi.Controllers.InquiriesController (RealEstateApi).
+2025-07-09 12:00:10.789 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 12:00:10.789 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:00:10.789 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 12:00:10.789 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:00:10.789 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:00:10.790 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:00:10.790 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 6.2404ms
+2025-07-09 12:00:10.790 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 5.7284ms
+2025-07-09 12:00:10.790 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:00:10.790 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:00:10.790 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 6.2151ms
+2025-07-09 12:00:10.790 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageSize=5 - 200 null application/json; charset=utf-8 7.0842ms
+2025-07-09 12:00:10.790 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:00:10.790 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings - 200 null application/json; charset=utf-8 7.7948ms
+2025-07-09 12:00:10.790 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user?pageSize=5 - 200 null application/json; charset=utf-8 7.4926ms
+2025-07-09 12:00:10.793 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status", b."Id", b."Budget", b."Phone", b."PreferredLocation", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u0."Id", u0."CreatedAt", u0."Email", u0."IsDeleted", u0."Name", u0."PasswordHash", u0."PasswordUpdatedAt", u0."RefreshToken", u0."RefreshTokenExpiryTime", u0."Role", u0."UpdatedAt", p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", i0."Id", i0."AuthorId", i0."AuthorType", i0."CreatedAt", i0."InquiryId", i0."Message"
+FROM "Inquiries" AS i
+INNER JOIN "Buyers" AS b ON i."BuyerId" = b."Id"
+INNER JOIN "Users" AS u ON b."Id" = u."Id"
+LEFT JOIN "Agents" AS a ON i."AgentId" = a."Id"
+LEFT JOIN "Users" AS u0 ON a."Id" = u0."Id"
+INNER JOIN "PropertyListings" AS p ON i."ListingId" = p."Id"
+LEFT JOIN "InquiryReplies" AS i0 ON i."Id" = i0."InquiryId"
+ORDER BY i."Id", b."Id", u."Id", a."Id", u0."Id", p."Id"
+2025-07-09 12:00:10.793 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.InquiryResponseNewDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:00:10.793 +05:30 [INF] Executed action RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi) in 9.3364ms
+2025-07-09 12:00:10.793 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:00:10.793 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/inquiries - 200 null application/json; charset=utf-8 10.5927ms
+2025-07-09 12:00:10.811 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status", b."Id", b."Budget", b."Phone", b."PreferredLocation", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u0."Id", u0."CreatedAt", u0."Email", u0."IsDeleted", u0."Name", u0."PasswordHash", u0."PasswordUpdatedAt", u0."RefreshToken", u0."RefreshTokenExpiryTime", u0."Role", u0."UpdatedAt", p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", i0."Id", i0."AuthorId", i0."AuthorType", i0."CreatedAt", i0."InquiryId", i0."Message"
+FROM "Inquiries" AS i
+INNER JOIN "Buyers" AS b ON i."BuyerId" = b."Id"
+INNER JOIN "Users" AS u ON b."Id" = u."Id"
+LEFT JOIN "Agents" AS a ON i."AgentId" = a."Id"
+LEFT JOIN "Users" AS u0 ON a."Id" = u0."Id"
+INNER JOIN "PropertyListings" AS p ON i."ListingId" = p."Id"
+LEFT JOIN "InquiryReplies" AS i0 ON i."Id" = i0."InquiryId"
+ORDER BY i."Id", b."Id", u."Id", a."Id", u0."Id", p."Id"
+2025-07-09 12:00:10.812 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.InquiryResponseNewDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:00:10.812 +05:30 [INF] Executed action RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi) in 24.6942ms
+2025-07-09 12:00:10.812 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:00:10.812 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/inquiries?pageSize=5 - 200 null application/json; charset=utf-8 25.6094ms
+2025-07-09 12:00:44.608 +05:30 [INF] Application is shutting down...
+2025-07-09 12:00:44.620 +05:30 [INF] Executed endpoint '/hubs/notifications'
+2025-07-09 12:00:44.620 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/hubs/notifications?id=BmIc5YxfUMAJZ4X8jthTiw&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIwMTk3ZWRkZi1kZDhmLTcwMTgtOGY3Zi1hZWQ2NzBlNzgwNDMiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1MjA0MjU4OCwiZXhwIjoxNzUyMzg4MTg4LCJpYXQiOjE3NTIwNDI1ODh9.uSm6RHLvOsqSXSdJyDgfvqVpvcXI0Hs7-QC32x0T5fc - 101 null null 55219.5628ms
+2025-07-09 12:07:38.172 +05:30 [INF] User profile is available. Using '/Users/muckesh/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-07-09 12:07:38.304 +05:30 [WRN] Overriding address(es) 'http://localhost:5009'. Binding to endpoints defined via IConfiguration and/or UseKestrel() instead.
+2025-07-09 12:07:38.316 +05:30 [INF] Now listening on: http://[::]:5011
+2025-07-09 12:07:38.316 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-07-09 12:07:38.316 +05:30 [INF] Hosting environment: Development
+2025-07-09 12:07:38.316 +05:30 [INF] Content root path: /Users/muckesh/Muckesh/Presidio/Genspark-Training/Capstone-1/RealEstateApi
+2025-07-09 12:07:57.671 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageSize=5 - null null
+2025-07-09 12:07:57.671 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings - null null
+2025-07-09 12:07:57.671 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries - null null
+2025-07-09 12:07:57.671 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user - null null
+2025-07-09 12:07:57.671 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries?pageSize=5 - null null
+2025-07-09 12:07:57.671 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageSize=5 - null null
+2025-07-09 12:07:57.731 +05:30 [WRN] Failed to determine the https port for redirect.
+2025-07-09 12:07:57.775 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:07:57.775 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:07:57.775 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:07:57.775 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:07:57.775 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:07:57.775 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:07:57.782 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries - 204 null null 115.0047ms
+2025-07-09 12:07:57.782 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user - 204 null null 115.0774ms
+2025-07-09 12:07:57.782 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries?pageSize=5 - 204 null null 115.1552ms
+2025-07-09 12:07:57.782 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageSize=5 - 204 null null 115.1452ms
+2025-07-09 12:07:57.782 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings - 204 null null 115.1071ms
+2025-07-09 12:07:57.782 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageSize=5 - 204 null null 115.0502ms
+2025-07-09 12:07:57.789 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user?pageSize=5 - null null
+2025-07-09 12:07:57.789 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/inquiries - null null
+2025-07-09 12:07:57.789 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageSize=5 - null null
+2025-07-09 12:07:57.789 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user - null null
+2025-07-09 12:07:57.789 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/inquiries?pageSize=5 - null null
+2025-07-09 12:07:57.789 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings - null null
+2025-07-09 12:07:57.875 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:07:57.875 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:07:57.875 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:07:57.875 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:07:57.877 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:07:57.877 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:07:57.877 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:07:57.877 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:07:57.880 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:07:57.880 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:07:57.881 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:07:57.881 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:07:57.913 +05:30 [INF] Route matched with {action = "GetFilteredInquiries", controller = "Inquiries"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetFilteredInquiries(RealEstateApi.Models.DTOs.InquiryQueryDto) on controller RealEstateApi.Controllers.InquiriesController (RealEstateApi).
+2025-07-09 12:07:57.913 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 12:07:57.913 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:07:57.913 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:07:57.913 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 12:07:57.913 +05:30 [INF] Route matched with {action = "GetFilteredInquiries", controller = "Inquiries"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetFilteredInquiries(RealEstateApi.Models.DTOs.InquiryQueryDto) on controller RealEstateApi.Controllers.InquiriesController (RealEstateApi).
+2025-07-09 12:07:59.250 +05:30 [WRN] Compiling a query which loads related collections for more than one collection navigation, either via 'Include' or through projection, but no 'QuerySplittingBehavior' has been configured. By default, Entity Framework will use 'QuerySplittingBehavior.SingleQuery', which can potentially result in slow query performance. See https://go.microsoft.com/fwlink/?linkid=2134277 for more information. To identify the query that's triggering this warning call 'ConfigureWarnings(w => w.Throw(RelationalEventId.MultipleCollectionIncludeWarning))'.
+2025-07-09 12:07:59.498 +05:30 [INF] Executed DbCommand (36ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 12:07:59.498 +05:30 [INF] Executed DbCommand (37ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status", b."Id", b."Budget", b."Phone", b."PreferredLocation", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u0."Id", u0."CreatedAt", u0."Email", u0."IsDeleted", u0."Name", u0."PasswordHash", u0."PasswordUpdatedAt", u0."RefreshToken", u0."RefreshTokenExpiryTime", u0."Role", u0."UpdatedAt", p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", i0."Id", i0."AuthorId", i0."AuthorType", i0."CreatedAt", i0."InquiryId", i0."Message"
+FROM "Inquiries" AS i
+INNER JOIN "Buyers" AS b ON i."BuyerId" = b."Id"
+INNER JOIN "Users" AS u ON b."Id" = u."Id"
+LEFT JOIN "Agents" AS a ON i."AgentId" = a."Id"
+LEFT JOIN "Users" AS u0 ON a."Id" = u0."Id"
+INNER JOIN "PropertyListings" AS p ON i."ListingId" = p."Id"
+LEFT JOIN "InquiryReplies" AS i0 ON i."Id" = i0."InquiryId"
+ORDER BY i."Id", b."Id", u."Id", a."Id", u0."Id", p."Id"
+2025-07-09 12:07:59.498 +05:30 [INF] Executed DbCommand (35ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:07:59.498 +05:30 [INF] Executed DbCommand (37ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status", b."Id", b."Budget", b."Phone", b."PreferredLocation", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u0."Id", u0."CreatedAt", u0."Email", u0."IsDeleted", u0."Name", u0."PasswordHash", u0."PasswordUpdatedAt", u0."RefreshToken", u0."RefreshTokenExpiryTime", u0."Role", u0."UpdatedAt", p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", i0."Id", i0."AuthorId", i0."AuthorType", i0."CreatedAt", i0."InquiryId", i0."Message"
+FROM "Inquiries" AS i
+INNER JOIN "Buyers" AS b ON i."BuyerId" = b."Id"
+INNER JOIN "Users" AS u ON b."Id" = u."Id"
+LEFT JOIN "Agents" AS a ON i."AgentId" = a."Id"
+LEFT JOIN "Users" AS u0 ON a."Id" = u0."Id"
+INNER JOIN "PropertyListings" AS p ON i."ListingId" = p."Id"
+LEFT JOIN "InquiryReplies" AS i0 ON i."Id" = i0."InquiryId"
+ORDER BY i."Id", b."Id", u."Id", a."Id", u0."Id", p."Id"
+2025-07-09 12:07:59.498 +05:30 [INF] Executed DbCommand (35ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:07:59.498 +05:30 [INF] Executed DbCommand (37ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 12:07:59.532 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.InquiryResponseNewDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:07:59.532 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:07:59.532 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.InquiryResponseNewDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:07:59.532 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:07:59.621 +05:30 [INF] Executed action RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi) in 1704.0828ms
+2025-07-09 12:07:59.621 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 1704.1253ms
+2025-07-09 12:07:59.622 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 1704.2553ms
+2025-07-09 12:07:59.622 +05:30 [INF] Executed action RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi) in 1704.2426ms
+2025-07-09 12:07:59.622 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:07:59.622 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:07:59.622 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:07:59.622 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:07:59.634 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings - 200 null application/json; charset=utf-8 1845.0622ms
+2025-07-09 12:07:59.634 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/inquiries - 200 null application/json; charset=utf-8 1845.0799ms
+2025-07-09 12:07:59.634 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageSize=5 - 200 null application/json; charset=utf-8 1845.0699ms
+2025-07-09 12:07:59.634 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/inquiries?pageSize=5 - 200 null application/json; charset=utf-8 1845.0292ms
+2025-07-09 12:07:59.634 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/hubs/notifications/negotiate?negotiateVersion=1 - null null
+2025-07-09 12:07:59.636 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:07:59.636 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/hubs/notifications/negotiate?negotiateVersion=1 - 204 null null 1.8868ms
+2025-07-09 12:07:59.638 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5011/hubs/notifications/negotiate?negotiateVersion=1 - null 0
+2025-07-09 12:07:59.640 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:07:59.640 +05:30 [INF] Executing endpoint '/hubs/notifications/negotiate'
+2025-07-09 12:07:59.645 +05:30 [INF] Executed endpoint '/hubs/notifications/negotiate'
+2025-07-09 12:07:59.645 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5011/hubs/notifications/negotiate?negotiateVersion=1 - 200 316 application/json 6.799ms
+2025-07-09 12:07:59.648 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:07:59.648 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:07:59.650 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/hubs/notifications?id=mYykymHcEskr9PkGUvX5_g&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIwMTk3ZWRkZi1kZDhmLTcwMTgtOGY3Zi1hZWQ2NzBlNzgwNDMiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1MjA0MjU4OCwiZXhwIjoxNzUyMzg4MTg4LCJpYXQiOjE3NTIwNDI1ODh9.uSm6RHLvOsqSXSdJyDgfvqVpvcXI0Hs7-QC32x0T5fc - null null
+2025-07-09 12:07:59.650 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:07:59.650 +05:30 [INF] Executing endpoint '/hubs/notifications'
+2025-07-09 12:07:59.662 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 1748.7448ms
+2025-07-09 12:07:59.662 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 1748.7777ms
+2025-07-09 12:07:59.663 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:07:59.663 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:07:59.663 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user - 200 null application/json; charset=utf-8 1873.8531ms
+2025-07-09 12:07:59.663 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user?pageSize=5 - 200 null application/json; charset=utf-8 1873.8875ms
+2025-07-09 12:08:03.417 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - null null
+2025-07-09 12:08:03.419 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:03.419 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - 204 null null 1.6048ms
+2025-07-09 12:08:03.420 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - null null
+2025-07-09 12:08:03.424 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:03.424 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:03.424 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:08:03.494 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:08:03.495 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:03.495 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 70.7494ms
+2025-07-09 12:08:03.495 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:03.495 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - 200 null application/json; charset=utf-8 75.3982ms
+2025-07-09 12:08:05.131 +05:30 [INF] Executed endpoint '/hubs/notifications'
+2025-07-09 12:08:05.131 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/hubs/notifications?id=mYykymHcEskr9PkGUvX5_g&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIwMTk3ZWRkZi1kZDhmLTcwMTgtOGY3Zi1hZWQ2NzBlNzgwNDMiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1MjA0MjU4OCwiZXhwIjoxNzUyMzg4MTg4LCJpYXQiOjE3NTIwNDI1ODh9.uSm6RHLvOsqSXSdJyDgfvqVpvcXI0Hs7-QC32x0T5fc - 101 null null 5481.3259ms
+2025-07-09 12:08:05.217 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - null null
+2025-07-09 12:08:05.223 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:05.223 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:05.224 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:08:05.233 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:08:05.234 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:05.235 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 10.2014ms
+2025-07-09 12:08:05.235 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:05.236 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - 200 null application/json; charset=utf-8 18.3612ms
+2025-07-09 12:08:05.500 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - null null
+2025-07-09 12:08:05.501 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:05.501 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:05.501 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:08:05.510 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:08:05.511 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:05.512 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 11.1119ms
+2025-07-09 12:08:05.513 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:05.513 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - 200 null application/json; charset=utf-8 13.0196ms
+2025-07-09 12:08:05.768 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - null null
+2025-07-09 12:08:05.770 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:05.771 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:05.772 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:08:05.790 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:08:05.791 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:05.792 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 18.4013ms
+2025-07-09 12:08:05.792 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:05.792 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user?0=0&1=1&2=9&3=7&4=e&5=d&6=d&7=f&8=-&9=d&10=d&11=8&12=f&13=-&14=7&15=0&16=1&17=8&18=-&19=8&20=f&21=7&22=f&23=-&24=a&25=e&26=d&27=6&28=7&29=0&30=e&31=7&32=8&33=0&34=4&35=3 - 200 null application/json; charset=utf-8 24.055ms
+2025-07-09 12:08:06.567 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user - null null
+2025-07-09 12:08:06.568 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:06.568 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user - 204 null null 0.6379ms
+2025-07-09 12:08:06.569 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user - null null
+2025-07-09 12:08:06.570 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:06.570 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:06.570 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:08:06.577 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings - null null
+2025-07-09 12:08:06.577 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries - null null
+2025-07-09 12:08:06.577 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:06.577 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:06.578 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries - 204 null null 0.3154ms
+2025-07-09 12:08:06.578 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings - 204 null null 0.6559ms
+2025-07-09 12:08:06.578 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageSize=5 - null null
+2025-07-09 12:08:06.578 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:06.578 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageSize=5 - null null
+2025-07-09 12:08:06.578 +05:30 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:08:06.578 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageSize=5 - 204 null null 0.6131ms
+2025-07-09 12:08:06.579 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:06.579 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageSize=5 - 204 null null 0.6939ms
+2025-07-09 12:08:06.579 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries?pageSize=5 - null null
+2025-07-09 12:08:06.579 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:06.579 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:06.579 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries?pageSize=5 - 204 null null 0.4358ms
+2025-07-09 12:08:06.580 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 9.0895ms
+2025-07-09 12:08:06.580 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:06.580 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user - 200 null application/json; charset=utf-8 10.6003ms
+2025-07-09 12:08:06.582 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings - null null
+2025-07-09 12:08:06.583 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:06.583 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/inquiries - null null
+2025-07-09 12:08:06.584 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:06.584 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 12:08:06.584 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageSize=5 - null null
+2025-07-09 12:08:06.584 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user?pageSize=5 - null null
+2025-07-09 12:08:06.584 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/inquiries?pageSize=5 - null null
+2025-07-09 12:08:06.585 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:06.585 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:08:06.585 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:06.585 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:06.585 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:08:06.585 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:06.585 +05:30 [INF] Route matched with {action = "GetFilteredInquiries", controller = "Inquiries"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetFilteredInquiries(RealEstateApi.Models.DTOs.InquiryQueryDto) on controller RealEstateApi.Controllers.InquiriesController (RealEstateApi).
+2025-07-09 12:08:06.585 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 12:08:06.585 +05:30 [INF] Route matched with {action = "GetFilteredInquiries", controller = "Inquiries"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetFilteredInquiries(RealEstateApi.Models.DTOs.InquiryQueryDto) on controller RealEstateApi.Controllers.InquiriesController (RealEstateApi).
+2025-07-09 12:08:06.585 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:06.585 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:06.585 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:08:06.588 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:08:06.589 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:06.589 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 3.8983ms
+2025-07-09 12:08:06.589 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:06.589 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user?pageSize=5 - 200 null application/json; charset=utf-8 5.0511ms
+2025-07-09 12:08:06.590 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 12:08:06.590 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 12:08:06.591 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:06.591 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:06.591 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 6.4813ms
+2025-07-09 12:08:06.592 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 7.2568ms
+2025-07-09 12:08:06.592 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:06.592 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:06.592 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings - 200 null application/json; charset=utf-8 9.9597ms
+2025-07-09 12:08:06.592 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageSize=5 - 200 null application/json; charset=utf-8 7.6067ms
+2025-07-09 12:08:06.592 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status", b."Id", b."Budget", b."Phone", b."PreferredLocation", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u0."Id", u0."CreatedAt", u0."Email", u0."IsDeleted", u0."Name", u0."PasswordHash", u0."PasswordUpdatedAt", u0."RefreshToken", u0."RefreshTokenExpiryTime", u0."Role", u0."UpdatedAt", p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", i0."Id", i0."AuthorId", i0."AuthorType", i0."CreatedAt", i0."InquiryId", i0."Message"
+FROM "Inquiries" AS i
+INNER JOIN "Buyers" AS b ON i."BuyerId" = b."Id"
+INNER JOIN "Users" AS u ON b."Id" = u."Id"
+LEFT JOIN "Agents" AS a ON i."AgentId" = a."Id"
+LEFT JOIN "Users" AS u0 ON a."Id" = u0."Id"
+INNER JOIN "PropertyListings" AS p ON i."ListingId" = p."Id"
+LEFT JOIN "InquiryReplies" AS i0 ON i."Id" = i0."InquiryId"
+ORDER BY i."Id", b."Id", u."Id", a."Id", u0."Id", p."Id"
+2025-07-09 12:08:06.593 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.InquiryResponseNewDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:06.593 +05:30 [INF] Executed action RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi) in 8.4143ms
+2025-07-09 12:08:06.594 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:08:06.594 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/inquiries - 200 null application/json; charset=utf-8 10.5485ms
+2025-07-09 12:08:06.594 +05:30 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status", b."Id", b."Budget", b."Phone", b."PreferredLocation", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u0."Id", u0."CreatedAt", u0."Email", u0."IsDeleted", u0."Name", u0."PasswordHash", u0."PasswordUpdatedAt", u0."RefreshToken", u0."RefreshTokenExpiryTime", u0."Role", u0."UpdatedAt", p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", i0."Id", i0."AuthorId", i0."AuthorType", i0."CreatedAt", i0."InquiryId", i0."Message"
+FROM "Inquiries" AS i
+INNER JOIN "Buyers" AS b ON i."BuyerId" = b."Id"
+INNER JOIN "Users" AS u ON b."Id" = u."Id"
+LEFT JOIN "Agents" AS a ON i."AgentId" = a."Id"
+LEFT JOIN "Users" AS u0 ON a."Id" = u0."Id"
+INNER JOIN "PropertyListings" AS p ON i."ListingId" = p."Id"
+LEFT JOIN "InquiryReplies" AS i0 ON i."Id" = i0."InquiryId"
+ORDER BY i."Id", b."Id", u."Id", a."Id", u0."Id", p."Id"
+2025-07-09 12:08:06.595 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.InquiryResponseNewDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:06.595 +05:30 [INF] Executed action RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi) in 10.122ms
+2025-07-09 12:08:06.595 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:08:06.595 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/inquiries?pageSize=5 - 200 null application/json; charset=utf-8 11.0687ms
+2025-07-09 12:08:06.767 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/hubs/notifications/negotiate?negotiateVersion=1 - null null
+2025-07-09 12:08:06.767 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:06.768 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/hubs/notifications/negotiate?negotiateVersion=1 - 204 null null 0.452ms
+2025-07-09 12:08:06.769 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5011/hubs/notifications/negotiate?negotiateVersion=1 - null 0
+2025-07-09 12:08:06.769 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:06.769 +05:30 [INF] Executing endpoint '/hubs/notifications/negotiate'
+2025-07-09 12:08:06.770 +05:30 [INF] Executed endpoint '/hubs/notifications/negotiate'
+2025-07-09 12:08:06.770 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5011/hubs/notifications/negotiate?negotiateVersion=1 - 200 316 application/json 0.9037ms
+2025-07-09 12:08:06.773 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/hubs/notifications?id=5ub54_3BqBUlMOK9TGn1sA&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIwMTk3ZWRkZi1kZDhmLTcwMTgtOGY3Zi1hZWQ2NzBlNzgwNDMiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1MjA0MjU4OCwiZXhwIjoxNzUyMzg4MTg4LCJpYXQiOjE3NTIwNDI1ODh9.uSm6RHLvOsqSXSdJyDgfvqVpvcXI0Hs7-QC32x0T5fc - null null
+2025-07-09 12:08:06.773 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:06.773 +05:30 [INF] Executing endpoint '/hubs/notifications'
+2025-07-09 12:08:09.103 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:08:09.103 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:09.104 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - 204 null null 0.9599ms
+2025-07-09 12:08:09.105 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:08:09.106 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:09.106 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:09.106 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 12:08:09.113 +05:30 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 12:08:09.113 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:09.114 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 7.6046ms
+2025-07-09 12:08:09.114 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:09.114 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - 200 null application/json; charset=utf-8 8.6368ms
+2025-07-09 12:08:11.481 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:08:11.481 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:11.481 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:11.481 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 12:08:11.494 +05:30 [INF] Executed DbCommand (9ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 12:08:11.494 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:11.495 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 13.0721ms
+2025-07-09 12:08:11.495 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:11.495 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - 200 null application/json; charset=utf-8 14.109ms
+2025-07-09 12:08:15.113 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertyimages/admin/images/cleanup - null null
+2025-07-09 12:08:15.114 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:15.114 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertyimages/admin/images/cleanup - 204 null null 1.036ms
+2025-07-09 12:08:15.116 +05:30 [INF] Request starting HTTP/1.1 DELETE http://localhost:5011/api/v1/propertyimages/admin/images/cleanup - null null
+2025-07-09 12:08:15.117 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:15.118 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyImagesController.CleanupOldDeletedImages (RealEstateApi)'
+2025-07-09 12:08:15.122 +05:30 [INF] Route matched with {action = "CleanupOldDeletedImages", controller = "PropertyImages"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] CleanupOldDeletedImages() on controller RealEstateApi.Controllers.PropertyImagesController (RealEstateApi).
+2025-07-09 12:08:15.138 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."DeletedAt", p."FileName", p."FileUrl", p."IsDeleted", p."IsHardDeleted", p."PropertyListingId"
+FROM "PropertyImages" AS p
+2025-07-09 12:08:15.140 +05:30 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType3`3[[System.String, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.DateTime, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2025-07-09 12:08:15.156 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyImagesController.CleanupOldDeletedImages (RealEstateApi) in 33.3282ms
+2025-07-09 12:08:15.156 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyImagesController.CleanupOldDeletedImages (RealEstateApi)'
+2025-07-09 12:08:15.156 +05:30 [INF] Request finished HTTP/1.1 DELETE http://localhost:5011/api/v1/propertyimages/admin/images/cleanup - 200 null application/json; charset=utf-8 40.7557ms
+2025-07-09 12:08:19.175 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:08:19.175 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:19.175 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - 204 null null 0.3819ms
+2025-07-09 12:08:19.177 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:08:19.177 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:19.177 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:19.177 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 12:08:19.182 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 12:08:19.182 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:19.183 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 4.9979ms
+2025-07-09 12:08:19.183 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:19.183 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - 200 null application/json; charset=utf-8 6.1388ms
+2025-07-09 12:08:22.004 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:08:22.005 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:22.005 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:22.006 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 12:08:22.010 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 12:08:22.010 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:22.011 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 4.8955ms
+2025-07-09 12:08:22.011 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:22.011 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - 200 null application/json; charset=utf-8 6.2656ms
+2025-07-09 12:08:22.672 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:08:22.673 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:22.673 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageNumber=1&pageSize=10 - 204 null null 0.3783ms
+2025-07-09 12:08:22.674 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:08:22.675 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:22.675 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:22.675 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:08:22.678 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:08:22.679 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:22.679 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 3.4252ms
+2025-07-09 12:08:22.679 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:22.679 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user?pageNumber=1&pageSize=10 - 200 null application/json; charset=utf-8 5.0423ms
+2025-07-09 12:08:23.107 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user - null null
+2025-07-09 12:08:23.108 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:23.108 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user - 204 null null 0.7072ms
+2025-07-09 12:08:23.110 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user - null null
+2025-07-09 12:08:23.110 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings - null null
+2025-07-09 12:08:23.110 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:23.110 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings - 204 null null 0.3577ms
+2025-07-09 12:08:23.110 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:23.110 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:23.110 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:08:23.111 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings - null null
+2025-07-09 12:08:23.112 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:23.112 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:23.112 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 12:08:23.113 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries - null null
+2025-07-09 12:08:23.113 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:23.113 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries - 204 null null 0.3351ms
+2025-07-09 12:08:23.113 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:08:23.113 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageSize=5 - null null
+2025-07-09 12:08:23.114 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:23.114 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageSize=5 - 204 null null 0.4854ms
+2025-07-09 12:08:23.114 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:23.114 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageSize=5 - null null
+2025-07-09 12:08:23.114 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 4.0188ms
+2025-07-09 12:08:23.114 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:23.114 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:23.114 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user - 200 null application/json; charset=utf-8 4.9722ms
+2025-07-09 12:08:23.115 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageSize=5 - 204 null null 0.6755ms
+2025-07-09 12:08:23.115 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries?pageSize=5 - null null
+2025-07-09 12:08:23.115 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:23.115 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/inquiries?pageSize=5 - 204 null null 0.4449ms
+2025-07-09 12:08:23.117 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/inquiries - null null
+2025-07-09 12:08:23.120 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:23.120 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:08:23.120 +05:30 [INF] Route matched with {action = "GetFilteredInquiries", controller = "Inquiries"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetFilteredInquiries(RealEstateApi.Models.DTOs.InquiryQueryDto) on controller RealEstateApi.Controllers.InquiriesController (RealEstateApi).
+2025-07-09 12:08:23.121 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageSize=5 - null null
+2025-07-09 12:08:23.121 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user?pageSize=5 - null null
+2025-07-09 12:08:23.121 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/inquiries?pageSize=5 - null null
+2025-07-09 12:08:23.121 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:23.121 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:23.122 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:23.122 +05:30 [INF] Executed DbCommand (7ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 12:08:23.121 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:08:23.122 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:08:23.122 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:23.122 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 12:08:23.122 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:08:23.122 +05:30 [INF] Route matched with {action = "GetFilteredInquiries", controller = "Inquiries"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetFilteredInquiries(RealEstateApi.Models.DTOs.InquiryQueryDto) on controller RealEstateApi.Controllers.InquiriesController (RealEstateApi).
+2025-07-09 12:08:23.122 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:23.123 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 10.3929ms
+2025-07-09 12:08:23.123 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:23.123 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings - 200 null application/json; charset=utf-8 11.6962ms
+2025-07-09 12:08:23.126 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 12:08:23.126 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:08:23.126 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:23.126 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 4.3984ms
+2025-07-09 12:08:23.126 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:08:23.126 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageSize=5 - 200 null application/json; charset=utf-8 5.7803ms
+2025-07-09 12:08:23.127 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:23.128 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 5.5884ms
+2025-07-09 12:08:23.128 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:08:23.128 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user?pageSize=5 - 200 null application/json; charset=utf-8 7.0906ms
+2025-07-09 12:08:23.129 +05:30 [INF] Executed DbCommand (6ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status", b."Id", b."Budget", b."Phone", b."PreferredLocation", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u0."Id", u0."CreatedAt", u0."Email", u0."IsDeleted", u0."Name", u0."PasswordHash", u0."PasswordUpdatedAt", u0."RefreshToken", u0."RefreshTokenExpiryTime", u0."Role", u0."UpdatedAt", p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", i0."Id", i0."AuthorId", i0."AuthorType", i0."CreatedAt", i0."InquiryId", i0."Message"
+FROM "Inquiries" AS i
+INNER JOIN "Buyers" AS b ON i."BuyerId" = b."Id"
+INNER JOIN "Users" AS u ON b."Id" = u."Id"
+LEFT JOIN "Agents" AS a ON i."AgentId" = a."Id"
+LEFT JOIN "Users" AS u0 ON a."Id" = u0."Id"
+INNER JOIN "PropertyListings" AS p ON i."ListingId" = p."Id"
+LEFT JOIN "InquiryReplies" AS i0 ON i."Id" = i0."InquiryId"
+ORDER BY i."Id", b."Id", u."Id", a."Id", u0."Id", p."Id"
+2025-07-09 12:08:23.129 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.InquiryResponseNewDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:23.130 +05:30 [INF] Executed action RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi) in 7.5387ms
+2025-07-09 12:08:23.130 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:08:23.130 +05:30 [INF] Executed DbCommand (8ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status", b."Id", b."Budget", b."Phone", b."PreferredLocation", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u0."Id", u0."CreatedAt", u0."Email", u0."IsDeleted", u0."Name", u0."PasswordHash", u0."PasswordUpdatedAt", u0."RefreshToken", u0."RefreshTokenExpiryTime", u0."Role", u0."UpdatedAt", p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", i0."Id", i0."AuthorId", i0."AuthorType", i0."CreatedAt", i0."InquiryId", i0."Message"
+FROM "Inquiries" AS i
+INNER JOIN "Buyers" AS b ON i."BuyerId" = b."Id"
+INNER JOIN "Users" AS u ON b."Id" = u."Id"
+LEFT JOIN "Agents" AS a ON i."AgentId" = a."Id"
+LEFT JOIN "Users" AS u0 ON a."Id" = u0."Id"
+INNER JOIN "PropertyListings" AS p ON i."ListingId" = p."Id"
+LEFT JOIN "InquiryReplies" AS i0 ON i."Id" = i0."InquiryId"
+ORDER BY i."Id", b."Id", u."Id", a."Id", u0."Id", p."Id"
+2025-07-09 12:08:23.130 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/inquiries?pageSize=5 - 200 null application/json; charset=utf-8 8.9259ms
+2025-07-09 12:08:23.130 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.InquiryResponseNewDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:08:23.130 +05:30 [INF] Executed action RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi) in 10.0116ms
+2025-07-09 12:08:23.130 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.InquiriesController.GetFilteredInquiries (RealEstateApi)'
+2025-07-09 12:08:23.131 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/inquiries - 200 null application/json; charset=utf-8 13.8347ms
+2025-07-09 12:09:33.870 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:09:33.871 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:09:33.872 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/user?pageNumber=1&pageSize=10 - 204 null null 1.5087ms
+2025-07-09 12:09:33.874 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/user?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:09:33.874 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:09:33.874 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:09:33.874 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-07-09 12:09:33.877 +05:30 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", b."Id", b."Budget", b."Phone", b."PreferredLocation"
+FROM "Users" AS u
+LEFT JOIN "Agents" AS a ON u."Id" = a."Id"
+LEFT JOIN "Buyers" AS b ON u."Id" = b."Id"
+WHERE NOT (u."IsDeleted")
+2025-07-09 12:09:33.877 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:09:33.878 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 3.1615ms
+2025-07-09 12:09:33.878 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-07-09 12:09:33.878 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/user?pageNumber=1&pageSize=10 - 200 null application/json; charset=utf-8 4.2237ms
+2025-07-09 12:09:34.687 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:09:34.687 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:09:34.687 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - 204 null null 0.314ms
+2025-07-09 12:09:34.689 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:09:34.690 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:09:34.690 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:09:34.690 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 12:09:34.694 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 12:09:34.694 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:09:34.694 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 4.0892ms
+2025-07-09 12:09:34.694 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:09:34.694 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - 200 null application/json; charset=utf-8 5.3602ms
+2025-07-09 12:09:36.310 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:09:36.311 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:09:36.311 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:09:36.311 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 12:09:36.315 +05:30 [INF] Executed DbCommand (2ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 12:09:36.316 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:09:36.316 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 4.7087ms
+2025-07-09 12:09:36.316 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:09:36.316 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - 200 null application/json; charset=utf-8 6.213ms
+2025-07-09 12:09:49.079 +05:30 [INF] Request starting HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:09:49.079 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:09:49.079 +05:30 [INF] Request finished HTTP/1.1 OPTIONS http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - 204 null null 0.3489ms
+2025-07-09 12:09:49.080 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - null null
+2025-07-09 12:09:49.081 +05:30 [INF] CORS policy execution successful.
+2025-07-09 12:09:49.081 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:09:49.082 +05:30 [INF] Route matched with {action = "SearchListings", controller = "PropertyListings"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] SearchListings(RealEstateApi.Models.DTOs.PropertyListingQueryParametersDto) on controller RealEstateApi.Controllers.PropertyListingsController (RealEstateApi).
+2025-07-09 12:09:49.086 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."HasParking", p."IsDeleted", p."IsPetsAllowed", p."ListingType", p."Location", p."Price", p."PropertyType", p."SquareFeet", p."Status", p."Title", p."UpdatedAt", a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."PasswordUpdatedAt", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", u."UpdatedAt", p1."Id", p1."DeletedAt", p1."FileName", p1."FileUrl", p1."IsDeleted", p1."IsHardDeleted", p1."PropertyListingId", i."Id", i."AgentId", i."BuyerId", i."CreatedAt", i."ListingId", i."Message", i."Status"
+FROM "PropertyListings" AS p
+INNER JOIN "Agents" AS a ON p."AgentId" = a."Id"
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN (
+    SELECT p0."Id", p0."DeletedAt", p0."FileName", p0."FileUrl", p0."IsDeleted", p0."IsHardDeleted", p0."PropertyListingId"
+    FROM "PropertyImages" AS p0
+    WHERE NOT (p0."IsDeleted")
+) AS p1 ON p."Id" = p1."PropertyListingId"
+LEFT JOIN "Inquiries" AS i ON p."Id" = i."ListingId"
+WHERE NOT (p."IsDeleted")
+ORDER BY p."Id", a."Id", u."Id", p1."Id"
+2025-07-09 12:09:49.086 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.DTOs.PropertyListingResponseDto, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-07-09 12:09:49.086 +05:30 [INF] Executed action RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi) in 4.8217ms
+2025-07-09 12:09:49.087 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.PropertyListingsController.SearchListings (RealEstateApi)'
+2025-07-09 12:09:49.087 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/api/v1/propertylistings?pageNumber=1&pageSize=10 - 200 null application/json; charset=utf-8 6.2246ms
+2025-07-09 12:10:08.008 +05:30 [INF] Application is shutting down...
+2025-07-09 12:10:08.013 +05:30 [INF] Executed endpoint '/hubs/notifications'
+2025-07-09 12:10:08.014 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5011/hubs/notifications?id=5ub54_3BqBUlMOK9TGn1sA&access_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIwMTk3ZWRkZi1kZDhmLTcwMTgtOGY3Zi1hZWQ2NzBlNzgwNDMiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc1MjA0MjU4OCwiZXhwIjoxNzUyMzg4MTg4LCJpYXQiOjE3NTIwNDI1ODh9.uSm6RHLvOsqSXSdJyDgfvqVpvcXI0Hs7-QC32x0T5fc - 101 null null 121237.8604ms

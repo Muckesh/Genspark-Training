@@ -61,7 +61,7 @@ namespace RealEstateApi.Controllers
 
         
 
-        [Authorize(Roles = "Agent")]
+        [Authorize(Roles = "Agent,Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAgent(Guid id, [FromBody] UpdateAgentDto updateDto)
         {

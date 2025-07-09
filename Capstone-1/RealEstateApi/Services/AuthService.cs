@@ -1,4 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
 using RealEstateApi.Exceptions;
 using RealEstateApi.Interfaces;
@@ -104,9 +105,15 @@ namespace RealEstateApi.Services
         public async Task<User> GetUserDetailsAsync()
         {
             var userId = _httpContextAccessor.HttpContext?.User?.GetUserId();
+            // var userRole = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
             if (userId == null)
                 throw new UnauthorizedAccessAppException("Invalid or missing user Id.");
             var user = await _userRepository.GetByIdAsync(userId.Value);
+            // if (userRole == "Buyer")
+            // {
+            //     var buyerRes = await _
+            // }
+            
             return user ?? throw new UserNotFoundException("User not found.");
         }
     }

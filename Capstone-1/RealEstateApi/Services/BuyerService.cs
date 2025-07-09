@@ -2,6 +2,7 @@ using System.Security.Claims;
 using RealEstateApi.Exceptions;
 using RealEstateApi.Interfaces;
 using RealEstateApi.Mappers;
+using RealEstateApi.Misc;
 using RealEstateApi.Models;
 using RealEstateApi.Models.DTOs;
 
@@ -116,15 +117,24 @@ namespace RealEstateApi.Services
 
         public async Task<Buyer> UpdateBuyerAsync(Guid buyerId, UpdateBuyerDto updateDto)
         {
-            var userIdStr = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            
+            var userId = _httpContextAccessor.HttpContext?.User.GetUserId(); 
+            var userRole = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
 
-            if (!Guid.TryParse(userIdStr, out var userId) || userId != buyerId)
-                throw new UnauthorizedAccessAppException("You are not authorized to update this buyer profile.");
+
+            if (userRole != "Admin")
+            {
+                if ( userId != buyerId)
+                    throw new UnauthorizedAccessAppException("You are not authorized to update this buyer profile.");
+            }
+            
+            
 
             var buyer = await _buyerRepository.GetByIdAsync(buyerId);
             if (buyer == null)
                 throw new UserNotFoundException("Buyer not found.");
 
+            buyer.Phone = updateDto.Phone ?? buyer.Phone;
             buyer.PreferredLocation = updateDto.PreferredLocation ?? buyer.PreferredLocation;
             buyer.Budget = updateDto.Budget ?? buyer.Budget;
 

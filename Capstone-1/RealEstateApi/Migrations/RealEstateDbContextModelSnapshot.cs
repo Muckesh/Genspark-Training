@@ -86,6 +86,10 @@ namespace RealEstateApi.Migrations
                     b.Property<double>("Budget")
                         .HasColumnType("double precision");
 
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("PreferredLocation")
                         .IsRequired()
                         .HasColumnType("text");
@@ -101,6 +105,9 @@ namespace RealEstateApi.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<Guid?>("AgentId")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("BuyerId")
                         .HasColumnType("uuid");
 
@@ -114,13 +121,49 @@ namespace RealEstateApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("AgentId");
 
                     b.HasIndex("BuyerId");
 
                     b.HasIndex("ListingId");
 
                     b.ToTable("Inquiries");
+                });
+
+            modelBuilder.Entity("RealEstateApi.Models.InquiryReply", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AuthorType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("InquiryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InquiryId");
+
+                    b.ToTable("InquiryReplies");
                 });
 
             modelBuilder.Entity("RealEstateApi.Models.PropertyImage", b =>
@@ -141,6 +184,9 @@ namespace RealEstateApi.Migrations
                         .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsHardDeleted")
                         .HasColumnType("boolean");
 
                     b.Property<Guid>("PropertyListingId")
@@ -175,8 +221,18 @@ namespace RealEstateApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("HasParking")
+                        .HasColumnType("boolean");
+
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
+
+                    b.Property<bool>("IsPetsAllowed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ListingType")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Location")
                         .IsRequired()
@@ -185,12 +241,23 @@ namespace RealEstateApi.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("double precision");
 
+                    b.Property<string>("PropertyType")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("SquareFeet")
                         .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -223,6 +290,9 @@ namespace RealEstateApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("PasswordUpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<string>("RefreshToken")
                         .HasColumnType("text");
 
@@ -232,6 +302,9 @@ namespace RealEstateApi.Migrations
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
@@ -262,6 +335,10 @@ namespace RealEstateApi.Migrations
 
             modelBuilder.Entity("RealEstateApi.Models.Inquiry", b =>
                 {
+                    b.HasOne("RealEstateApi.Models.Agent", "Agent")
+                        .WithMany()
+                        .HasForeignKey("AgentId");
+
                     b.HasOne("RealEstateApi.Models.Buyer", "Buyer")
                         .WithMany("Inquiries")
                         .HasForeignKey("BuyerId")
@@ -274,9 +351,22 @@ namespace RealEstateApi.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.Navigation("Agent");
+
                     b.Navigation("Buyer");
 
                     b.Navigation("Listing");
+                });
+
+            modelBuilder.Entity("RealEstateApi.Models.InquiryReply", b =>
+                {
+                    b.HasOne("RealEstateApi.Models.Inquiry", "Inquiry")
+                        .WithMany("Replies")
+                        .HasForeignKey("InquiryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Inquiry");
                 });
 
             modelBuilder.Entity("RealEstateApi.Models.PropertyImage", b =>
@@ -309,6 +399,11 @@ namespace RealEstateApi.Migrations
             modelBuilder.Entity("RealEstateApi.Models.Buyer", b =>
                 {
                     b.Navigation("Inquiries");
+                });
+
+            modelBuilder.Entity("RealEstateApi.Models.Inquiry", b =>
+                {
+                    b.Navigation("Replies");
                 });
 
             modelBuilder.Entity("RealEstateApi.Models.PropertyListing", b =>

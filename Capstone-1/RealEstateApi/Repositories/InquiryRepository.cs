@@ -15,7 +15,11 @@ namespace RealEstateApi.Repositories
         {
             var inquiries = await _realEstateDbContext.Inquiries
                                     .Include(i => i.Buyer)
+                                        .ThenInclude(i => i.User)
+                                    .Include(i => i.Agent)
+                                        .ThenInclude(i=>i.User)
                                     .Include(i => i.Listing)
+                                    .Include(i=>i.Replies)
                                     .ToListAsync();
 
             // return inquiries.Count == 0 ? throw new Exception("No inquiries found") : inquiries;
@@ -27,7 +31,11 @@ namespace RealEstateApi.Repositories
         {
             var inquiry = await _realEstateDbContext.Inquiries
                                 .Include(i => i.Buyer)
+                                    .ThenInclude(i => i.User)
+                                .Include(i => i.Agent)
+                                    .ThenInclude(i => i.User)
                                 .Include(i => i.Listing)
+                                .Include(i=>i.Replies)
                                 .SingleOrDefaultAsync(i => i.Id == id);
             return inquiry ?? throw new NotFoundException("Inquiry not found.");
         }

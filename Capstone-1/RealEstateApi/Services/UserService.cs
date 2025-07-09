@@ -10,10 +10,14 @@ namespace RealEstateApi.Services
         private readonly IRepository<Guid, User> _userRepository;
         private readonly IPasswordService _passwordService;
         private readonly ITokenService _tokenService;
+        private readonly IRepository<Guid, PropertyListing> _propertyListingRepository;
+        private IRepository<Guid, Inquiry> _inquiryRepository;
 
-        public UserService(IRepository<Guid, User> userRepository, IPasswordService passwordService, ITokenService tokenService)
+        public UserService(IRepository<Guid, User> userRepository,IRepository<Guid, PropertyListing> propertyListingRepository, IRepository<Guid, Inquiry> inquiryRepository, IPasswordService passwordService, ITokenService tokenService)
         {
             _userRepository = userRepository;
+            _propertyListingRepository = propertyListingRepository;
+            _inquiryRepository = inquiryRepository;
             _passwordService = passwordService;
             _tokenService = tokenService;
         }
@@ -40,7 +44,7 @@ namespace RealEstateApi.Services
             user = await _userRepository.AddAsync(user);
 
             return user;
-            
+
         }
 
         public async Task<User> UpdateUserAsync(Guid id, UpdateUserDto userDto)
@@ -110,6 +114,14 @@ namespace RealEstateApi.Services
         {
             var users = await _userRepository.GetAllAsync();
 
+            // search
+            if (!string.IsNullOrWhiteSpace(query.SearchTerm))
+                users = users.Where(
+                    u => u.Name.Contains(query.SearchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    u.Email.Contains(query.SearchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    u.Role.Contains(query.SearchTerm, StringComparison.OrdinalIgnoreCase)
+                );
+
             // Filter
             if (!string.IsNullOrWhiteSpace(query.Name))
                 users = users.Where(u => u.Name.Contains(query.Name, StringComparison.OrdinalIgnoreCase));
@@ -125,7 +137,7 @@ namespace RealEstateApi.Services
             {
                 "name" => query.IsDescending ? users.OrderByDescending(u => u.Name) : users.OrderBy(u => u.Name),
                 "email" => query.IsDescending ? users.OrderByDescending(u => u.Email) : users.OrderBy(u => u.Email),
-                _ => users.OrderBy(u => u.Name)
+                _ => users.OrderByDescending(u => u.CreatedAt)
             };
 
             int totalCount = users.Count();
@@ -141,6 +153,22 @@ namespace RealEstateApi.Services
                 PageSize = query.PageSize,
                 TotalCount = totalCount,
                 Items = users
+            };
+        }
+        
+        public async Task<DashboardStatsDto> GetDashboardStatsAsync()
+        {
+            var users = await _userRepository.GetAllAsync();
+            var listings = await _propertyListingRepository.GetAllAsync();
+            var inquiries = await _inquiryRepository.GetAllAsync();
+
+            return new DashboardStatsDto
+            {
+                TotalUsers = users.Count(u => !u.IsDeleted),
+                TotalAgents = users.Count(u => u.Role == "Agent" && !u.IsDeleted),
+                TotalBuyers = users.Count(u => u.Role == "Buyer" && !u.IsDeleted),
+                TotalListings = listings.Count(l => !l.IsDeleted),
+                TotalInquiries = inquiries.Count()
             };
         }
         

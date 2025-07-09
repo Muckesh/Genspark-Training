@@ -12,24 +12,42 @@ namespace RealEstateApi.Services
 {
     public class PropertyListingService : IPropertyListingService
     {
+        private readonly IPropertyImageService _propertyImageService;
         private readonly IHubContext<NotificationHub> _hubContext;
 
         private readonly IRepository<Guid, PropertyListing> _propertyListingRepository;
         private readonly IRepository<Guid, PropertyImage> _propertyImageRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public PropertyListingService(IHubContext<NotificationHub> hubContext,IRepository<Guid, PropertyListing> propertyListingRepository, IRepository<Guid, PropertyImage> propertyImageRepository, IHttpContextAccessor httpContextAccessor)
+        public PropertyListingService(IHubContext<NotificationHub> hubContext,IPropertyImageService propertyImageService,IRepository<Guid, PropertyListing> propertyListingRepository, IRepository<Guid, PropertyImage> propertyImageRepository, IHttpContextAccessor httpContextAccessor)
         {
             _hubContext = hubContext;
+            _propertyImageService = propertyImageService;
             _propertyListingRepository = propertyListingRepository;
             _propertyImageRepository = propertyImageRepository;
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<PropertyListing> GetListingByIdAsync(Guid id)
+        public async Task<PropertyListingResponseDto> GetListingByIdAsync(Guid id)
         {
             var listing = await _propertyListingRepository.GetByIdAsync(id);
-            return listing;
+            var imageUrls =( await _propertyImageService.GetImageUrlsByListingIdAsync(id)).ToList();
+            var listingDto = new PropertyListingResponseDto
+            {
+                Id = listing.Id,
+                Title = listing.Title,
+                Description = listing.Description,
+                Price = listing.Price,
+                Location = listing.Location,
+                Bedrooms = listing.Bedrooms,
+                Bathrooms = listing.Bathrooms,
+                SquareFeet = listing.SquareFeet,
+                AgentId = listing.AgentId,
+                ImageUrls = imageUrls,
+                CreatedAt = listing.CreatedAt,
+                IsDeleted = listing.IsDeleted
+            };
+            return listingDto;
         }
 
         public async Task<IEnumerable<PropertyListing>> GetAllListings()
@@ -91,7 +109,12 @@ namespace RealEstateApi.Services
                 Bedrooms = listingDto.Bedrooms,
                 Bathrooms = listingDto.Bathrooms,
                 SquareFeet = listingDto.SquareFeet,
-                AgentId = agentId
+                AgentId = agentId,
+                PropertyType = listingDto.PropertyType,
+                ListingType = listingDto.ListingType,
+                IsPetsAllowed = listingDto.IsPetsAllowed,
+                Status = listingDto.Status,
+                HasParking=listingDto.HasParking
             };
 
 
@@ -132,6 +155,11 @@ namespace RealEstateApi.Services
             existingListing.Bedrooms = listingDto.Bedrooms ?? existingListing.Bedrooms;
             existingListing.Bathrooms = listingDto.Bathrooms ?? existingListing.Bathrooms;
             existingListing.SquareFeet = listingDto.SquareFeet ?? existingListing.SquareFeet;
+            existingListing.PropertyType = listingDto.PropertyType ?? existingListing.PropertyType;
+            existingListing.ListingType = listingDto.ListingType ?? existingListing.ListingType;
+            existingListing.IsPetsAllowed = listingDto.IsPetsAllowed ?? existingListing.IsPetsAllowed;
+            existingListing.HasParking = listingDto.HasParking ?? existingListing.HasParking;
+            existingListing.Status = listingDto.status ?? existingListing.Status;
 
             var updatedListing = await _propertyListingRepository.UpdateAsync(id, existingListing);
             return updatedListing ?? throw new FailedOperationException("Unable to update listing at the moment.");
@@ -162,17 +190,27 @@ namespace RealEstateApi.Services
             return listing;
         }
         
-        public async Task<PagedResult<PropertyListing>> GetFilteredListingsAsync(PropertyListingQueryParametersDto query)
+        public async Task<PagedResult<PropertyListingResponseDto>> GetFilteredListingsAsync(PropertyListingQueryParametersDto query)
         {
             var listings = await _propertyListingRepository.GetAllAsync();
+
+            // id
+            // Filter by ListingId
+            if (query.ListingId.HasValue)
+                listings = listings.Where(l => l.Id == query.ListingId.Value);
 
             // Search
             if (!string.IsNullOrWhiteSpace(query.Keyword))
             {
                 listings = listings.Where(l =>
                     l.Title.Contains(query.Keyword, StringComparison.OrdinalIgnoreCase) ||
-                    l.Description.Contains(query.Keyword, StringComparison.OrdinalIgnoreCase));
+                    l.Description.Contains(query.Keyword, StringComparison.OrdinalIgnoreCase)||
+                    l.Location.Contains(query.Keyword,StringComparison.OrdinalIgnoreCase));
             }
+
+            // Filter by AgentId
+            if (query.AgentId.HasValue)
+                listings = listings.Where(i => i.AgentId == query.AgentId.Value);
 
             // Filter
             if (!string.IsNullOrWhiteSpace(query.Location))
@@ -190,13 +228,29 @@ namespace RealEstateApi.Services
             if (query.MinBathrooms.HasValue)
                 listings = listings.Where(l => l.Bathrooms >= query.MinBathrooms.Value);
 
+            if (!string.IsNullOrWhiteSpace(query.ListingType))
+                listings = listings.Where(l => l.ListingType.Contains(query.ListingType, StringComparison.OrdinalIgnoreCase));
+
+            if (!string.IsNullOrWhiteSpace(query.PropertyType))
+                listings = listings.Where(l => l.PropertyType.Contains(query.PropertyType, StringComparison.OrdinalIgnoreCase));
+            
+            if (!string.IsNullOrWhiteSpace(query.Status))
+                listings = listings.Where(l => l.Status.Contains(query.Status, StringComparison.OrdinalIgnoreCase));
+
+            if (query.HasParking.HasValue)
+                listings = listings.Where(l => l.HasParking == query.HasParking);
+                
+            if (query.IsPetsAllowed.HasValue)
+                listings = listings.Where(l => l.IsPetsAllowed == query.IsPetsAllowed);
+
             // Sort
             listings = query.SortBy?.ToLower() switch
             {
                 "price" => query.IsDescending ? listings.OrderByDescending(l => l.Price) : listings.OrderBy(l => l.Price),
                 "bedrooms" => query.IsDescending ? listings.OrderByDescending(l => l.Bedrooms) : listings.OrderBy(l => l.Bedrooms),
                 "bathrooms" => query.IsDescending ? listings.OrderByDescending(l => l.Bathrooms) : listings.OrderBy(l => l.Bathrooms),
-                _ => listings.OrderBy(l => l.Price)
+                "createdAt" => query.IsDescending ? listings.OrderByDescending(l=>l.CreatedAt) : listings.OrderBy(l=>l.CreatedAt),
+                _ => listings.OrderByDescending(l => l.CreatedAt)
             };
 
             // count for pagination
@@ -207,12 +261,46 @@ namespace RealEstateApi.Services
                 .Skip((query.PageNumber - 1) * query.PageSize)
                 .Take(query.PageSize);
 
-            return new PagedResult<PropertyListing>
+            var listingDtos = new List<PropertyListingResponseDto>();
+            foreach (var l in listings)
+            {
+                var imageUrls =( await _propertyImageService.GetImageUrlsByListingIdAsync(l.Id)).ToList();
+                var agent = l.Agent;
+                var user = agent?.User;
+                listingDtos.Add(new PropertyListingResponseDto
+                {
+                    Id = l.Id,
+                    Title = l.Title,
+                    Description = l.Description,
+                    Price = l.Price,
+                    Location = l.Location,
+                    Bedrooms = l.Bedrooms,
+                    Bathrooms = l.Bathrooms,
+                    SquareFeet = l.SquareFeet,
+                    AgentId = l.AgentId,
+                    PropertyType = l.PropertyType,
+                    ListingType = l.ListingType,
+                    IsPetsAllowed = l.IsPetsAllowed,
+                    Status = l.Status,
+                    HasParking=l.HasParking,
+                    // Agent=l.Agent,
+                    Name =user?.Name ?? string.Empty,
+                    Email=user?.Email??string.Empty,
+                    Phone=agent?.Phone ?? string.Empty,
+                    AgencyName = agent?.AgencyName ?? string.Empty,
+                    LicenseNumber = agent?.LicenseNumber ?? string.Empty,
+                    ImageUrls = imageUrls,
+                    CreatedAt = l.CreatedAt,
+                    IsDeleted = l.IsDeleted
+                });
+            }
+
+            return new PagedResult<PropertyListingResponseDto>
             {
                 PageNumber = query.PageNumber,
                 PageSize = query.PageSize,
                 TotalCount = totalCount,
-                Items = listings
+                Items = listingDtos
             };
         }
 

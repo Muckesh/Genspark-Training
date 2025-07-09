@@ -30,10 +30,26 @@ namespace RealEstateApi.Services
             if (listing == null || listing.IsDeleted)
                 throw new NotFoundException("Property listing not found.");
 
+            var userId = _httpContextAccessor.HttpContext?.User.GetUserId();
+            var userRole = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
+
+            if (!userId.HasValue && (userRole!="Agent" || userRole!="Admin"))
+                throw new UnauthorizedAccessAppException("Unauthorized access.");
+
+            // Guid agentId;
+
+            // if (userRole == "Admin")
+            // {
+                // if (listing.AgentId==null)
+                //     throw new ArgumentRequiredException("AgentId is required when Admin is creating a listing.");
+
+            //     agentId = listing.AgentId;
+            // }
+
             // Agent check
-            var agentId = _httpContextAccessor.HttpContext?.User.GetUserId();
-            if (!agentId.HasValue || agentId != listing.AgentId)
-                throw new UnauthorizedAccessAppException("You are not authorized to upload images for this listing.");
+            // var agentId = _httpContextAccessor.HttpContext?.User.GetUserId();
+            // if (!agentId.HasValue || agentId != listing.AgentId)
+            //     throw new UnauthorizedAccessAppException("You are not authorized to upload images for this listing.");
 
             // Sanitize and generate unique file name
             var originalFileName = Path.GetFileName(imageDto.ImageFile.FileName);

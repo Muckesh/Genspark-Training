@@ -122,8 +122,14 @@ namespace RealEstateApi.Services
         {
             var userId = _httpContextAccessor.HttpContext?.User?.GetUserId();
 
-            if (userId != agentId)
-                throw new UnauthorizedAccessAppException("You are not authorized to update this agent profile.");
+            var userRole = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.Role)?.Value;
+
+
+            if (userRole != "Admin")
+            {
+                if ( userId != agentId)
+                    throw new UnauthorizedAccessAppException("You are not authorized to update this buyer profile.");
+            }
 
             var agent = await _agentRepository.GetByIdAsync(agentId);
             if (agent == null)

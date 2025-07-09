@@ -22,6 +22,7 @@ namespace RealEstateApi.Mappers
         {
             Buyer buyer = new Buyer();
             buyer.Id = user.Id;
+            buyer.Phone = buyerDto.Phone;
             buyer.Budget = buyerDto.Budget;
             buyer.PreferredLocation = buyerDto.PreferredLocation;
 

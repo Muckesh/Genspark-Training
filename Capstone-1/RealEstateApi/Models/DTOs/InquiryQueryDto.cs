@@ -5,6 +5,8 @@ namespace RealEstateApi.Models.DTOs
         public Guid? ListingId { get; set; }
         public Guid? BuyerId { get; set; }
 
+        public Guid? AgentId { get; set; }
+
         public DateTime? FromDate { get; set; }
         public DateTime? ToDate { get; set; }
 

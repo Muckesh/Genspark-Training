@@ -19,6 +19,7 @@ namespace RealEstateApi.Contexts
         public DbSet<PropertyImage> PropertyImages { get; set; }
         public DbSet<PropertyListing> PropertyListings { get; set; }
         public DbSet<Inquiry> Inquiries { get; set; }
+        public DbSet<InquiryReply> InquiryReplies { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -96,7 +97,7 @@ namespace RealEstateApi.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-           
+
             // user <-> agent
             modelBuilder.Entity<Agent>()
                         .HasOne(a => a.User)
@@ -137,6 +138,13 @@ namespace RealEstateApi.Contexts
                         .HasOne(pi => pi.Listing)
                         .WithMany(pl => pl.Images)
                         .HasForeignKey(pi => pi.PropertyListingId)
+                        .OnDelete(DeleteBehavior.Restrict);
+
+            // Inquiry <-> InquiryReply
+            modelBuilder.Entity<InquiryReply>()
+                        .HasOne(r => r.Inquiry)
+                        .WithMany(i => i.Replies)
+                        .HasForeignKey(r => r.InquiryId)
                         .OnDelete(DeleteBehavior.Restrict);
 
             // Optional: Global query filters for soft delete

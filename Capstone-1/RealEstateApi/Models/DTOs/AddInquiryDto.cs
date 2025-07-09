@@ -6,6 +6,8 @@ namespace RealEstateApi.Models.DTOs
 
         public Guid? BuyerId { get; set; }
 
+        // public Guid? AgentId { get; set; }
+
         public string Message { get; set; } = string.Empty;
     }
 }

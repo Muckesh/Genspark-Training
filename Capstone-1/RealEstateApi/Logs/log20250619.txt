@@ -1,0 +1,114 @@
+2025-06-19 12:13:06.004 +05:30 [INF] User profile is available. Using '/Users/muckesh/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-06-19 12:13:06.282 +05:30 [WRN] Overriding address(es) 'http://localhost:5009'. Binding to endpoints defined via IConfiguration and/or UseKestrel() instead.
+2025-06-19 12:13:06.297 +05:30 [INF] Now listening on: http://[::]:5011
+2025-06-19 12:13:06.298 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-06-19 12:13:06.298 +05:30 [INF] Hosting environment: Development
+2025-06-19 12:13:06.298 +05:30 [INF] Content root path: /Users/muckesh/Muckesh/Presidio/Genspark-Training/Capstone-1/RealEstateApi
+2025-06-19 12:14:12.078 +05:30 [INF] User profile is available. Using '/Users/muckesh/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-06-19 12:14:12.206 +05:30 [WRN] Overriding address(es) 'http://localhost:5009'. Binding to endpoints defined via IConfiguration and/or UseKestrel() instead.
+2025-06-19 12:14:12.219 +05:30 [INF] Now listening on: http://[::]:5011
+2025-06-19 12:14:12.219 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-06-19 12:14:12.219 +05:30 [INF] Hosting environment: Development
+2025-06-19 12:14:12.220 +05:30 [INF] Content root path: /Users/muckesh/Muckesh/Presidio/Genspark-Training/Capstone-1/RealEstateApi
+2025-06-19 12:14:51.555 +05:30 [INF] User profile is available. Using '/Users/muckesh/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-06-19 12:14:51.677 +05:30 [WRN] Overriding address(es) 'http://localhost:5009'. Binding to endpoints defined via IConfiguration and/or UseKestrel() instead.
+2025-06-19 12:14:51.690 +05:30 [INF] Now listening on: http://[::]:5009
+2025-06-19 12:14:51.690 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-06-19 12:14:51.690 +05:30 [INF] Hosting environment: Development
+2025-06-19 12:14:51.690 +05:30 [INF] Content root path: /Users/muckesh/Muckesh/Presidio/Genspark-Training/Capstone-1/RealEstateApi
+2025-06-19 12:15:11.040 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5009/swagger/index.html - null null
+2025-06-19 12:15:11.142 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5009/swagger/index.html - 200 null text/html;charset=utf-8 104.0906ms
+2025-06-19 12:15:11.297 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5009/swagger/v1/swagger.json - null null
+2025-06-19 12:15:11.457 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5009/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 160.988ms
+2025-06-19 12:15:19.492 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5009/api/v1/Agents - null null
+2025-06-19 12:15:19.542 +05:30 [WRN] Failed to determine the https port for redirect.
+2025-06-19 12:15:19.606 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.AgentsController.GetFilteredAgents (RealEstateApi)'
+2025-06-19 12:15:19.634 +05:30 [INF] Route matched with {action = "GetFilteredAgents", controller = "Agents"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetFilteredAgents(AgentQueryDto) on controller RealEstateApi.Controllers.AgentsController (RealEstateApi).
+2025-06-19 12:15:21.111 +05:30 [ERR] An error occurred using the connection to database 'RealEstateDb' on server 'tcp://localhost:5433'.
+2025-06-19 12:15:21.154 +05:30 [ERR] An exception occurred while iterating over the results of a query for context type 'RealEstateApi.Contexts.RealEstateDbContext'.
+System.InvalidOperationException: An exception has been raised that is likely due to a transient failure.
+ ---> Npgsql.NpgsqlException (0x80004005): Failed to connect to 127.0.0.1:5433
+ ---> System.Net.Sockets.SocketException (61): Connection refused
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at Npgsql.TaskTimeoutAndCancellation.ExecuteAsync(Func`2 getTaskFunc, NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.RawOpen(SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|214_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.<Get>g__RentAsync|33_0(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+System.InvalidOperationException: An exception has been raised that is likely due to a transient failure.
+ ---> Npgsql.NpgsqlException (0x80004005): Failed to connect to 127.0.0.1:5433
+ ---> System.Net.Sockets.SocketException (61): Connection refused
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at Npgsql.TaskTimeoutAndCancellation.ExecuteAsync(Func`2 getTaskFunc, NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.RawOpen(SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|214_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.PoolingDataSource.<Get>g__RentAsync|33_0(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalCommand.ExecuteReaderAsync(RelationalCommandParameterObject parameterObject, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.InitializeReaderAsync(AsyncEnumerator enumerator, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlExecutionStrategy.ExecuteAsync[TState,TResult](TState state, Func`4 operation, Func`4 verifySucceeded, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Query.Internal.SingleQueryingEnumerable`1.AsyncEnumerator.MoveNextAsync()
+2025-06-19 12:15:21.164 +05:30 [INF] Executing BadRequestObjectResult, writing value of type 'System.String'.
+2025-06-19 12:15:21.172 +05:30 [INF] Executed action RealEstateApi.Controllers.AgentsController.GetFilteredAgents (RealEstateApi) in 1533.4368ms
+2025-06-19 12:15:21.172 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.AgentsController.GetFilteredAgents (RealEstateApi)'
+2025-06-19 12:15:21.183 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5009/api/v1/Agents - 400 null text/plain; charset=utf-8 1691.1595ms
+2025-06-19 12:15:58.821 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5009/api/v1/Agents - null null
+2025-06-19 12:15:58.826 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.AgentsController.GetFilteredAgents (RealEstateApi)'
+2025-06-19 12:15:58.827 +05:30 [INF] Route matched with {action = "GetFilteredAgents", controller = "Agents"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetFilteredAgents(AgentQueryDto) on controller RealEstateApi.Controllers.AgentsController (RealEstateApi).
+2025-06-19 12:15:59.068 +05:30 [INF] Executed DbCommand (30ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT a."Id", a."AgencyName", a."LicenseNumber", a."Phone", u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role", p."Id", p."AgentId", p."Bathrooms", p."Bedrooms", p."CreatedAt", p."Description", p."IsDeleted", p."Location", p."Price", p."SquareFeet", p."Title"
+FROM "Agents" AS a
+INNER JOIN "Users" AS u ON a."Id" = u."Id"
+LEFT JOIN "PropertyListings" AS p ON a."Id" = p."AgentId"
+WHERE NOT (u."IsDeleted")
+ORDER BY a."Id", u."Id"
+2025-06-19 12:15:59.282 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.Agent, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-06-19 12:15:59.360 +05:30 [INF] Executed action RealEstateApi.Controllers.AgentsController.GetFilteredAgents (RealEstateApi) in 532.8304ms
+2025-06-19 12:15:59.360 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.AgentsController.GetFilteredAgents (RealEstateApi)'
+2025-06-19 12:15:59.360 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5009/api/v1/Agents - 200 null application/json; charset=utf-8 539.479ms
+2025-06-19 12:16:09.517 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5009/api/v1/User - null null
+2025-06-19 12:16:09.549 +05:30 [INF] Authorization failed. These requirements were not met:
+RolesAuthorizationRequirement:User.IsInRole must be true for one of the following roles: (Admin)
+2025-06-19 12:16:09.552 +05:30 [INF] AuthenticationScheme: Bearer was challenged.
+2025-06-19 12:16:09.553 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5009/api/v1/User - 401 0 null 35.3951ms
+2025-06-19 12:16:26.240 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5009/swagger/index.html - null null
+2025-06-19 12:16:26.241 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5009/swagger/index.html - 200 null text/html;charset=utf-8 0.8788ms
+2025-06-19 12:16:26.316 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5009/swagger/v1/swagger.json - null null
+2025-06-19 12:16:26.333 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5009/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 16.6475ms
+2025-06-19 12:17:24.644 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5009/api/v1/User - null null
+2025-06-19 12:17:24.699 +05:30 [INF] Executing endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-06-19 12:17:24.704 +05:30 [INF] Route matched with {action = "GetFilteredUsers", controller = "User"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[RealEstateApi.Models.DTOs.PagedResult`1[RealEstateApi.Models.User]]] GetFilteredUsers(RealEstateApi.Models.DTOs.UserQueryDto) on controller RealEstateApi.Controllers.UserController (RealEstateApi).
+2025-06-19 12:17:24.786 +05:30 [INF] Executed DbCommand (3ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT u."Id", u."CreatedAt", u."Email", u."IsDeleted", u."Name", u."PasswordHash", u."RefreshToken", u."RefreshTokenExpiryTime", u."Role"
+FROM "Users" AS u
+WHERE NOT (u."IsDeleted")
+2025-06-19 12:17:24.788 +05:30 [INF] Executing OkObjectResult, writing value of type 'RealEstateApi.Models.DTOs.PagedResult`1[[RealEstateApi.Models.User, RealEstateApi, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2025-06-19 12:17:24.793 +05:30 [INF] Executed action RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi) in 88.1797ms
+2025-06-19 12:17:24.793 +05:30 [INF] Executed endpoint 'RealEstateApi.Controllers.UserController.GetFilteredUsers (RealEstateApi)'
+2025-06-19 12:17:24.793 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5009/api/v1/User - 200 null application/json; charset=utf-8 148.8405ms

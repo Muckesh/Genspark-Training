@@ -35,26 +35,41 @@ namespace RealEstateApi.Controllers
             }
         }
 
-        // [HttpPost("create-admin")]
-        // [AllowAnonymous]
-        // // [Authorize(Roles ="Admin")]
-        // public async Task<IActionResult> CreateAdmin([FromBody] CreateUserDto userDto)
-        // {
-        //     try
-        //     {
-        //         var existing = await _userService.GetUserByEmail(userDto.Email);
-        //         if (existing != null)
-        //             return BadRequest("User already exists.");
+        [HttpGet("stats")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<DashboardStatsDto>> GetStats()
+        {
+            try
+            {
+                var stats = await _userService.GetDashboardStatsAsync();
+                return Ok(stats);
+            }
+            catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-        //         var admin = await _userService.CreateAdminUser(userDto);
+        [HttpPost("create-admin")]
+        [AllowAnonymous]
+        // [Authorize(Roles ="Admin")]
+        public async Task<IActionResult> CreateAdmin([FromBody] CreateUserDto userDto)
+        {
+            try
+            {
+                var existing = await _userService.GetUserByEmail(userDto.Email);
+                if (existing != null)
+                    return BadRequest("User already exists.");
 
-        //         return Created("", admin);
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         return BadRequest(e.Message);
-        //     }
-        // }
+                var admin = await _userService.CreateAdminUser(userDto);
+
+                return Created("", admin);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin")]
@@ -90,11 +105,11 @@ namespace RealEstateApi.Controllers
                     return Forbid("You can only change your own password.");
 
                 var result = await _userService.ChangePasswordAsync(id, dto);
-                return result ? Ok("Password changed successfully.") : BadRequest("Failed to change password.");
+                return result ? Ok(new { message = "Password changed successfully." }) : BadRequest(new {message = "Failed to change password."});
             }
             catch (UnauthorizedAccessAppException ex)
             {
-                return Unauthorized(ex.Message);
+                return StatusCode(403,new { message = ex.Message });
             }
             catch (UserNotFoundException ex)
             {

@@ -32,15 +32,15 @@ namespace RealEstateApi.Controllers
             }
             catch (UserNotFoundException e)
             {
-                return NotFound(e.Message);
+                return NotFound(new { error = e.Message });
             }
             catch (InvalidCredentialsException e)
             {
-                return Unauthorized(e.Message);
+                return Unauthorized(new { error = e.Message });
             }
             catch (Exception e)
             {
-                return BadRequest(e.Message);
+                return BadRequest(new { error = "An unexpected error occurred. Please try again later." });
             }
         }
 
@@ -75,7 +75,7 @@ namespace RealEstateApi.Controllers
                 var accessToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
 
                 await _authService.LogoutAsync(logoutRequestDto, accessToken);
-                return Ok("Logout Successful.");
+                return Ok(new {message = "Logout Successful."});
             }
             catch (UserNotFoundException e)
             {

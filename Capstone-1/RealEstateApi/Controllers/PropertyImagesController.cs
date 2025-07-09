@@ -49,7 +49,7 @@ namespace RealEstateApi.Controllers
             try
             {
                 var urls = await _propertyImageService.GetImageUrlsByListingIdAsync(listingId);
-                return Ok(urls);
+                return Ok(urls.ToList());
             }
             catch (NotFoundException ex)
             {
@@ -64,17 +64,29 @@ namespace RealEstateApi.Controllers
 
         [HttpDelete("admin/images/cleanup")]
         [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> CleanupOldDeletedImages()
         {
             try
             {
                 var basePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-                await _imageCleanupService.CleanOldDeletedImagesAsync(basePath);
-                return Ok("Old deleted images cleaned up");
+                var cleanedCount = await _imageCleanupService.CleanOldDeletedImagesAsync(basePath);
+                return Ok(new
+                {
+                    Message = "Image cleanup completed successfully",
+                    ImagesCleaned = cleanedCount,
+                    Timestamp = DateTime.UtcNow
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred during image cleanup",
+                    Error = ex.Message,
+                    Timestamp = DateTime.UtcNow
+                });
             }
         }
 
