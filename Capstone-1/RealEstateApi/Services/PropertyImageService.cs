@@ -12,15 +12,18 @@ namespace RealEstateApi.Services
         private readonly IRepository<Guid, PropertyImage> _propertyImageRepository;
         private readonly IRepository<Guid, PropertyListing> _propertyListingRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IBlobService _blobService;
 
         public PropertyImageService(
             IRepository<Guid, PropertyImage> propertyImageRepository,
             IRepository<Guid, PropertyListing> propertyListingRepository,
+            IBlobService blobService,
             IHttpContextAccessor httpContextAccessor)
         {
             _propertyImageRepository = propertyImageRepository;
             _propertyListingRepository = propertyListingRepository;
             _httpContextAccessor = httpContextAccessor;
+            _blobService = blobService;
         }
 
         public async Task<PropertyImage> UploadPropertyImageAsync(AddPropertyImageDto imageDto)
@@ -73,10 +76,16 @@ namespace RealEstateApi.Services
                 await imageDto.ImageFile.CopyToAsync(stream);
             }
 
+            var folderName = $"{listing.Id}/{uniqueName}";
+
+            // blob
+            var blobUrl = await _blobService.UploadFileAsync(imageDto.ImageFile, folderName);
+
             var image = new PropertyImage
             {
                 FileName = uniqueName,
-                FileUrl = $"/property-images/{listing.Id}/{uniqueName}",
+                // FileUrl = $"/property-images/{listing.Id}/{uniqueName}",
+                FileUrl = blobUrl,
                 PropertyListingId = listing.Id
             };
 
@@ -229,7 +238,7 @@ namespace RealEstateApi.Services
             };
         }
 
-        
+
 
         public async Task<IEnumerable<string>> GetImageUrlsByListingIdAsync(Guid listingId)
         {
@@ -249,7 +258,10 @@ namespace RealEstateApi.Services
             var imageUrls = images.Select(i =>
                 $"{baseUrl}/property-images/{listingId}/{i.FileName}");
 
-            return imageUrls;
+            var blobUrls = images.Select(i => i.FileUrl);
+
+            // return imageUrls;
+            return blobUrls;
         }
 
 

@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.RateLimiting;
@@ -18,6 +19,12 @@ using Serilog;
 
 Log.Logger = new LoggerConfiguration()
             .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
+            .WriteTo.AzureBlobStorage(
+                connectionString:"",
+                storageContainerName: "app-logs",
+                storageFileName: "log-{yyyyMMdd}.txt",
+                restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
+            )
             .Enrich.FromLogContext()
             .CreateLogger();
 
@@ -100,7 +107,8 @@ builder.Services.AddTransient<IBuyerService, BuyerService>();
 builder.Services.AddTransient<IInquiryService, InquiryService>();
 builder.Services.AddTransient<IPropertyImageService, PropertyImageService>();
 builder.Services.AddTransient<IPropertyListingService, PropertyListingService>();
-builder.Services.AddTransient<IImageCleanupService,ImageCleanUpService>();
+builder.Services.AddTransient<IImageCleanupService, ImageCleanUpService>();
+builder.Services.AddTransient<IBlobService,BlobService>();
 builder.Services.AddSingleton<ITokenBlacklistService, TokenBlacklistService>();
 #endregion
 
@@ -184,7 +192,8 @@ builder.Services.AddCors(opts =>
         policy.WithOrigins(
             "http://localhost:4200",  // Angular dev server
             "http://127.0.0.1:4200", // Alternative Angular URL
-            "http://127.0.0.1:5500" 
+            "http://127.0.0.1:5500",
+            "https://muckeshblob.z13.web.core.windows.net"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
