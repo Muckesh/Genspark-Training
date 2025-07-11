@@ -1,0 +1,28 @@
+.main-content {
+  margin-left: 280px;
+  min-height: 100vh;
+  width: calc(100% - 280px);
+  transition: all 0.3s ease;
+}
+
+.main-content.sidebar-collapsed {
+  margin-left: 80px;
+  width: calc(100% - 80px);
+}
+
+.content-wrapper {
+  padding-top: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .main-content {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+  }
+  
+  .main-content.sidebar-collapsed {
+    margin-left: 60px;
+    width: calc(100% - 60px);
+  }
+}

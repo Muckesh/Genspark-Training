@@ -1,0 +1,235 @@
+/* Shared Inquiry Styles */
+.inquiry-container {
+  display: flex;
+  height: calc(100vh - 120px);
+  gap: 20px;
+  padding: 20px;
+}
+
+.inquiry-list-container {
+  flex: 0 0 350px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6c757d;
+}
+
+.inquiry-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.inquiry-card {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  border: 1px solid #e9ecef;
+}
+
+.inquiry-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.inquiry-card.active {
+  border-left: 4px solid #0d6efd;
+  background-color: #f8f9fa;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.card-header h3 {
+  font-size: 1.1rem;
+  margin: 0;
+  color: #212529;
+}
+
+.inquiry-preview {
+  color: #495057;
+  margin: 10px 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  font-size: 0.8rem;
+}
+
+.buyer-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #495057;
+  margin-bottom: 8px;
+}
+
+/* Chat Container Styles */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  border: 1px solid #e9ecef;
+}
+
+.chat-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-title h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.message {
+  max-width: 70%;
+}
+
+.message-content {
+  padding: 10px 15px;
+  border-radius: 18px;
+  position: relative;
+}
+
+.message-outgoing .message-content {
+  background-color: #0d6efd;
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 2px;
+}
+
+.message-incoming .message-content {
+  background-color: #e9ecef;
+  color: #212529;
+  align-self: flex-start;
+  border-bottom-left-radius: 2px;
+}
+
+.message-time {
+  display: block;
+  text-align: right;
+  font-size: 0.7rem;
+  opacity: 0.8;
+  margin-top: 5px;
+}
+
+.chat-input {
+  padding: 15px;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  gap: 10px;
+}
+
+.chat-input textarea {
+  flex: 1;
+  border: 1px solid #dee2e6;
+  border-radius: 20px;
+  padding: 10px 15px;
+  resize: none;
+  min-height: 50px;
+  max-height: 120px;
+}
+
+.chat-input textarea:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.chat-input button {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .inquiry-container {
+    flex-direction: column;
+    height: auto;
+  }
+  
+  .inquiry-list-container {
+    flex: 1;
+    width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .chat-container {
+    width: 100%;
+    min-height: 400px;
+  }
+  
+  .message {
+    max-width: 85%;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.message {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* Scrollbar styling */
+.inquiry-list-container::-webkit-scrollbar,
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.inquiry-list-container::-webkit-scrollbar-track,
+.chat-messages::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.inquiry-list-container::-webkit-scrollbar-thumb,
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #0d6efd;
+  border-radius: 3px;
+}
+
+.inquiry-list-container::-webkit-scrollbar-thumb:hover,
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #0b5ed7;
+}

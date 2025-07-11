@@ -1,0 +1,131 @@
+<div class="top-filter-container">
+  <!-- Collapse Toggle Button -->
+  <div class="filter-header d-flex justify-content-between align-items-center p-3 bg-light border-bottom">
+    <button class="btn btn-toggle" (click)="toggleFilters()">
+      <i class="bi bi-sliders me-2"></i>
+      {{ isCollapsed ? 'Show Filters' : 'Hide Filters' }}
+      <i class="bi bi-chevron-down ms-2 transition-all" [class.rotate-180]="!isCollapsed"></i>
+    </button>
+    
+    <button class="btn btn-sm btn-outline-secondary" (click)="resetFilters()" title="Reset all filters">
+      <i class="bi bi-arrow-counterclockwise"></i> Reset
+    </button>
+  </div>
+  
+  <!-- Filter Panel -->
+  <div class="top-filter-content p-3 bg-white shadow-sm" [class.collapsed]="isCollapsed">
+    <form [formGroup]="filterForm" class="row g-3">
+      <!-- Search Section -->
+      <div class="col-md-4">
+        <label class="form-label fw-medium text-muted mb-1">Search</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white">
+            <i class="bi bi-search text-muted"></i>
+          </span>
+          <input 
+            type="text" 
+            formControlName="keyword" 
+            class="form-control border-start-0" 
+            placeholder="Keywords..."
+            aria-label="Search properties"
+          >
+        </div>
+      </div>
+      
+      <!-- Location Section -->
+      <div class="col-md-4">
+        <label class="form-label fw-medium text-muted mb-1">Location</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white">
+            <i class="bi bi-geo-alt text-muted"></i>
+          </span>
+          <input 
+            type="text" 
+            formControlName="location" 
+            class="form-control border-start-0" 
+            placeholder="Any location"
+            aria-label="Property location"
+          >
+        </div>
+      </div>
+      
+      <!-- Price Range Section -->
+      <div class="col-md-4">
+        <label class="form-label fw-medium text-muted mb-1">Price Range (₹)</label>
+        <div class="row g-2">
+          <div class="col">
+            <div class="input-group">
+              <span class="input-group-text bg-white small">Min</span>
+              <input 
+                type="number" 
+                formControlName="minPrice" 
+                class="form-control" 
+                placeholder="0"
+                min="0"
+                aria-label="Minimum price"
+              >
+            </div>
+          </div>
+          <div class="col">
+            <div class="input-group">
+              <span class="input-group-text bg-white small">Max</span>
+              <input 
+                type="number" 
+                formControlName="maxPrice" 
+                class="form-control" 
+                placeholder="Any"
+                min="0"
+                aria-label="Maximum price"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Bedrooms Section -->
+      <div class="col-md-3">
+        <label class="form-label fw-medium text-muted mb-1">Bedrooms</label>
+        <select 
+          formControlName="minBedrooms" 
+          class="form-select"
+          aria-label="Minimum bedrooms"
+        >
+          <option value="">Any</option>
+          <option value="1">1+</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+          <option value="4">4+</option>
+          <option value="5">5+</option>
+        </select>
+      </div>
+      
+      <!-- Bathrooms Section -->
+      <div class="col-md-3">
+        <label class="form-label fw-medium text-muted mb-1">Bathrooms</label>
+        <select 
+          formControlName="minBathrooms" 
+          class="form-select"
+          aria-label="Minimum bathrooms"
+        >
+          <option value="">Any</option>
+          <option value="1">1+</option>
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+        </select>
+      </div>
+      
+      <!-- Apply Button -->
+      <div class="col-md-3 d-flex align-items-end">
+        <button 
+          type="button" 
+          class="btn btn-primary w-100" 
+          (click)="applyFilters()"
+          [disabled]="filterForm.invalid"
+        >
+          <i class="bi bi-funnel-fill me-2"></i>
+          Apply
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

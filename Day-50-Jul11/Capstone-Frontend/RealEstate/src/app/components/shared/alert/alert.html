@@ -1,0 +1,12 @@
+<div *ngIf="isVisible" class="alert" [ngClass]="alertClass" role="alert">
+  <div class="d-flex align-items-center">
+    <i class="bi me-2" [ngClass]="{
+      'bi-check-circle-fill': type === 'success',
+      'bi-exclamation-triangle-fill': type === 'danger',
+      'bi-exclamation-circle-fill': type === 'warning',
+      'bi-info-circle-fill': type === 'info'
+    }"></i>
+    <span>{{ message }}</span>
+    <button *ngIf="dismissible" type="button" class="btn-close ms-auto" (click)="dismiss()" aria-label="Close"></button>
+  </div>
+</div>

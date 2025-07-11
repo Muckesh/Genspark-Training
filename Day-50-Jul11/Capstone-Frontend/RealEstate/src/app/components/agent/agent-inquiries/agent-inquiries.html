@@ -1,0 +1,36 @@
+
+
+<h2 class="mb-4"><i class="bi bi-chat-left-text me-2"></i>Inquiries</h2>
+  <div class="container">
+    
+    <div *ngIf="inquiries.length === 0" class="empty-state">
+      <i class="bi bi-chat-square-text text-muted" style="font-size: 3rem;"></i>
+      <h4 class="mt-3">No inquiries yet</h4>
+      <p class="text-muted">Start by inquiring about a property you're interested in</p>
+    </div>
+
+    <div class="inquiry-cards">
+      <div *ngFor="let inquiry of inquiries" 
+           class="inquiry-card" 
+           [class.active]="selectedInquiry?.id === inquiry.id"
+           [routerLink]="['/agent/inquiry/',inquiry?.id]">
+        <div class="card-header">
+          <h3 class="mb-1">{{ inquiry.listingTitle }}</h3>
+          <span class="badge" [class.bg-primary]="inquiry.status === 'Pending'"
+                               [class.bg-success]="inquiry.status === 'Responded'"
+                               [class.bg-secondary]="inquiry.status === 'Closed'">
+            {{ inquiry.status }}
+          </span>
+        </div>
+        <p class="inquiry-preview">{{ inquiry.message }}</p>
+        <div class="card-footer">
+          <!-- <small class="text-muted">Last updated: {{ inquiry.createdAt | date:'short' }}</small> -->
+           <p class="mb-1"> Buyer : {{ inquiry.buyerName }}</p>
+          <small class="text-muted">Created At: {{ inquiry.createdAt | date:'short' }}</small>
+          <button class="btn btn-sm btn-outline-primary" [routerLink]="['/agent/inquiry/',inquiry?.id]">View Chat</button>
+        </div>
+      </div>
+    <!-- </div> -->
+  </div>
+</div>
+
