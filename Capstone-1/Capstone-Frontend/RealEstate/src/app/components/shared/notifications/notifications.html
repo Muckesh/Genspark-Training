@@ -1,0 +1,205 @@
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <!-- Header -->
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 class="mb-0">
+            <i class="bi bi-bell me-2"></i>
+            Notifications
+          </h2>
+          <p class="text-muted mb-0">
+            <span *ngIf="(unreadCount$ | async)! > 0" class="badge bg-danger me-2">
+              {{ unreadCount$ | async }} unread
+            </span>
+            Stay updated with the latest property listings and system updates
+          </p>
+        </div>
+        
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-primary btn-sm" 
+                  (click)="sendTestNotification()"
+                  title="Send test notification">
+            <i class="bi bi-bell-fill"></i>
+            Test
+          </button>
+          
+          <button class="btn btn-outline-success btn-sm" 
+                  *ngIf="(unreadCount$ | async)! > 0"
+                  (click)="markAllAsRead()"
+                  title="Mark all as read">
+            <i class="bi bi-check-all"></i>
+            Mark All Read
+          </button>
+          
+          <button class="btn btn-outline-danger btn-sm" 
+                  (click)="clearAllNotifications()"
+                  title="Clear all notifications">
+            <i class="bi bi-trash"></i>
+            Clear All
+          </button>
+        </div>
+      </div>
+
+      <!-- Connection Status -->
+      <div class="alert alert-info d-flex align-items-center mb-4" 
+           *ngIf="connectionStatus$ | async; else disconnected">
+        <i class="bi bi-wifi text-success me-2"></i>
+        <span>Connected to notification service</span>
+      </div>
+      
+      <ng-template #disconnected>
+        <div class="alert alert-warning d-flex align-items-center mb-4">
+          <i class="bi bi-wifi-off text-warning me-2"></i>
+          <span>Disconnected from notification service. Trying to reconnect...</span>
+        </div>
+      </ng-template>
+
+      <!-- Filters and Search -->
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <label class="form-label">Filter by type:</label>
+              <select class="form-select" 
+                      [(ngModel)]="selectedFilter" 
+                      (change)="onFilterChange()">
+                <option value="all">All notifications</option>
+                <option value="unread">Unread only</option>
+                <option value="property">Property listings</option>
+                <option value="inquiry">Inquiries</option>
+                <option value="system">System notifications</option>
+              </select>
+            </div>
+            
+            <div class="col-md-6">
+              <label class="form-label">Search notifications:</label>
+              <input type="text" 
+                     class="form-control" 
+                     placeholder="Search by title or message..." 
+                     [(ngModel)]="searchTerm" 
+                     (input)="onSearchChange()">
+            </div>
+            
+            <div class="col-md-3 d-flex align-items-end">
+              <div class="text-muted">
+                <i class="bi bi-info-circle me-1"></i>
+                {{ filteredNotifications.length }} results
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications List -->
+      <div class="notifications-container">
+        <div *ngIf="filteredNotifications.length === 0" class="text-center py-5">
+          <div class="text-muted">
+            <i class="bi bi-bell-slash fs-1 d-block mb-3"></i>
+            <h4>No notifications found</h4>
+            <p>You don't have any notifications matching your current filter.</p>
+          </div>
+        </div>
+
+        <div class="notification-item" 
+             *ngFor="let notification of filteredNotifications; trackBy: trackByNotificationId"
+             [class.unread]="!notification.isRead">
+          
+          <div class="d-flex align-items-start">
+            <!-- Icon -->
+            <div class="notification-icon me-3">
+              <i [class]="getNotificationIcon(notification.type)" 
+                 [class]="getNotificationClass(notification.type)"></i>
+            </div>
+            
+            <!-- Content -->
+            <div class="flex-grow-1">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="notification-title mb-0">{{ notification.title }}</h6>
+                <small class="text-muted">
+                  {{ notification.timestamp | date:'short' }}
+                </small>
+              </div>
+              
+              <p class="notification-message text-muted mb-2">
+                {{ notification.message }}
+              </p>
+              
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="badge" 
+                      [class.bg-primary]="notification.type === 'property'"
+                      [class.bg-info]="notification.type === 'inquiry'"
+                      [class.bg-warning]="notification.type === 'system'">
+                  {{ notification.type | titlecase }}
+                </span>
+                
+                <div class="notification-actions">
+                  <button *ngIf="notification.type === 'property' && notification.data?.listingId" 
+                          class="btn btn-sm btn-outline-info me-2"
+                          (click)="viewProperty(notification.data.listingId)"
+                          title="View property">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  
+                  <button *ngIf="notification.type === 'inquiry' && notification.data?.inquiryId" 
+                          class="btn btn-sm btn-outline-info me-2"
+                          (click)="viewInquiry(notification.data.inquiryId)"
+                          title="View inquiry">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  
+                  <button *ngIf="!notification.isRead" 
+                          class="btn btn-sm btn-outline-primary me-2"
+                          (click)="markAsRead(notification.id)"
+                          title="Mark as read">
+                    <i class="bi bi-check"></i>
+                  </button>
+                  
+                  <button class="btn btn-sm btn-outline-danger"
+                          (click)="clearNotification(notification.id)"
+                          title="Remove notification">
+                    <i class="bi bi-x"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Unread indicator -->
+            <div *ngIf="!notification.isRead" class="unread-indicator"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <nav aria-label="Notifications pagination" 
+           *ngIf="totalPages > 1" 
+           class="mt-4">
+        <ul class="pagination justify-content-center">
+          <li class="page-item" [class.disabled]="currentPage === 1">
+            <button class="page-link" 
+                    (click)="goToPage(currentPage - 1)"
+                    [disabled]="currentPage === 1">
+              <i class="bi bi-chevron-left"></i>
+            </button>
+          </li>
+          
+          <li *ngFor="let page of getPaginationArray()" 
+              class="page-item" 
+              [class.active]="page === currentPage">
+            <button class="page-link" (click)="goToPage(page)">
+              {{ page }}
+            </button>
+          </li>
+          
+          <li class="page-item" [class.disabled]="currentPage === totalPages">
+            <button class="page-link" 
+                    (click)="goToPage(currentPage + 1)"
+                    [disabled]="currentPage === totalPages">
+              <i class="bi bi-chevron-right"></i>
+            </button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>

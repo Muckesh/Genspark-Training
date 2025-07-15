@@ -1,0 +1,308 @@
+<div class="container-fluid py-4 admin-dashboard">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">
+      <i class="bi bi-speedometer2 me-2 text-primary"></i>
+      Admin Dashboard
+    </h2>
+    <!-- <div class="text-muted">
+      <i class="bi bi-clock-history me-1"></i>
+      Last updated: {{ date.UTC| date:'medium' }}
+    </div> -->
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row mb-4 g-4">
+    <!-- Main Stats Cards -->
+    <div class="col-md-6 col-lg-3" *ngFor="let stat of stats">
+      <div class="card border-0 shadow-sm h-100 stat-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-muted mb-2">{{ stat.label }}</h6>
+              <h3 class="mb-0">{{ stat.value }}</h3>
+            </div>
+            <div class="icon-container bg-{{ stat.color }}-light">
+              <i class="bi {{ stat.icon }} text-{{ stat.color }}"></i>
+            </div>
+          </div>
+          <div class="mt-3">
+            <span class="badge bg-{{ stat.color }}-light text-{{ stat.color }}">
+              <i class="bi bi-arrow-up-right"></i> View All
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detailed Stats Section -->
+  <div class="row mb-4 g-4">
+    <!-- User Stats -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white border-bottom">
+          <h5 class="mb-0">
+            <i class="bi bi-people-fill me-2 text-primary"></i>
+            User Statistics
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="user-stats-grid">
+            <div class="stat-item">
+              <div class="stat-value">{{ userStats.totalUsers }}</div>
+              <div class="stat-label">Total Users</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">{{ userStats.agents }}</div>
+              <div class="stat-label">Agents</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">{{ userStats.buyers }}</div>
+              <div class="stat-label">Buyers</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">{{ userStats.admins }}</div>
+              <div class="stat-label">Admins</div>
+            </div>
+            <div class="stat-item highlight">
+              <div class="stat-value">{{ userStats.newUsersThisMonth }}</div>
+              <div class="stat-label">New This Month</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Property Stats -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white border-bottom">
+          <h5 class="mb-0">
+            <i class="bi bi-house-fill me-2 text-success"></i>
+            Property Statistics
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="property-stats-grid">
+            <div class="stat-item">
+              <div class="stat-value">{{ propertyStats.totalProperties }}</div>
+              <div class="stat-label">Total Properties</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">{{ propertyStats.activeListings }}</div>
+              <div class="stat-label">Active Listings</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">{{ propertyStats.soldProperties }}</div>
+              <div class="stat-label">Sold Properties</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">{{ propertyStats.averagePrice | currency:'INR' }}</div>
+              <div class="stat-label">Avg. Price</div>
+            </div>
+            <div class="stat-item highlight">
+              <div class="stat-value">{{ propertyStats.newListingsThisMonth }}</div>
+              <div class="stat-label">New This Month</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inquiry Stats -->
+    <div class="col-md-6 col-lg-4">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-header bg-white border-bottom">
+          <h5 class="mb-0">
+            <i class="bi bi-chat-dots-fill me-2 text-info"></i>
+            Inquiry Statistics
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="inquiry-stats-grid">
+            <div class="stat-item">
+              <div class="stat-value">{{ inquiryStats.totalInquiries }}</div>
+              <div class="stat-label">Total Inquiries</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">{{ inquiryStats.pendingInquiries }}</div>
+              <div class="stat-label">Pending</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value">{{ inquiryStats.resolvedInquiries }}</div>
+              <div class="stat-label">Resolved</div>
+            </div>
+            <div class="stat-item highlight">
+              <div class="stat-value">{{ inquiryStats.newInquiriesToday }}</div>
+              <div class="stat-label">New Today</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Listings -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+          <h5 class="mb-0">
+            <i class="bi bi-house-fill me-2 text-success"></i>
+            Recent Listings
+          </h5>
+          <a [routerLink]="['/admin/listings']" class="btn btn-sm btn-outline-primary">
+            View All <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Title</th>
+                  <th>Location</th>
+                  <th>Price</th>
+                  <th>Agent</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let listing of recentProperties">
+                  <td>
+                    <a [routerLink]="['/admin/property', listing.id]" class="text-decoration-none">
+                      {{ listing.title }}
+                    </a>
+                  </td>
+                  <td>{{ listing.location }}</td>
+                  <td class="fw-bold">{{ listing.price | currency:'INR' }}</td>
+                  <td>{{ listing.name }}</td>
+                  <td>
+                    <span class="badge" 
+                          [ngClass]="{
+                            'bg-success': listing.status === 'Available',
+                            'bg-warning': listing.status === 'Pending',
+                            'bg-info': listing.status === 'Rented',
+                            'bg-danger': listing.status === 'Sold'
+                          }">
+                      {{ listing.status }}
+                    </span>
+                  </td>
+                  <td>
+                    <div class="d-flex gap-2">
+                      <a [routerLink]="['/admin/property', listing.id]" class="btn btn-sm btn-outline-primary" title="View">
+                        <i class="bi bi-eye"></i>
+                      </a>
+                      <a [routerLink]="['/admin/listings/edit', listing.id]" class="btn btn-sm btn-outline-secondary" title="Edit">
+                        <i class="bi bi-pencil"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State -->
+          <div *ngIf="recentProperties.length === 0" class="text-center py-5">
+            <i class="bi bi-house-x fs-1 text-muted"></i>
+            <h5 class="mt-3">No listings found</h5>
+            <p class="text-muted">There are no recent property listings</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Users -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center border-bottom">
+          <h5 class="mb-0">
+            <i class="bi bi-people-fill me-2 text-primary"></i>
+            Recent Users
+          </h5>
+          <a [routerLink]="['/admin/users']" class="btn btn-sm btn-outline-primary">
+            View All <i class="bi bi-arrow-right ms-1"></i>
+          </a>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="ps-4">User</th>
+                  <th>Email</th>
+                  <th>Role</th>
+                  <th>Joined</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of recentUsers">
+                  <td class="ps-4">
+                    <div class="d-flex align-items-center">
+                      <div class="avatar-sm me-3">
+                        <div class="avatar-title bg-light rounded-circle">
+                          <i class="bi bi-person-fill text-primary"></i>
+                        </div>
+                      </div>
+                      <div>
+                        <h6 class="mb-0">{{ user.name }}</h6>
+                        <small class="text-muted">ID: {{ user.id | slice:0:8 }}...</small>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                    <span class="badge" [ngClass]="getRoleBadgeClass(user.role)">
+                      {{ user.role }}
+                    </span>
+                  </td>
+                  <td>{{ user.createdAt | date:'shortDate' }}</td>
+                  <td>
+                    <div class="d-flex gap-2">
+                      <a [routerLink]="['/admin/users/view', user.id]" class="btn btn-sm btn-outline-primary" title="View">
+                        <i class="bi bi-eye-fill"></i>
+                      </a>
+                      <a [routerLink]="['/admin/users/edit', user.id]" class="btn btn-sm btn-outline-secondary" title="Edit">
+                        <i class="bi bi-pencil-fill"></i>
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Empty State -->
+          <div *ngIf="recentUsers.length === 0" class="text-center py-5">
+            <i class="bi bi-people fs-1 text-muted"></i>
+            <h5 class="mt-3">No users found</h5>
+            <p class="text-muted">There are no recent user registrations</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isStatsLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading dashboard data...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isStatsLoading" class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    {{ error }}
+    <button class="btn btn-sm btn-outline-danger ms-3" (click)="loadDashboardData()">
+      <i class="bi bi-arrow-repeat"></i> Retry
+    </button>
+  </div>
+</div>

@@ -1,0 +1,60 @@
+/* top-filter.css */
+.top-filter-container {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.filter-header {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-toggle {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0.5rem 0;
+  color: #495057;
+  font-weight: 500;
+}
+
+.btn-toggle:hover {
+  color: #0d6efd;
+}
+
+.transition-all {
+  transition: all 0.2s ease;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.top-filter-content {
+  transition: all 0.3s ease;
+  overflow: hidden;
+  max-height: 500px; /* Adjust based on your content */
+  opacity: 1;
+  visibility: visible;
+}
+
+.top-filter-content.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+  visibility: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .top-filter-content .row > div {
+    margin-bottom: 1rem;
+  }
+  
+  .top-filter-content .row > div:last-child {
+    margin-bottom: 0;
+  }
+}

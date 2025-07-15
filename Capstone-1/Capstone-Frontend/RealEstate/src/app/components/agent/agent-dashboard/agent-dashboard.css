@@ -1,0 +1,67 @@
+.avatar-sm {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar-title {
+  font-size: 1.1rem;
+}
+
+.table th {
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  color: #6c757d;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.card {
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.badge {
+  padding: 0.35em 0.65em;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* admin-layout.component.css */
+.main-content {
+  margin-left: 280px;
+  min-height: 100vh;
+  transition: margin-left 0.3s;
+}
+
+.content-wrapper {
+  padding-top: 20px;
+}
+
+/* Collapsed sidebar state */
+.sidebar-collapsed .main-content {
+  margin-left: 80px;
+}
+
+.sidebar-collapsed .sidebar {
+  width: 80px;
+  overflow: hidden;
+}
+
+.sidebar-collapsed .sidebar .nav-link {
+  text-align: center;
+}
+
+.sidebar-collapsed .sidebar .nav-link span {
+  display: none;
+}
+
+.sidebar-collapsed .sidebar .dropdown-toggle::after {
+  display: none;
+}

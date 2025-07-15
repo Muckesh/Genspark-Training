@@ -12,18 +12,18 @@ namespace RealEstateApi.Services
         private readonly IRepository<Guid, PropertyImage> _propertyImageRepository;
         private readonly IRepository<Guid, PropertyListing> _propertyListingRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly IBlobService _blobService;
+        // private readonly IBlobService _blobService;
 
         public PropertyImageService(
             IRepository<Guid, PropertyImage> propertyImageRepository,
             IRepository<Guid, PropertyListing> propertyListingRepository,
-            IBlobService blobService,
+            // IBlobService blobService,
             IHttpContextAccessor httpContextAccessor)
         {
             _propertyImageRepository = propertyImageRepository;
             _propertyListingRepository = propertyListingRepository;
             _httpContextAccessor = httpContextAccessor;
-            _blobService = blobService;
+            // _blobService = blobService;
         }
 
         public async Task<PropertyImage> UploadPropertyImageAsync(AddPropertyImageDto imageDto)
@@ -79,13 +79,13 @@ namespace RealEstateApi.Services
             var folderName = $"{listing.Id}/{uniqueName}";
 
             // blob
-            var blobUrl = await _blobService.UploadFileAsync(imageDto.ImageFile, folderName);
+            // var blobUrl = await _blobService.UploadFileAsync(imageDto.ImageFile, folderName);
 
             var image = new PropertyImage
             {
                 FileName = uniqueName,
-                // FileUrl = $"/property-images/{listing.Id}/{uniqueName}",
-                FileUrl = blobUrl,
+                FileUrl = $"/property-images/{listing.Id}/{uniqueName}",
+                // FileUrl = blobUrl,
                 PropertyListingId = listing.Id
             };
 

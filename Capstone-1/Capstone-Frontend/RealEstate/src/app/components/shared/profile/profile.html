@@ -1,0 +1,316 @@
+<!-- Loading State -->
+<div *ngIf="isLoading" class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="text-center">
+    <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <h5 class="text-muted">Loading your profile...</h5>
+  </div>
+</div>
+
+<!-- Error State -->
+<div *ngIf="error && !isLoading" class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 text-center">
+      <div class="card shadow-sm border-danger">
+        <div class="card-body">
+          <i class="bi bi-exclamation-triangle text-danger" style="font-size: 3rem;"></i>
+          <h3 class="mt-3 text-danger">Profile Loading Error</h3>
+          <p class="text-muted mb-4">{{ error }}</p>
+          <button class="btn btn-primary" (click)="ngOnInit()">
+            <i class="bi bi-arrow-repeat"></i> Try Again
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div *ngIf="!isLoading && !error" class="container py-5">
+  <div class="row">
+    <!-- Sidebar Navigation -->
+    <div class="col-lg-3 mb-4">
+      <div class="card shadow-sm ">
+        <div class="card-body text-center">
+          <div class="position-relative mb-3">
+            <!-- <img [src]="'assets/placeholder.webp'" 
+                 class="rounded-circle border shadow" 
+                 width="200" 
+                 height="150"
+                 alt="Profile picture"> -->
+                 <label class="btn btn-lg" [ngClass]="{
+                        'btn-primary': isBuyer,
+                        'btn-success': isAgent,
+                        'btn-danger':isAdmin,
+                      }">
+                    <i class="bi bi-person"></i>
+                 </label>
+            <!-- <label class="btn btn-sm btn-primary position-absolute bottom-0 end-0 rounded-circle shadow-sm">
+              <i class="bi bi-camera"></i>
+            </label> -->
+          </div>
+          
+          <!-- Profile Update Messages -->
+          <div *ngIf="profileUpdateMessage" class="alert alert-success alert-dismissible fade show mb-3">
+            <i class="bi bi-check-circle me-2"></i>
+            {{ profileUpdateMessage }}
+            <button type="button" class="btn-close" (click)="profileUpdateMessage = null"></button>
+          </div>
+          
+          <div *ngIf="profileUpdateError" class="alert alert-danger alert-dismissible fade show mb-3">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            {{ profileUpdateError }}
+            <button type="button" class="btn-close" (click)="profileUpdateError = null"></button>
+          </div>
+          
+          <h5 class="card-title mb-1">{{ user.name }}</h5>
+          <p class="text-muted mb-2">{{ user.email }}</p>
+          <span class="badge mb-3" [ngClass]="{
+            'bg-primary': isBuyer,
+            'bg-success': isAgent,
+            'bg-danger':isAdmin
+          }">
+            {{ isBuyer ? 'Buyer' : isAgent?'Agent':'Admin' }}
+          </span>
+          
+          <hr class="my-3">
+          
+          <ul class="nav flex-column">
+            <!-- <li class="nav-item">
+              <a class="nav-link active d-flex align-items-center" href="javascript:void(0)">
+                <i class="bi bi-person me-2"></i> Profile
+              </a>
+            </li> -->
+            <li class="nav-item" *ngIf="isBuyer">
+              <a [routerLink]="['/buyer/my-inquiries']" class="nav-link d-flex align-items-center">
+                <i class="bi bi-question-circle me-2"></i> My Inquiries
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="isAgent">
+              <a [routerLink]="['/agent/listings']" class="nav-link d-flex align-items-center">
+                <i class="bi bi-house me-2"></i> My Listings
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="col-lg-9">
+      <!-- Profile Information Section -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+          <h5 class="mb-0 d-flex align-items-center">
+            <i class="bi bi-person-lines-fill text-primary me-2"></i> Personal Information
+          </h5>
+          <button class="btn btn-sm" 
+                  [class.btn-outline-primary]="!isProfileEditing"
+                  [class.btn-outline-secondary]="isProfileEditing"
+                  (click)="toggleProfileEdit()">
+            <i class="bi" [class.bi-pencil]="!isProfileEditing" [class.bi-x]="isProfileEditing"></i>
+            {{ isProfileEditing ? 'Cancel' : 'Edit' }}
+          </button>
+        </div>
+        <div class="card-body">
+          <form *ngIf="isProfileEditing; else viewProfile" [formGroup]="profileForm" (ngSubmit)="onUpdateProfile()">
+            <div class="row g-3">
+              <!-- Buyer Fields -->
+              <ng-container *ngIf="isBuyer">
+                <div class="col-md-6">
+                  <label class="form-label">Phone</label>
+                  <input type="tel" class="form-control" formControlName="phone">
+                  <div *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched" 
+                      class="text-danger small mt-1">
+                    <i class="bi bi-exclamation-circle"></i> Phone number is required
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label">Preferred Location</label>
+                  <input type="text" class="form-control" formControlName="preferredLocation">
+                  <div *ngIf="profileForm.get('preferredLocation')?.invalid && profileForm.get('preferredLocation')?.touched" 
+                      class="text-danger small mt-1">
+                    <i class="bi bi-exclamation-circle"></i> Preferred Location is required
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <label class="form-label">Budget (₹)</label>
+                  <input type="number" class="form-control" formControlName="budget">
+                  <div *ngIf="profileForm.get('budget')?.invalid && profileForm.get('budget')?.touched" 
+                      class="text-danger small mt-1">
+                    <i class="bi bi-exclamation-circle"></i> Budget must be positive
+                  </div>
+                </div>
+              </ng-container>
+              
+              <!-- Agent Fields -->
+              <ng-container *ngIf="isAgent">
+                <div class="col-md-6">
+                  <label class="form-label">Agency Name</label>
+                  <input type="text" class="form-control" formControlName="agencyName">
+                  <div *ngIf="profileForm.get('agencyName')?.invalid && profileForm.get('agencyName')?.touched" 
+                       class="text-danger small mt-1">
+                    <i class="bi bi-exclamation-circle"></i> Agency name is required
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <label class="form-label">License Number</label>
+                  <input type="text" class="form-control" formControlName="licenseNumber">
+                  <div *ngIf="profileForm.get('licenseNumber')?.invalid && profileForm.get('licenseNumber')?.touched" 
+                       class="text-danger small mt-1">
+                    <i class="bi bi-exclamation-circle"></i> License number is required
+                  </div>
+                </div>
+                
+                <div class="col-12">
+                  <label class="form-label">Phone</label>
+                  <input type="tel" class="form-control" formControlName="phone">
+                  <div *ngIf="profileForm.get('phone')?.invalid && profileForm.get('phone')?.touched" 
+                       class="text-danger small mt-1">
+                    <i class="bi bi-exclamation-circle"></i> Phone number is required
+                  </div>
+                </div>
+              </ng-container>
+
+              <div class="col-12 mt-3">
+                <button type="submit" class="btn btn-primary px-4" [disabled]="profileForm.invalid">
+                  <i class="bi bi-save me-2"></i> Save Changes
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <ng-template #viewProfile>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <h6 class="text-muted small mb-1">Name</h6>
+                <p class="fw-medium">{{ user.name }}</p>
+              </div>
+              
+              <div class="col-md-6 mb-3">
+                <h6 class="text-muted small mb-1">Email</h6>
+                <p class="fw-medium">{{ user.email }}</p>
+              </div>
+
+              <!-- Buyer Profile View -->
+              <ng-container *ngIf="isBuyer">
+                <div class="col-md-6 mb-3">
+                  <h6 class="text-muted small mb-1">Phone</h6>
+                  <p class="fw-medium">{{ user.buyerProfile?.phone || 'Not provided' }}</p>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <h6 class="text-muted small mb-1">Preferred Location</h6>
+                  <p class="fw-medium">{{ user.buyerProfile?.preferredLocation || 'Not specified' }}</p>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <h6 class="text-muted small mb-1">Budget</h6>
+                  <p class="fw-medium">{{ user.buyerProfile?.budget | currency:'INR' }}</p>
+                </div>
+              </ng-container>
+
+              <!-- Agent Profile View -->
+              <ng-container *ngIf="isAgent">
+                <div class="col-md-6 mb-3">
+                  <h6 class="text-muted small mb-1">Agency Name</h6>
+                  <p class="fw-medium">{{ user.agentProfile?.agencyName || 'Not specified' }}</p>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <h6 class="text-muted small mb-1">License Number</h6>
+                  <p class="fw-medium">{{ user.agentProfile?.licenseNumber || 'Not specified' }}</p>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <h6 class="text-muted small mb-1">Phone</h6>
+                  <p class="fw-medium">{{ user.agentProfile?.phone || 'Not provided' }}</p>
+                </div>
+              </ng-container>
+            </div>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Change Password Section -->
+      <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+          <h5 class="mb-0 d-flex align-items-center">
+            <i class="bi bi-shield-lock text-primary me-2"></i> Security
+          </h5>
+          <button class="btn btn-sm" 
+                  [class.btn-outline-primary]="!isPasswordEditing"
+                  [class.btn-outline-secondary]="isPasswordEditing"
+                  (click)="togglePasswordEdit()">
+            <i class="bi" [class.bi-pencil]="!isPasswordEditing" [class.bi-x]="isPasswordEditing"></i>
+            {{ isPasswordEditing ? 'Cancel' : 'Change Password' }}
+          </button>
+        </div>
+        
+        <div class="card-body">
+          <!-- Password Update Messages -->
+          <div *ngIf="passwordUpdateMessage" class="alert alert-success alert-dismissible fade show mb-3">
+            <i class="bi bi-check-circle me-2"></i>
+            {{ passwordUpdateMessage }}
+            <button type="button" class="btn-close" (click)="passwordUpdateMessage = null"></button>
+          </div>
+          
+          <div *ngIf="passwordUpdateError" class="alert alert-danger alert-dismissible fade show mb-3">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            {{ passwordUpdateError }}
+            <button type="button" class="btn-close" (click)="passwordUpdateError = null"></button>
+          </div>
+          
+          <form *ngIf="isPasswordEditing" [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label">Current Password</label>
+                <input type="password" class="form-control" formControlName="oldPassword">
+                <div *ngIf="passwordForm.get('oldPassword')?.invalid && passwordForm.get('oldPassword')?.touched" 
+                     class="text-danger small mt-1">
+                  <i class="bi bi-exclamation-circle"></i> Password must be at least 6 characters
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label">New Password</label>
+                <input type="password" class="form-control" formControlName="newPassword">
+                <div *ngIf="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched" 
+                     class="text-danger small mt-1">
+                  <i class="bi bi-exclamation-circle"></i> Password must be at least 6 characters
+                </div>
+              </div>
+              
+              <div class="col-md-6">
+                <label class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" formControlName="confirmPassword">
+                <div *ngIf="passwordForm.errors?.['mismatch'] && passwordForm.get('confirmPassword')?.touched" 
+                     class="text-danger small mt-1">
+                  <i class="bi bi-exclamation-circle"></i> Passwords do not match
+                </div>
+              </div>
+              
+              <div class="col-12 mt-3">
+                <button type="submit" class="btn btn-primary px-4" [disabled]="passwordForm.invalid">
+                  <i class="bi bi-key me-2"></i> Update Password
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <div *ngIf="!isPasswordEditing" class="text-center py-4">
+            <div class="bg-light rounded-circle d-inline-flex p-4 mb-3">
+              <i class="bi bi-shield-check text-primary" style="font-size: 2rem;"></i>
+            </div>
+            <h5 class="mb-2">Password Security</h5>
+            <p class="text-muted">Last changed: {{ user.createdAt | date }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -2,6 +2,8 @@ using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.RateLimiting;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -17,18 +19,29 @@ using RealEstateApi.Repositories;
 using RealEstateApi.Services;
 using Serilog;
 
-Log.Logger = new LoggerConfiguration()
-            .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
-            .WriteTo.AzureBlobStorage(
-                connectionString:"",
-                storageContainerName: "app-logs",
-                storageFileName: "log-{yyyyMMdd}.txt",
-                restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
-            )
-            .Enrich.FromLogContext()
-            .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
+
+// var vaultUrl = builder.Configuration["AzureBlobStorage:VaultUrl"];
+
+// string? connectionString = null;
+
+// var client = new SecretClient(new Uri(vaultUrl), new DefaultAzureCredential());
+// KeyVaultSecret secret = client.GetSecret("ConnectionString");
+
+// connectionString = secret.Value;
+
+Log.Logger = new LoggerConfiguration()
+            .WriteTo.File("Logs/log.txt", rollingInterval: RollingInterval.Day)
+            // .WriteTo.AzureBlobStorage(
+            //     // connectionString:"",
+            //     connectionString: connectionString,
+            //     storageContainerName: "app-logs",
+            //     storageFileName: "log-{yyyyMMdd}.txt",
+            //     restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Information
+            // )
+            .Enrich.FromLogContext()
+            .CreateLogger();
 
 builder.WebHost.ConfigureKestrel(options =>
 {
@@ -79,11 +92,17 @@ builder.Services.AddControllers()
 
 builder.Services.AddHttpContextAccessor();
 
+// string? defaultConnection = null;
+
+// KeyVaultSecret secret2 = client.GetSecret("DefaultConnection");
+
+// defaultConnection = secret2.Value;
 
 #region DBContext
 builder.Services.AddDbContext<RealEstateDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    // options.UseNpgsql(defaultConnection);
 });
 #endregion
 
@@ -94,7 +113,8 @@ builder.Services.AddTransient<IRepository<Guid,Buyer>,BuyerRepository>();
 builder.Services.AddTransient<IRepository<Guid,Inquiry>,InquiryRepository>();
 builder.Services.AddTransient<IRepository<Guid,InquiryReply>,InquiryReplyRepository>();
 builder.Services.AddTransient<IRepository<Guid,PropertyImage>,PropertyImageRepository>();
-builder.Services.AddTransient<IRepository<Guid,PropertyListing>,PropertyListingRepository>();
+builder.Services.AddTransient<IRepository<Guid, PropertyListing>, PropertyListingRepository>();
+builder.Services.AddTransient<IRepository<Guid,Purchase>,PurchaseRepository>();
 #endregion
 
 #region Services
@@ -108,7 +128,8 @@ builder.Services.AddTransient<IInquiryService, InquiryService>();
 builder.Services.AddTransient<IPropertyImageService, PropertyImageService>();
 builder.Services.AddTransient<IPropertyListingService, PropertyListingService>();
 builder.Services.AddTransient<IImageCleanupService, ImageCleanUpService>();
-builder.Services.AddTransient<IBlobService,BlobService>();
+builder.Services.AddTransient<IBlobService, BlobService>();
+builder.Services.AddTransient<IPurchaseService, PurchaseService>();
 builder.Services.AddSingleton<ITokenBlacklistService, TokenBlacklistService>();
 #endregion
 

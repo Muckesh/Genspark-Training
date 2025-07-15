@@ -1,0 +1,97 @@
+<div class="card shadow-sm">
+  <div class="card-header bg-white d-flex justify-content-between align-items-center">
+    <h5 class="mb-0">
+      <i class="bi bi-person-badge me-2"></i>
+      User Details
+    </h5>
+    <span class="badge" [ngClass]="getRoleBadgeClass(user.role)">
+      {{ user.role }}
+    </span>
+  </div>
+
+  <div class="card-body">
+    <!-- Loading State -->
+    <div *ngIf="isLoading" class="text-center py-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="alert alert-danger">
+      <i class="bi bi-exclamation-triangle me-2"></i>
+      {{ error }}
+    </div>
+
+    <!-- User Details -->
+    <div *ngIf="!isLoading && !error" class="row">
+      <div class="col-md-4 text-center mb-4">
+        <div class="avatar-xxl mb-3 mx-auto">
+          <div class="avatar-title bg-light rounded-circle">
+            <i class="bi bi-person-fill text-primary" style="font-size: 3rem;"></i>
+          </div>
+        </div>
+        <h4>{{ user.name }}</h4>
+        <p class="text-muted">{{ user.email }}</p>
+      </div>
+
+      <div class="col-md-8">
+        <div class="row">
+          <div class="col-md-6">
+            <h6 class="border-bottom pb-2 mb-3">Basic Information</h6>
+            <div class="mb-3">
+              <p class="mb-1 text-muted small">User ID</p>
+              <p>{{ user.id }}</p>
+            </div>
+            <div class="mb-3">
+              <p class="mb-1 text-muted small">Account Created</p>
+              <p>{{ user.createdAt | date:'mediumDate' }}</p>
+            </div>
+          </div>
+
+          <!-- Buyer Specific Details -->
+          <div *ngIf="user.role === 'Buyer'" class="col-md-6">
+            <h6 class="border-bottom pb-2 mb-3">Buyer Profile</h6>
+            <div class="mb-3">
+              <p class="mb-1 text-muted small">Phone</p>
+              <p>{{ user.buyerProfile?.phone || 'Not provided' }}</p>
+            </div>
+            <div class="mb-3">
+              <p class="mb-1 text-muted small">Preferred Location</p>
+              <p>{{ user.buyerProfile?.preferredLocation }}</p>
+            </div>
+            <div class="mb-3">
+              <p class="mb-1 text-muted small">Budget</p>
+              <p>{{ user.buyerProfile?.budget| currency:'INR' }}</p>
+            </div>
+          </div>
+
+          <!-- Agent Specific Details -->
+          <div *ngIf="user.role === 'Agent'" class="col-md-6">
+            <h6 class="border-bottom pb-2 mb-3">Agent Profile</h6>
+            <div class="mb-3">
+              <p class="mb-1 text-muted small">Agency</p>
+              <p>{{ user.agentProfile?.agencyName }}</p>
+            </div>
+            <div class="mb-3">
+              <p class="mb-1 text-muted small">License Number</p>
+              <p>{{ user.agentProfile?.licenseNumber }}</p>
+            </div>
+            <div class="mb-3">
+              <p class="mb-1 text-muted small">Phone</p>
+              <p>{{ user.agentProfile?.phone }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer bg-white text-end">
+    @if (isAgent || isBuyer) {
+        <a [routerLink]="['/admin/users/edit', user.id]" class="btn btn-primary">
+      <i class="bi bi-pencil me-2"></i>Edit User
+    </a>
+    }
+  </div>
+</div>

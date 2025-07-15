@@ -1,0 +1,15 @@
+.card {
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.card-footer {
+  background-color: transparent;
+  border-top: none;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-danger {
+  min-width: 120px;
+}

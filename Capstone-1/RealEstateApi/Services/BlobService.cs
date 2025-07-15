@@ -1,3 +1,5 @@
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using RealEstateApi.Interfaces;
@@ -10,8 +12,18 @@ namespace RealEstateApi.Services
 
         public BlobService(IConfiguration configuration)
         {
-            var connectionString = configuration["AzureBlobStorage:ConnectionString"];
-            var containerName = configuration["AzureBlobStorage:ContainerName"];
+            var vaultUrl = configuration["AzureBlobStorage:VaultUrl"];
+
+            string? connectionString = null;
+
+            var client = new SecretClient(new Uri(vaultUrl), new DefaultAzureCredential());
+            KeyVaultSecret secret = client.GetSecret("ConnectionString");
+
+            connectionString = secret.Value;
+
+            // var connectionString = configuration["AzureBlobStorage:ConnectionString"];
+            // var containerName = configuration["AzureBlobStorage:ContainerName"];
+            var containerName = "property-images";
             _blobContainerClient = new BlobContainerClient(connectionString, containerName);
             _blobContainerClient.CreateIfNotExists(PublicAccessType.Blob);
         }

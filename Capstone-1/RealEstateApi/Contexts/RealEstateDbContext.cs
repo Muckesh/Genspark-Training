@@ -20,6 +20,7 @@ namespace RealEstateApi.Contexts
         public DbSet<PropertyListing> PropertyListings { get; set; }
         public DbSet<Inquiry> Inquiries { get; set; }
         public DbSet<InquiryReply> InquiryReplies { get; set; }
+        public DbSet<Purchase> Purchases { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

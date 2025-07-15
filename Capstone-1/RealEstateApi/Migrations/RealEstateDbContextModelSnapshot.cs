@@ -266,6 +266,37 @@ namespace RealEstateApi.Migrations
                     b.ToTable("PropertyListings");
                 });
 
+            modelBuilder.Entity("RealEstateApi.Models.Purchase", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BuyerId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ListingId")
+                        .HasColumnType("uuid");
+
+                    b.Property<double>("PriceAtPurchase")
+                        .HasColumnType("double precision");
+
+                    b.Property<DateTime>("PurchasedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BuyerId");
+
+                    b.HasIndex("ListingId");
+
+                    b.ToTable("Purchases");
+                });
+
             modelBuilder.Entity("RealEstateApi.Models.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -389,6 +420,25 @@ namespace RealEstateApi.Migrations
                         .IsRequired();
 
                     b.Navigation("Agent");
+                });
+
+            modelBuilder.Entity("RealEstateApi.Models.Purchase", b =>
+                {
+                    b.HasOne("RealEstateApi.Models.User", "Buyer")
+                        .WithMany()
+                        .HasForeignKey("BuyerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RealEstateApi.Models.PropertyListing", "Listing")
+                        .WithMany()
+                        .HasForeignKey("ListingId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Buyer");
+
+                    b.Navigation("Listing");
                 });
 
             modelBuilder.Entity("RealEstateApi.Models.Agent", b =>
