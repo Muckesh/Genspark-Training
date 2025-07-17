@@ -1,0 +1,52 @@
+2025-07-16 15:11:22.411 +05:30 [INF] Now listening on: http://localhost:5226
+2025-07-16 15:11:22.447 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-07-16 15:11:22.448 +05:30 [INF] Hosting environment: Development
+2025-07-16 15:11:22.448 +05:30 [INF] Content root path: /Users/muckesh/Muckesh/Presidio/Genspark-Training/Day-53-Jul16/AzureBlob
+2025-07-16 15:12:17.865 +05:30 [INF] Application is shutting down...
+2025-07-16 15:12:39.515 +05:30 [INF] Now listening on: http://localhost:5226
+2025-07-16 15:12:39.545 +05:30 [INF] Application started. Press Ctrl+C to shut down.
+2025-07-16 15:12:39.546 +05:30 [INF] Hosting environment: Development
+2025-07-16 15:12:39.547 +05:30 [INF] Content root path: /Users/muckesh/Muckesh/Presidio/Genspark-Training/Day-53-Jul16/AzureBlob
+2025-07-16 15:14:01.619 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5226/swagger/index.html - null null
+2025-07-16 15:14:01.807 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5226/swagger/index.html - 200 null text/html;charset=utf-8 187.8566ms
+2025-07-16 15:14:01.812 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5226/_framework/aspnetcore-browser-refresh.js - null null
+2025-07-16 15:14:01.812 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5226/swagger/swagger-ui-bundle.js - null null
+2025-07-16 15:14:01.812 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5226/swagger/swagger-ui-standalone-preset.js - null null
+2025-07-16 15:14:01.815 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5226/swagger/swagger-ui.css - null null
+2025-07-16 15:14:01.815 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5226/_framework/aspnetcore-browser-refresh.js - 200 13732 application/javascript; charset=utf-8 4.3122ms
+2025-07-16 15:14:01.854 +05:30 [INF] Sending file. Request path: '/swagger-ui.css'. Physical path: 'N/A'
+2025-07-16 15:14:01.855 +05:30 [INF] Sending file. Request path: '/swagger-ui-standalone-preset.js'. Physical path: 'N/A'
+2025-07-16 15:14:01.856 +05:30 [INF] Sending file. Request path: '/swagger-ui-bundle.js'. Physical path: 'N/A'
+2025-07-16 15:14:01.858 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5226/swagger/swagger-ui-bundle.js - 200 1456926 text/javascript 46.9886ms
+2025-07-16 15:14:01.858 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5226/swagger/swagger-ui.css - 200 152034 text/css 43.5609ms
+2025-07-16 15:14:01.858 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5226/swagger/swagger-ui-standalone-preset.js - 200 230280 text/javascript 47.5285ms
+2025-07-16 15:14:02.020 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5226/swagger/v1/swagger.json - null null
+2025-07-16 15:14:02.043 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5226/swagger/favicon-32x32.png - null null
+2025-07-16 15:14:02.043 +05:30 [INF] Sending file. Request path: '/favicon-32x32.png'. Physical path: 'N/A'
+2025-07-16 15:14:02.043 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5226/swagger/favicon-32x32.png - 200 628 image/png 0.7611ms
+2025-07-16 15:14:02.118 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5226/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 97.4582ms
+2025-07-16 15:14:14.925 +05:30 [INF] Request starting HTTP/1.1 GET http://localhost:5226/api/File?fileName=property.jpeg - null null
+2025-07-16 15:14:14.941 +05:30 [WRN] Failed to determine the https port for redirect.
+2025-07-16 15:14:14.946 +05:30 [INF] Executing endpoint 'AzureBlob.Controllers.FileController.Download (AzureBlob)'
+2025-07-16 15:14:14.984 +05:30 [INF] Route matched with {action = "Download", controller = "File"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.IO.Stream]] Download(System.String) on controller AzureBlob.Controllers.FileController (AzureBlob).
+2025-07-16 15:14:15.014 +05:30 [INF] Start processing HTTP request GET https://muckeshfunc.azurewebsites.net/api/generate-sas/property.jpeg?code=<fn-key>
+2025-07-16 15:14:15.017 +05:30 [INF] Sending HTTP request GET https://muckeshfunc.azurewebsites.net/api/generate-sas/property.jpeg?code=<fn-key>
+2025-07-16 15:14:16.426 +05:30 [INF] Received HTTP response headers after 1405.6243ms - 200
+2025-07-16 15:14:16.426 +05:30 [INF] End processing HTTP request after 1414.3232ms - 200
+2025-07-16 15:14:16.482 +05:30 [INF] SAS URL obtained: https://muckeshstorageaccount.blob.core.windows.net/app-logs/property.jpeg?sv=2025-07-05&se=2025-07-16T10%3A44%3A16Z&sr=b&sp=rw&sig=u5X9eXv4C5rXqyAOt%2BLnIKJTpdL%2FDgimel6TAD%2BhHVA%3D
+2025-07-16 15:14:17.073 +05:30 [INF] Executing FileStreamResult, sending file with download name 'property.jpeg' ...
+2025-07-16 15:14:17.338 +05:30 [INF] Executed action AzureBlob.Controllers.FileController.Download (AzureBlob) in 2348.9765ms
+2025-07-16 15:14:17.338 +05:30 [INF] Executed endpoint 'AzureBlob.Controllers.FileController.Download (AzureBlob)'
+2025-07-16 15:14:17.339 +05:30 [INF] Request finished HTTP/1.1 GET http://localhost:5226/api/File?fileName=property.jpeg - 200 null application/octet-stream 2413.7991ms
+2025-07-16 15:14:33.021 +05:30 [INF] Request starting HTTP/1.1 POST http://localhost:5226/api/File - multipart/form-data; boundary=----WebKitFormBoundaryFG5kCPC5aB7tkbTl 1149681
+2025-07-16 15:14:33.022 +05:30 [INF] Executing endpoint 'AzureBlob.Controllers.FileController.Upload (AzureBlob)'
+2025-07-16 15:14:33.032 +05:30 [INF] Route matched with {action = "Upload", controller = "File"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Upload(AzureBlob.DTOs.UploadRequestDto) on controller AzureBlob.Controllers.FileController (AzureBlob).
+2025-07-16 15:14:33.066 +05:30 [INF] Start processing HTTP request GET https://muckeshfunc.azurewebsites.net/api/generate-sas/house-png.png?code=<fn-key>
+2025-07-16 15:14:33.066 +05:30 [INF] Sending HTTP request GET https://muckeshfunc.azurewebsites.net/api/generate-sas/house-png.png?code=<fn-key>
+2025-07-16 15:14:33.409 +05:30 [INF] Received HTTP response headers after 343.6321ms - 200
+2025-07-16 15:14:33.410 +05:30 [INF] End processing HTTP request after 344.185ms - 200
+2025-07-16 15:14:33.410 +05:30 [INF] SAS URL obtained: https://muckeshstorageaccount.blob.core.windows.net/app-logs/house-png.png?sv=2025-07-05&se=2025-07-16T10%3A44%3A33Z&sr=b&sp=rw&sig=xrWMnFg8Ni35iIpDEwlaM%2Fzkt%2BKVa%2BB0PElkpXi1cfY%3D
+2025-07-16 15:14:35.494 +05:30 [INF] Executing OkObjectResult, writing value of type 'System.String'.
+2025-07-16 15:14:35.495 +05:30 [INF] Executed action AzureBlob.Controllers.FileController.Upload (AzureBlob) in 2462.6555ms
+2025-07-16 15:14:35.495 +05:30 [INF] Executed endpoint 'AzureBlob.Controllers.FileController.Upload (AzureBlob)'
+2025-07-16 15:14:35.497 +05:30 [INF] Request finished HTTP/1.1 POST http://localhost:5226/api/File - 200 null text/plain; charset=utf-8 2475.3865ms
