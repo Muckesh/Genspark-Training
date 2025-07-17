@@ -1,0 +1,63 @@
+Create an Azure container registry
+
+az login
+
+az group create --name muckesh-acr-rg --location eastus
+
+ACR_NAME=muckeshacr
+
+az acr create --resource-group muckesh-acr-rg --name $ACR_NAME --sku Premium(for geo replication)
+
+Create a container image using Azure Container Registry Tasks
+
+code Dockerfile
+
+FROM    node:9-alpine
+ADD     https://raw.githubusercontent.com/Azure-Samples/acr-build-helloworld-node/master/package.json /
+ADD     https://raw.githubusercontent.com/Azure-Samples/acr-build-helloworld-node/master/server.js /
+RUN     npm install
+EXPOSE  80
+CMD     ["node", "server.js"]
+
+az acr build --registry $ACR_NAME --image muckeshacrtasks:v1 .
+
+az acr repository list --name $ACR_NAME --output table
+Result
+---------------
+muckeshacrtasks
+
+Registry authentication
+
+Enable the registry admin account
+
+az acr update -n $ACR_NAME --admin-enabled true
+
+az acr credential show --name $ACR_NAME
+{
+  "passwords": [
+    {
+      "name": "password",
+      "value": ""
+    },
+    {
+      "name": "password2",
+      "value": ""
+    }
+  ],
+  "username": "muckeshacr"
+}
+
+Deploy a container with Azure CLI
+
+az container create --resource-group muckesh-acr-rg --name muckesh-acr-tasks --image $ACR_NAME.azurecr.io/muckeshacrtasks:v1 --registry-login-server $ACR_NAME.azurecr.io --ip-address Public --location eastus --registry-username muckeshacr --registry-password <pass> --os-type Linux --cpu 1 --memory 1
+
+az container show --resource-group muckesh-acr-rg --name muckesh-acr-tasks --query ipAddress.ip --output table
+
+Create a replicated region for an Azure Container Registry
+
+az acr replication create --registry $ACR_NAME --location westus2
+
+az acr replication list --registry $ACR_NAME --output table
+
+Clean up resources
+az group delete --name learn-acr-rg --yes --no-wait
