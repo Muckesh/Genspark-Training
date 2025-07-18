@@ -42,5 +42,19 @@ namespace RealEstateApi.Controllers
             var purchases = await _purchaseService.GetPurchasesByBuyerAsync(Guid.Parse(userId));
             return Ok(purchases);
         }
+
+        [HttpPost("Buy")]//new endpoint with discountcode
+        public async Task<IActionResult> BuyPropertyWithDiscountCode([FromBody] CreatePurchaseWithDiscountDto dto)
+        {
+            try
+            {
+                var result = await _purchaseService.CreatePurchaseWithDiscountAsync(dto);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
     }
 }

@@ -101,7 +101,8 @@ builder.Services.AddHttpContextAccessor();
 #region DBContext
 builder.Services.AddDbContext<RealEstateDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    // options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection2")); //changed connection string
     // options.UseNpgsql(defaultConnection);
 });
 #endregion
@@ -114,7 +115,8 @@ builder.Services.AddTransient<IRepository<Guid,Inquiry>,InquiryRepository>();
 builder.Services.AddTransient<IRepository<Guid,InquiryReply>,InquiryReplyRepository>();
 builder.Services.AddTransient<IRepository<Guid,PropertyImage>,PropertyImageRepository>();
 builder.Services.AddTransient<IRepository<Guid, PropertyListing>, PropertyListingRepository>();
-builder.Services.AddTransient<IRepository<Guid,Purchase>,PurchaseRepository>();
+builder.Services.AddTransient<IRepository<Guid, Purchase>, PurchaseRepository>();
+builder.Services.AddTransient<IRepository<Guid,DiscountCodes>, DiscountCodeRepository>();
 #endregion
 
 #region Services
@@ -131,6 +133,7 @@ builder.Services.AddTransient<IImageCleanupService, ImageCleanUpService>();
 builder.Services.AddTransient<IBlobService, BlobService>();
 builder.Services.AddTransient<IPurchaseService, PurchaseService>();
 builder.Services.AddSingleton<ITokenBlacklistService, TokenBlacklistService>();
+builder.Services.AddTransient<IDiscountCodeService, DiscountCodeService>();
 #endregion
 
 #region AuthenticationFilter

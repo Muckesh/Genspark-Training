@@ -10,6 +10,9 @@ namespace RealEstateApi.Models
         public DateTime PurchasedAt { get; set; } = DateTime.UtcNow;
         public string Status { get; set; } = "Completed"; // Pending / Cancelled
 
+        public string DiscountCode { get; set; } = string.Empty; //modified model for discount feature
+
+        public double OrginalPrice { get; set; }  //modified model for discount feature
         // Nav
         public User? Buyer { get; set; }
         public PropertyListing? Listing { get; set; }

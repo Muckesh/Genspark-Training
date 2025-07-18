@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RealEstateApi.Contexts;
@@ -11,9 +12,11 @@ using RealEstateApi.Contexts;
 namespace RealEstateApi.Migrations
 {
     [DbContext(typeof(RealEstateDbContext))]
-    partial class RealEstateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250715104542_discountcodes")]
+    partial class discountcodes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,9 +115,6 @@ namespace RealEstateApi.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("DeletedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<int>("DiscountPercentage")
                         .HasColumnType("integer");
 
@@ -126,10 +126,6 @@ namespace RealEstateApi.Migrations
 
                     b.Property<int>("Remaining")
                         .HasColumnType("integer");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -312,15 +308,8 @@ namespace RealEstateApi.Migrations
                     b.Property<Guid>("BuyerId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("DiscountCode")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<Guid>("ListingId")
                         .HasColumnType("uuid");
-
-                    b.Property<double>("OrginalPrice")
-                        .HasColumnType("double precision");
 
                     b.Property<double>("PriceAtPurchase")
                         .HasColumnType("double precision");
