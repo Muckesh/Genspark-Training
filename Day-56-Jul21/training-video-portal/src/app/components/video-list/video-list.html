@@ -1,0 +1,9 @@
+<h2>Training Video Library</h2>
+
+<div *ngIf="videos.length === 0">No videos uploaded yet.</div>
+
+<div *ngFor="let video of videos" class="video-card">
+  <h3>{{ video.title }}</h3>
+  <p>{{ video.description }}</p>
+  <video width="480" controls [src]="video.blobUrl"></video>
+</div>

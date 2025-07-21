@@ -1,0 +1,29 @@
+<h2>Upload Training Video</h2>
+
+<form (ngSubmit)="uploadVideo()">
+  <label>
+    Title:
+    <input type="text" [(ngModel)]="title" name="title" required>
+  </label>
+
+  <label>
+    Description:
+    <input type="text" [(ngModel)]="description" name="description" required>
+  </label>
+
+  <label>
+    Choose Video:
+    <input type="file" (change)="onFileSelected($event)" accept="video/mp4" required>
+  </label>
+
+  <button type="submit" [disabled]="isUploading">Upload</button>
+</form>
+
+<div *ngIf="previewUrl">
+  <h3>Preview:</h3>
+  <video width="480" controls [src]="previewUrl"></video>
+</div>
+
+<div *ngIf="successMessage" style="color: green; margin-top: 10px;">
+  {{ successMessage }}
+</div>
