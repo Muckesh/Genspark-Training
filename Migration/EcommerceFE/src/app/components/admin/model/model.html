@@ -1,0 +1,55 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Model Management</h2>
+
+  <!-- create/edit form -->
+    <form (ngSubmit)="onSubmit()" #modelForm="ngForm" class="mb-4">
+        <div class="form-group">
+            <label for="modelName">Model Name</label>
+            <input 
+                type="text" 
+                id="modelName"
+                name="modelName"
+                required
+                class="form-control"
+                [(ngModel)]="modelFormData.modelName"
+                >
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">
+            {{isEditMode ? 'Update':'Create'}}
+        </button>
+        <button type="button" class="btn btn-secondary mt-2 ms-2" (click)="resetForm()" *ngIf="isEditMode">
+        Cancel
+        </button>
+    </form>
+    <!-- model table -->
+     <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    Model ID
+                </th>
+                <th>
+                    Model Name
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            @for (model of models; track $index) {
+                <tr>
+                    <td>{{ model.modelId }}</td>
+                    <td>{{ model.modelName }}</td>
+                    <td>
+                    <button class="btn btn-sm btn-info me-2" (click)="editModel(model)">Edit</button>
+                    <button class="btn btn-sm btn-danger" (click)="deleteModel(model.modelId)">Delete</button>
+                    </td>
+                </tr>
+            }
+            
+        </tbody>
+     </table>
+
+</div>

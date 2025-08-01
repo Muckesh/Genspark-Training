@@ -1,0 +1,46 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Category Management</h2>
+
+  <!-- Create / Edit Form -->
+  <form (ngSubmit)="onSubmit()" #categoryForm="ngForm" class="mb-4">
+    <div class="form-group">
+      <label for="categoryName">Category Name</label>
+      <input
+        type="text"
+        id="categoryName"
+        class="form-control"
+        name="categoryName"
+        required
+        [(ngModel)]="categoryFormData.categoryName"
+      />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">
+      {{ isEditMode ? 'Update' : 'Create' }}
+    </button>
+    <button type="button" class="btn btn-secondary mt-2 ms-2" (click)="resetForm()" *ngIf="isEditMode">
+      Cancel
+    </button>
+  </form>
+
+  <!-- Category Table -->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Category ID</th>
+        <th>Category Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let category of categories">
+        <td>{{ category.categoryId }}</td>
+        <td>{{ category.categoryName }}</td>
+        <td>
+          <button class="btn btn-sm btn-info me-2" (click)="editCategory(category)">Edit</button>
+          <button class="btn btn-sm btn-danger" (click)="deleteCategory(category.categoryId)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,17 @@
+<div class="div-topmenu">
+  <ul>
+    <li><a routerLink="/">Home</a></li>
+    <li><a routerLink="/news">News</a></li>
+    <li><a routerLink="/contact-us">Contact Us</a></li>
+    <li><a routerLink="/cart">Cart</a></li>
+    <li><a routerLink="/orders">Order</a></li>
+    @if (isAdmin) {
+      <li><a routerLink="/products">Products</a></li>
+      <li><a routerLink="/categories">Manage Category</a></li>
+      <li><a routerLink="/models">Manage Model</a></li>
+      <li><a routerLink="/colors">Manage Color</a></li>
+      <li><a routerLink="/news-management">News Management</a></li>
+    }
+    <li><a class="btn btn-danger" (click)="logout()">Logout</a></li>
+  </ul>
+</div>

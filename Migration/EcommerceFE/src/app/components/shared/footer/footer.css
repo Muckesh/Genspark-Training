@@ -1,0 +1,16 @@
+.div-footer {
+  background-color: #f2f2f2;
+  padding: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #333;
+}
+
+.div-footer a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.div-footer a:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,7 @@
+<ul>
+  <li *ngFor="let category of categories">
+    <a [routerLink]="['/']" [queryParams]="{ categoryName: category.categoryName }">
+      {{ category.categoryName }}
+    </a>
+  </li>
+</ul>

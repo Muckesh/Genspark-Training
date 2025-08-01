@@ -1,0 +1,148 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">News Management</h2>
+    
+    <div class="d-flex gap-2">
+      <!-- Add New Button -->
+      <button *ngIf="!showForm" class="btn btn-primary" (click)="showCreateForm()">
+        <i class="bi bi-plus-circle me-1"></i> Add New News
+      </button>
+      
+      <!-- Export Buttons -->
+      <div class="btn-group" role="group">
+        <button class="btn btn-outline-success" (click)="exportToExcel()" [disabled]="isExporting">
+          <span *ngIf="!isExporting">
+            <i class="bi bi-file-earmark-excel me-1"></i> Excel
+          </span>
+          <span *ngIf="isExporting">
+            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+            Exporting...
+          </span>
+        </button>
+        <button class="btn btn-outline-info" (click)="exportToCSV()" [disabled]="isExporting">
+          <span *ngIf="!isExporting">
+            <i class="bi bi-file-earmark-text me-1"></i> CSV
+          </span>
+          <span *ngIf="isExporting">
+            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+            Exporting...
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+    
+
+  <!-- News Form (shown when showForm is true) -->
+  <form *ngIf="showForm" (ngSubmit)="onSubmit()" class="mb-4">
+    <div class="form-group mb-3">
+      <label for="title">Title</label>
+      <input 
+        type="text" 
+        id="title"
+        name="title"
+        required
+        class="form-control"
+        [(ngModel)]="newsFormData.title"
+      >
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="shortDescription">Short Description</label>
+      <textarea 
+        id="shortDescription"
+        name="shortDescription"
+        required
+        class="form-control"
+        [(ngModel)]="newsFormData.shortDescription"
+        rows="3"
+      ></textarea>
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="content">Content</label>
+      <textarea 
+        id="content"
+        name="content"
+        required
+        class="form-control"
+        [(ngModel)]="newsFormData.content"
+        rows="5"
+      ></textarea>
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="status">Status</label>
+      <select 
+        id="status"
+        name="status"
+        required
+        class="form-control"
+        [(ngModel)]="newsFormData.status"
+      >
+        <option [value]="1">Published</option>
+        <option [value]="0">Draft</option>
+      </select>
+    </div>
+
+    <div class="form-group mb-3">
+      <label for="newsImageInput">Image *</label>
+      <input 
+        type="file" 
+        id="newsImageInput"
+        name="image"
+        class="form-control"
+        (change)="onImageSelected($event)"
+        accept="image/*"
+        [required]="!isEditMode"
+      >
+      <small *ngIf="isEditMode" class="text-muted">
+        Current image will be used if no new image is selected
+      </small>
+    </div>
+
+    <div *ngIf="imagePreview" class="mb-3">
+      <img [src]="imagePreview" alt="Preview" class="img-thumbnail" style="max-height: 200px;">
+      <div *ngIf="isEditMode && currentImageUrl && !newsFormData.image" class="mt-2">
+        <small>Using existing image</small>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">
+      {{ isEditMode ? 'Update' : 'Create' }}
+    </button>
+    <button type="button" class="btn btn-secondary ms-2" (click)="cancelForm()">
+      Cancel
+    </button>
+  </form>
+
+  <!-- News Table -->
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Short Description</th>
+        <th>Status</th>
+        <th>Image</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (news of newsList; track news.newsId) {
+        <tr>
+          <td>{{ news.title }}</td>
+          <td>{{ news.shortDescription }}</td>
+          <td>{{ news.status === 1 ? 'Published' : 'Draft' }}</td>
+          <td>
+            <img [src]="news.image" alt="News image" style="max-height: 60px;" class="img-thumbnail">
+          </td>
+          <td>
+            <button class="btn btn-sm btn-info me-2" (click)="editNews(news)">Edit</button>
+            <button class="btn btn-sm btn-danger" (click)="deleteNews(news.newsId)">Delete</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

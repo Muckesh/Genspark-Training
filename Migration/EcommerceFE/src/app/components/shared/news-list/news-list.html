@@ -1,0 +1,52 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Latest News</h2>
+
+  <div *ngIf="loading" class="text-center">Loading...</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+  <div class="row" *ngIf="!loading && newsList.length">
+    <div class="col-md-4 mb-4" *ngFor="let news of newsList">
+      <div class="card h-100" (click)="openNewsModal(news)" style="cursor: pointer;">
+        <img
+          *ngIf="news.image"
+          [src]="news.image"
+          class="card-img-top"
+          alt="{{ news.title }}"
+          style="object-fit: cover; max-height: 200px;"
+        />
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ news.title }}</h5>
+          <p class="card-text">{{ news.shortDescription }}</p>
+          <!-- <a [routerLink]="['/news', news.newsId]" class="btn btn-primary mt-auto">Read More</a> -->
+        </div>
+        <div class="card-footer text-muted text-end" *ngIf="news.createdDate">
+          {{ news.createdDate | date: 'mediumDate' }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && newsList.length === 0" class="text-muted">
+    No news available.
+  </div>
+</div>
+
+<!-- News detail modal -->
+<ng-template #newsDetailsModal let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title">{{selectedNews?.title}}</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+    </div>
+    @if (selectedNews) {
+        <div class="modal-body">
+            <img *ngIf="selectedNews" [src]="selectedNews.image" class="img-fluid mb-3" alt="News Image">
+            <p><strong>Short Description:</strong> {{ selectedNews.shortDescription }}</p>
+            <p><strong>Content:</strong></p>
+            <div [innerHTML]="selectedNews.content"></div>
+            <p class="text-muted mt-3"><strong>Published on:</strong> {{ selectedNews.createdDate | date: 'medium' }}</p>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="modal.close()">Close</button>
+            </div>
+        </div>
+    }
+</ng-template>

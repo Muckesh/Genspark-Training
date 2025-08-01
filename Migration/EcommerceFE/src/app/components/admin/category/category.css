@@ -1,0 +1,11 @@
+table {
+  margin-top: 20px;
+}
+
+.form-group {
+  max-width: 400px;
+}
+
+button {
+  min-width: 80px;
+}

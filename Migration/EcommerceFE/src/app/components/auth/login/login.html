@@ -1,0 +1,65 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow">
+                <div class="card-body p-4">
+                    <h2 class="card-title text-center mb-4">Login to Ecommerce App</h2>
+
+                    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input 
+                                type="text"
+                                id="username"
+                                formControlName="username"
+                                placeholder="Enter your username"
+                                class="form-control"
+                                [class.is-invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+                                >
+                                <div class="invalid-feedback">
+                                    @if (loginForm.get('username')?.errors?.['required']) {
+                                        <span>Username is required</span>
+                                    }
+                                    @if (loginForm.get('username')?.errors?.['minlength']) {
+                                        <span>Username should be minimum of length 3</span>
+                                    }
+                                </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input 
+                                type="password"
+                                id="password"
+                                formControlName="password"
+                                placeholder="Enter your password"
+                                class="form-control"
+                                [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+                                >
+                                <div class="invalid-feedback">
+                                    @if (loginForm.get('password')?.errors?.['required']) {
+                                        <span>Password is required</span>
+                                    }
+                                    @if (loginForm.get('password')?.errors?.['minlength']) {
+                                        <span>Password should be minimum of length 6</span>
+                                    }
+                                </div>
+                        </div>
+
+                        @if (errorMessage) {
+                            <div class="alert alert-danger mb-3">
+                                {{ errorMessage }}
+                            </div>
+                        }
+
+                        <button type="submit" class="btn btn-primary w-100" [disabled]="loginForm.invalid || loading">
+                            <span *ngIf="loading" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span *ngIf="!loading">Login</span>
+                        </button>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

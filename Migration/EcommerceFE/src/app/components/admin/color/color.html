@@ -1,0 +1,55 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Color Management</h2>
+
+  <!-- create/edit form -->
+    <form (ngSubmit)="onSubmit()" #colorForm="ngForm" class="mb-4">
+        <div class="form-group">
+            <label for="colorName">Color Name</label>
+            <input 
+                type="text" 
+                id="colorName"
+                name="colorName"
+                required
+                class="form-control"
+                [(ngModel)]="colorFormData.colorName"
+                >
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">
+            {{isEditMode ? 'Update':'Create'}}
+        </button>
+        <button type="button" class="btn btn-secondary mt-2 ms-2" (click)="resetForm()" *ngIf="isEditMode">
+        Cancel
+        </button>
+    </form>
+    <!-- color table -->
+     <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    Color ID
+                </th>
+                <th>
+                    Color Name
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            @for (color of colors; track $index) {
+                <tr>
+                    <td>{{ color.colorId }}</td>
+                    <td>{{ color.colorName }}</td>
+                    <td>
+                    <button class="btn btn-sm btn-info me-2" (click)="editColor(color)">Edit</button>
+                    <button class="btn btn-sm btn-danger" (click)="deleteColor(color.colorId)">Delete</button>
+                    </td>
+                </tr>
+            }
+            
+        </tbody>
+     </table>
+
+</div>

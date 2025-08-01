@@ -1,0 +1,156 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="mb-0">Order Management</h2>
+    
+    <div class="d-flex gap-2">
+      <!-- Export Button -->
+      <button class="btn btn-outline-danger" (click)="exportToPdf()" [disabled]="isExporting">
+        <span *ngIf="!isExporting">
+          <i class="bi bi-file-earmark-pdf me-1"></i> Export to PDF
+        </span>
+        <span *ngIf="isExporting">
+          <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+          Exporting...
+        </span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Order Table -->
+  <div class="table-responsive">
+    <table class="table table-striped table-hover">
+      <thead class="table-dark">
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Date</th>
+          <th>Items</th>
+          <th>Total</th>
+          <th>Payment</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (order of orders; track order.orderID) {
+          <tr>
+            <td>{{ order.orderID }}</td>
+            <td>
+              <div class="fw-bold">{{ order.customerName }}</div>
+              <small class="text-muted">{{ order.customerEmail }}</small>
+            </td>
+            <td>{{ order.orderDate | date:'shortDate' }}</td>
+            <td>
+              <span class="badge bg-primary rounded-pill">
+                {{ order.orderDetails.length }} items
+              </span>
+            </td>
+            <td class="fw-bold">
+              {{ calculateOrderTotal(order) | currency }}
+            </td>
+            <td>{{ order.paymentType }}</td>
+            <td>
+              <span [class]="getStatusClass(order.status)">
+                {{ order.status }}
+              </span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-info me-2" (click)="viewOrderDetails(order, orderDetailsModal)">
+                <i class="bi bi-eye"></i> View
+              </button>
+            </td>
+          </tr>
+        }
+        @empty {
+          <tr>
+            <td colspan="8" class="text-center py-4">No orders found</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <nav *ngIf="totalOrders > pageSize">
+    <ul class="pagination justify-content-center">
+      <li class="page-item" [class.disabled]="currentPage === 1">
+        <a class="page-link" (click)="onPageChange(currentPage - 1)">Previous</a>
+      </li>
+      
+      @for (page of getPageNumbers(); track page) {
+        <li class="page-item" [class.active]="page === currentPage">
+          <a class="page-link" (click)="onPageChange(page)">{{ page }}</a>
+        </li>
+      }
+      
+      <li class="page-item" [class.disabled]="currentPage * pageSize >= totalOrders">
+        <a class="page-link" (click)="onPageChange(currentPage + 1)">Next</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<!-- Order Details Modal Template -->
+<ng-template #orderDetailsModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title">Order Details #{{ selectedOrder?.orderID }}</h5>
+    <button type="button" class="btn-close" (click)="modal.dismiss()" aria-label="Close"></button>
+  </div>
+  <div class="modal-body">
+    <div *ngIf="selectedOrder" class="row">
+      <div class="col-md-6">
+        <h6>Customer Information</h6>
+        <p>
+          <strong>Name:</strong> {{ selectedOrder.customerName }}<br>
+          <strong>Phone:</strong> {{ selectedOrder.customerPhone }}<br>
+          <strong>Email:</strong> {{ selectedOrder.customerEmail }}<br>
+          <strong>Address:</strong> {{ selectedOrder.customerAddress }}
+        </p>
+      </div>
+      <div class="col-md-6">
+        <h6>Order Information</h6>
+        <p>
+          <strong>Date:</strong> {{ selectedOrder.orderDate | date:'medium' }}<br>
+          <strong>Payment:</strong> {{ selectedOrder.paymentType }}<br>
+          <strong>Status:</strong> 
+          <span [class]="getStatusClass(selectedOrder.status)">
+            {{ selectedOrder.status }}
+          </span>
+        </p>
+      </div>
+      
+      <div class="col-12 mt-3">
+        <h6>Order Items</h6>
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th>Product ID</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of selectedOrder.orderDetails; track item.productID) {
+              <tr>
+                <td>{{ item.productID }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>{{ item.price | currency }}</td>
+                <td>{{ item.quantity * item.price | currency }}</td>
+              </tr>
+            }
+          </tbody>
+          <tfoot>
+            <tr class="table-active">
+              <td colspan="3" class="text-end fw-bold">Total:</td>
+              <td class="fw-bold">{{ calculateOrderTotal(selectedOrder) | currency }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.close()">Close</button>
+  </div>
+</ng-template>

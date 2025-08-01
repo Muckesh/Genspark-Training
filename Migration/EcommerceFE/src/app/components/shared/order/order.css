@@ -1,0 +1,30 @@
+/* Order status badges */
+.badge {
+  padding: 0.5em 0.75em;
+  font-size: 0.875em;
+  text-transform: capitalize;
+}
+
+/* Table row hover effect */
+.table-hover tbody tr:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Modal styles */
+.modal-body {
+  padding: 1.5rem;
+}
+
+/* Pagination active state */
+.page-item.active .page-link {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+/* Responsive table */
+@media (max-width: 768px) {
+  .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}

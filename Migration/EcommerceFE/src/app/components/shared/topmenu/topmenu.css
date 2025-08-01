@@ -1,0 +1,28 @@
+.div-topmenu {
+  background-color: #444;
+  padding: 10px 0;
+}
+
+.div-topmenu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.div-topmenu li {
+  margin: 0 15px;
+}
+
+.div-topmenu a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.div-topmenu a:hover {
+  text-decoration: underline;
+}

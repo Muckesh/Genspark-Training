@@ -1,0 +1,33 @@
+<div class="div-container">
+  <app-header></app-header>
+  
+  <div class="clear"></div>
+  
+  <app-topmenu></app-topmenu>
+  
+  <div class="clear"></div>
+  
+  <div class="div-left">
+    <div class="category-title">Category</div>
+    <app-sidebar></app-sidebar>
+  </div>
+  
+  <div class="div-main">
+    <!-- <div class="top-breadcrumb">
+      <ul>
+        <li><a routerLink="/">Home</a><span class="span-breadcrumb">>></span></li>
+        <li><a href="#">Current Page</a></li>
+      </ul>
+    </div>
+    
+    <div class="clear"></div> -->
+    
+    <div class="main-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+  
+  <div class="clear"></div>
+  
+  <app-footer></app-footer>
+</div>

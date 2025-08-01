@@ -1,0 +1,97 @@
+<div class="container my-5">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title mb-4">Checkout</h2>
+          
+          <!-- Customer Information Form -->
+          <form (ngSubmit)="placeOrder()">
+            <h5 class="mb-3">Customer Information</h5>
+            <div class="mb-3">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control" 
+                     [(ngModel)]="checkoutForm.customerName" 
+                     name="customerName" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" class="form-control" 
+                     [(ngModel)]="checkoutForm.customerPhone" 
+                     name="customerPhone" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" 
+                     [(ngModel)]="checkoutForm.customerEmail" 
+                     name="customerEmail" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Shipping Address</label>
+              <textarea class="form-control" 
+                        [(ngModel)]="checkoutForm.customerAddress" 
+                        name="customerAddress" required></textarea>
+            </div>
+
+            <h5 class="mb-3 mt-4">Payment Method</h5>
+            <div class="mb-3">
+              <select class="form-select" 
+                      [(ngModel)]="checkoutForm.paymentType" 
+                      name="paymentType">
+                <option value="Cash">Cash on Delivery</option>
+                <!-- <option value="Card">Credit/Debit Card</option>
+                <option value="UPI">UPI Payment</option> -->
+              </select>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+              <button type="submit" class="btn btn-primary btn-lg"
+                      [disabled]="isPlacingOrder || !checkoutForm.customerName || !checkoutForm.customerPhone">
+                <span *ngIf="!isPlacingOrder">Place Order</span>
+                <span *ngIf="isPlacingOrder">
+                  <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  Processing...
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Order Summary</h5>
+          
+          <div class="order-items mb-3">
+            @for (item of cartItems$ | async; track item.product.productId) {
+              <div class="d-flex justify-content-between mb-2">
+                <div>
+                  {{ item.product.productName }} × {{ item.quantity }}
+                </div>
+                <div>
+                  {{ item.product.price * item.quantity | currency }}
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="d-flex justify-content-between mb-3">
+            <span>Subtotal</span>
+            <span>{{ getCartTotal() | currency }}</span>
+          </div>
+          <div class="d-flex justify-content-between mb-3">
+            <span>Shipping</span>
+            <span>Free</span>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between fw-bold">
+            <span>Total</span>
+            <span>{{ getCartTotal() | currency }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
