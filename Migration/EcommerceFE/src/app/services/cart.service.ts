@@ -3,7 +3,7 @@ import { ProductResponse } from '../models/product.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { CartItem, CheckoutBEDto, CheckoutDto, OrderResponseDto } from '../models/order.model';
+import { CartDto, CartItem, CheckoutBEDto, CheckoutDto, OrderResponseDto } from '../models/order.model';
 
 
 
@@ -12,7 +12,6 @@ import { CartItem, CheckoutBEDto, CheckoutDto, OrderResponseDto } from '../model
 })
 export class CartService {
     private readonly baseUrl = `${environment.apiUrl}/shoppingcart`;
-    private readonly paypalUrl = `${environment.apiUrl}/paypal`;
     private http = inject(HttpClient);
   private cartItems: CartItem[] = [];
   private cartSubject = new BehaviorSubject<CartItem[]>([]);
@@ -36,17 +35,13 @@ export class CartService {
     return this.http.post<OrderResponseDto>(`${this.baseUrl}/place-order`,checkoutDto);
   }
 
-  createPaypalOrder(checkout:CheckoutDto):Observable<OrderResponseDto>{
-    const checkoutDto = this.createCheckoutDto(checkout);
-    return this.http.post<OrderResponseDto>(`${this.paypalUrl}/create-order`,checkoutDto);
+  checkoutWithPaypal(cart: CartDto[]){
+    return this.http.post(`${this.baseUrl}/create-order`, cart)
   }
 
-  capturePayPalOrder(orderId: string): Observable<OrderResponseDto> {
-        return this.http.post<OrderResponseDto>(`${this.paypalUrl}/complete-order`, null, {
-            params: { orderId }
-        });
-    }
-
+  capture(token :string) {
+    return this.http.post(`${this.baseUrl}/capture-order/${token}`, {})
+  }
     private createCheckoutDto(checkout: CheckoutDto): CheckoutBEDto {
           const checkoutDto: CheckoutBEDto = {} as CheckoutBEDto;
           checkoutDto.customerAddress = checkout.customerAddress;

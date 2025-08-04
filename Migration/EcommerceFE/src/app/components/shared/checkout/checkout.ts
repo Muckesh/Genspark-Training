@@ -36,18 +36,43 @@ export class Checkout {
     const cartItems = this.cartService.getCartItems();
     this.checkoutForm.items = cartItems;
     
-    this.cartService.placeOrder(this.checkoutForm).subscribe({
-      next: (order) => {
-        this.cartService.clearCart();
-        alert("Order placed successfully")
-        this.router.navigate(['/orders']);
-      },
-      error: (err) => {
-        console.error('Order placement failed', err);
-        alert('Order placement failed');
-        this.isPlacingOrder = false;
-      }
-    });
+    if(this.checkoutForm.paymentType==="Cash"){
+        this.cartService.placeOrder(this.checkoutForm).subscribe({
+        next: (order) => {
+          this.cartService.clearCart();
+          alert("Order placed successfully")
+          this.router.navigate(['/orders']);
+        },
+        error: (err) => {
+          console.error('Order placement failed', err);
+          alert('Order placement failed');
+          this.isPlacingOrder = false;
+        }
+      });
+    }
+    if(this.checkoutForm.paymentType==="PayPal"){
+      
+      const carts = this.cartService.getCartItems().map(item=>({
+        productId:item.product.productId,
+        quantity:item.quantity
+      }));
+      this.cartService.checkoutWithPaypal(carts).subscribe({
+        next:(res:any)=>{
+          this.cartService.clearCart();
+          const approveLink = res.links?.find((link:any)=> link.rel === "approve")?.href;
+          if(approveLink)
+            window.location.href=approveLink;
+          else
+            alert('Approval link not found.');
+        },
+        error:(err)=>{
+          console.error(err);
+          alert('Failed to initiate Paypal checkout.');
+          this.isPlacingOrder=false;
+        }
+      });
+
+    }
   }
 
   getCartTotal(): number {

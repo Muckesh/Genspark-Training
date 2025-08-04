@@ -30,6 +30,9 @@ export const routes: Routes = [
         {path:'contact-us',component:Contactus},
         {path:'products',component:Product},
         {path:'orders',component:Order},
+        {path:'payment-success',component:Order},  
+        {path:'payment-cancel',component:Order},    
+  
         {path:'cart',component:Cart},
         {path:'checkout',component:Checkout}
     ]},
