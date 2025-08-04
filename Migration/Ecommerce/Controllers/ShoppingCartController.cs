@@ -1,5 +1,6 @@
 using Ecommerce.Interfaces;
 using Ecommerce.Models.DTOs;
+using Ecommerce.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ecommerce.Controllers
@@ -10,10 +11,14 @@ namespace Ecommerce.Controllers
     public class ShoppingCartController : ControllerBase
     {
         private readonly IShoppingCartService _shoppingCartService;
+        private readonly IOrderService _orderService;
+        private readonly PaypalService _paypalService;
 
-        public ShoppingCartController(IShoppingCartService shoppingCartService)
+        public ShoppingCartController(IShoppingCartService shoppingCartService, IOrderService orderService, PaypalService paypalService)
         {
             _shoppingCartService = shoppingCartService;
+            _orderService = orderService;
+            _paypalService = paypalService;
         }
 
         [HttpPost("place-order")]
@@ -41,5 +46,20 @@ namespace Ecommerce.Controllers
         //     // return CreatedAtAction(nameof(PlaceOrder), new { id = orderResponse.OrderID }, orderResponse);
         //     return Ok(orderResponse);
         // }
+
+        [HttpPost("create-order")]
+        public async Task<IActionResult> CreateOrder([FromBody] List<CartDto> cart)
+        {
+            var result = await _paypalService.CreateOrder(cart);
+            return Content(result, "application/json");
+        }
+
+        [HttpPost("capture-order/{orderId}")]
+        public async Task<IActionResult> CaptureOrder(string orderId)
+        {
+            var result = await _paypalService.CaptureOrder(orderId);
+            return Content(result, "application/json");
+        }
+
     }
 }

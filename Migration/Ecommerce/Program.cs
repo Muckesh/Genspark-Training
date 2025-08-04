@@ -84,11 +84,11 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 
 #endregion
 
-// builder.Services.Configure<PaypalSettings>(builder.Configuration.GetSection("PayPal"));
+builder.Services.Configure<PaypalSettings>(builder.Configuration.GetSection("PayPal"));
 // builder.Services.AddSingleton(resolver =>
 //     resolver.GetRequiredService<IOptions<PaypalSettings>>().Value);
-// builder.Services.AddHttpClient<PaypalService>();
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient<PaypalService>();
+// builder.Services.AddHttpClient();
 
 #region Cors
 builder.Services.AddCors(options =>
