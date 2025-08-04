@@ -268,9 +268,20 @@
                       <a [routerLink]="['/admin/users/view', user.id]" class="btn btn-sm btn-outline-primary" title="View">
                         <i class="bi bi-eye-fill"></i>
                       </a>
-                      <a [routerLink]="['/admin/users/edit', user.id]" class="btn btn-sm btn-outline-secondary" title="Edit">
+                      <!-- <a [routerLink]="['/admin/users/edit', user.id]" class="btn btn-sm btn-outline-secondary" title="Edit">
                         <i class="bi bi-pencil-fill"></i>
+                      </a> -->
+                      <!-- @if (user.isDeleted === true) {
+                      <a (click)="enableUser(user.id)" class="btn btn-sm btn-outline-success" title="Enable">
+                        <i class="bi bi-check-circle"></i>
                       </a>
+                    }@else {
+                      <a (click)="deleteUser(user.id)" class="btn btn-sm btn-outline-danger" title="Disable">
+                        <i class="bi bi-slash-circle"></i>
+                      </a>
+                    } -->
+                      
+                      
                     </div>
                   </td>
                 </tr>

@@ -16,7 +16,7 @@ namespace RealEstateApi.Repositories
             var users = await _realEstateDbContext.Users
             .Include(u => u.AgentProfile)
             .Include(u=>u.BuyerProfile)
-            .Where(u => u.IsDeleted == false)
+            // .Where(u => u.IsDeleted == false)
             .ToListAsync();
             // return users.Count == 0 ? throw new Exception("No users found") : users;
             return users;
@@ -27,7 +27,7 @@ namespace RealEstateApi.Repositories
             var user = await _realEstateDbContext.Users
             .Include(u => u.AgentProfile)
             .Include(u=>u.BuyerProfile)
-            .SingleOrDefaultAsync(u => u.IsDeleted==false &&u.Id == id);
+            .SingleOrDefaultAsync(u => u.Id == id);
             return user ?? throw new UserNotFoundException("User not found");
         }
     }

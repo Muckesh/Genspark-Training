@@ -77,6 +77,7 @@ namespace RealEstateApi.Services
         public async Task<IEnumerable<User>> GetAllUsersAsync()
         {
             var users = await _userRepository.GetAllAsync();
+            // users = users.Where(u => u.IsDeleted == false);
             return users;
         }
 
@@ -90,6 +91,14 @@ namespace RealEstateApi.Services
         {
             var user = await _userRepository.GetByIdAsync(id);
             user.IsDeleted = true;
+            user = await _userRepository.UpdateAsync(id, user);
+            return user ?? throw new FailedOperationException("Unable to delete user at the moment.");
+        }
+
+        public async Task<User> EnableUserAsync(Guid id)
+        {
+            var user = await _userRepository.GetByIdAsync(id);
+            user.IsDeleted = false;
             user = await _userRepository.UpdateAsync(id, user);
             return user ?? throw new FailedOperationException("Unable to delete user at the moment.");
         }
@@ -113,6 +122,7 @@ namespace RealEstateApi.Services
         public async Task<PagedResult<User>> GetFilteredUsersAsync(UserQueryDto query)
         {
             var users = await _userRepository.GetAllAsync();
+            // users = users.Where(u => u.IsDeleted == false);
 
             // search
             if (!string.IsNullOrWhiteSpace(query.SearchTerm))

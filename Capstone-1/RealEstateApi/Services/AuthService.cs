@@ -1,6 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using RealEstateApi.Contexts;
 using RealEstateApi.Exceptions;
 using RealEstateApi.Interfaces;
 using RealEstateApi.Misc;
@@ -12,15 +14,19 @@ namespace RealEstateApi.Services
     public class AuthService : IAuthService
     {
         private readonly ITokenService _tokenService;
+        private readonly IEmailSender _emailSender;
         private readonly ITokenBlacklistService _tokenBlacklistService;
         private readonly IPasswordService _passwordService;
         private readonly IRepository<Guid, User> _userRepository;
+        private readonly IRepository<Guid, PasswordResetToken> _passwordResetTokenRepository;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthService(ITokenService tokenService, IPasswordService passwordService, IRepository<Guid, User> userRepository, ITokenBlacklistService tokenBlacklistService, IHttpContextAccessor httpContextAccessor)
+        public AuthService(ITokenService tokenService, IEmailSender emailSender,IRepository<Guid, PasswordResetToken> passwordResetTokenRepository, IPasswordService passwordService, IRepository<Guid, User> userRepository, ITokenBlacklistService tokenBlacklistService, IHttpContextAccessor httpContextAccessor)
         {
             _tokenService = tokenService;
+            _emailSender = emailSender;
             _tokenBlacklistService = tokenBlacklistService;
+            _passwordResetTokenRepository = passwordResetTokenRepository;
             _passwordService = passwordService;
             _userRepository = userRepository;
             _httpContextAccessor = httpContextAccessor;
@@ -60,6 +66,8 @@ namespace RealEstateApi.Services
             var user = users.SingleOrDefault(u => u.Email == login.Email);
             if (user == null)
                 throw new UserNotFoundException("User does not exist.");
+            if (user.IsDeleted == true)
+                throw new UserNotFoundException("You have been disabled by admin. Please contact the admin : admin@gmail.com");
             bool isValid = _passwordService.VerifyPassword(login.Password, user.PasswordHash);
             if (!isValid)
                 throw new InvalidCredentialsException("Invalid Credentials");
@@ -93,6 +101,55 @@ namespace RealEstateApi.Services
             var jwtExpiry = GetTokenExpiry(accessToken); // parse JWT expiry from token
             await _tokenBlacklistService.AddToBlacklistAsync(accessToken, jwtExpiry);
         }
+
+        public async Task ForgotPasswordAsync(ForgotPasswordDto dto)
+        {
+            var user = (await _userRepository.GetAllAsync())
+                .FirstOrDefault(u => u.Email == dto.Email);
+
+            if (user == null) return; // Don't expose user existence
+
+            var token = Guid.NewGuid().ToString();
+            var resetToken = new PasswordResetToken
+            {
+                UserId = user.Id,
+                Token = token,
+                Expiry = DateTime.UtcNow.AddHours(1)
+            };
+
+            await _passwordResetTokenRepository.AddAsync(resetToken);
+
+            // using var context = _httpContextAccessor.HttpContext!.RequestServices
+            //     .GetRequiredService<RealEstateDbContext>();
+            // context.PasswordResetTokens.Add(resetToken);
+            // await context.SaveChangesAsync();
+
+            var resetLink = $"http://localhost:4200/reset-password?token={token}";
+            await _emailSender.SendAsync(user.Email, "Reset Your Password", $"<p>Click <a href=\"{resetLink}\">here</a> to reset your password.</p>");
+        }
+
+        public async Task ResetPasswordAsync(ResetPasswordDto dto)
+        {
+            // using var context = _httpContextAccessor.HttpContext!.RequestServices
+            //     .GetRequiredService<RealEstateDbContext>();
+
+            // var tokenEntry = await context.PasswordResetTokens
+            //     .Include(t => t.User)
+            //     .FirstOrDefaultAsync(t => t.Token == dto.Token && t.Expiry > DateTime.UtcNow);
+
+            var tokenEntries = await _passwordResetTokenRepository.GetAllAsync();
+            var tokenEntry = tokenEntries.SingleOrDefault(t => t.Token == dto.Token && t.Expiry > DateTime.UtcNow);
+
+            if (tokenEntry == null)
+                throw new InvalidCredentialsException("Invalid or expired token.");
+
+            tokenEntry.User!.PasswordHash = _passwordService.HashPassword(dto.NewPassword);
+
+            // context.PasswordResetTokens.Remove(tokenEntry);
+            // await context.SaveChangesAsync();
+            await _passwordResetTokenRepository.DeleteAsync(tokenEntry.Id);
+        }
+
 
         
         private DateTime GetTokenExpiry(string token)

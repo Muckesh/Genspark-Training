@@ -126,7 +126,7 @@ export class AdminUsersManagement {
   
   
     deleteUser(userId:string){
-      if(confirm('Are you sure you want to delete this user?')){
+      if(confirm('Are you sure you want to disable this user?')){
         this.userService.deleteUser(userId).subscribe({
           next:()=>{
             this.users=this.users.filter(user=>user.id!==userId);
@@ -134,8 +134,24 @@ export class AdminUsersManagement {
             this.updateStats(this.users);
           },
           error: (err) => {
-            this.error = 'Failed to delete user. Please try again.';
-            console.error('Error deleting user:', err);
+            this.error = 'Failed to disable user. Please try again.';
+            console.error('Error disabling user:', err);
+          }
+        });
+      }
+    }
+
+    enableUser(userId:string){
+      if(confirm('Are you sure you want to enable this user?')){
+        this.userService.enableUser(userId).subscribe({
+          next:()=>{
+            // this.users=this.users.filter(user=>user.id!==userId);
+            this.filterUsers();
+            this.updateStats(this.users);
+          },
+          error: (err) => {
+            this.error = 'Failed to enable user. Please try again.';
+            console.error('Error enabling user:', err);
           }
         });
       }

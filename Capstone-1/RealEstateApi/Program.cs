@@ -114,7 +114,8 @@ builder.Services.AddTransient<IRepository<Guid,Inquiry>,InquiryRepository>();
 builder.Services.AddTransient<IRepository<Guid,InquiryReply>,InquiryReplyRepository>();
 builder.Services.AddTransient<IRepository<Guid,PropertyImage>,PropertyImageRepository>();
 builder.Services.AddTransient<IRepository<Guid, PropertyListing>, PropertyListingRepository>();
-builder.Services.AddTransient<IRepository<Guid,Purchase>,PurchaseRepository>();
+builder.Services.AddTransient<IRepository<Guid, Purchase>, PurchaseRepository>();
+builder.Services.AddTransient<IRepository<Guid,PasswordResetToken>,PasswordResetTokenRepository>();
 #endregion
 
 #region Services
@@ -131,6 +132,7 @@ builder.Services.AddTransient<IImageCleanupService, ImageCleanUpService>();
 builder.Services.AddTransient<IBlobService, BlobService>();
 builder.Services.AddTransient<IPurchaseService, PurchaseService>();
 builder.Services.AddSingleton<ITokenBlacklistService, TokenBlacklistService>();
+builder.Services.AddTransient<IEmailSender, SmtpEmailSender>();
 #endregion
 
 #region AuthenticationFilter

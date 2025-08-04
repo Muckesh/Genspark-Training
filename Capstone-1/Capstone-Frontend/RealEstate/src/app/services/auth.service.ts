@@ -124,6 +124,19 @@ export class AuthService{
         this.router.navigate(["login"]);
     }
 
+    // to send forgot-password request
+    requestPasswordReset(email:string):Observable<void>{
+        return this.http.post<void>(`${this.baseUrl}/auth/forgot-password`,{email});
+    }
+
+    // reset password using token
+    resetPassword(token:string,newPassword:string):Observable<void>{
+        return this.http.post<void>(`${this.baseUrl}/auth/reset-password`,{
+            token,
+            newPassword
+        });
+    }
+
     getCurrentUser():any{
         return this.currentUserSubject.value;
     }

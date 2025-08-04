@@ -75,17 +75,32 @@
                   </button>
                  
                   @if (user.role!=="Admin") {
-                     <button class="btn btn-sm btn-outline-primary" [routerLink]="['/admin/users/edit', user.id]" title="Edit">
+                     <!-- <button class="btn btn-sm btn-outline-primary" [routerLink]="['/admin/users/edit', user.id]" title="Edit">
                       <i class="bi bi-pencil-fill"></i>
-                    </button>
+                    </button> -->
+
+                    @if (user.isDeleted === true) {
+                      <button 
+                        class="btn btn-sm btn-outline-success" 
+                        (click)="enableUser(user.id)"
+                        title="Enable"
+                      >
+                        <i class="bi bi-check-circle"></i>
+
+                      </button>
+                    }
                     
-                    <button 
-                    class="btn btn-sm btn-outline-danger" 
-                    (click)="deleteUser(user.id)"
-                    title="Delete"
-                  >
-                    <i class="bi bi-trash-fill"></i>
-                  </button>}
+                    @else {
+                          <button 
+                          class="btn btn-sm btn-outline-danger" 
+                          (click)="deleteUser(user.id)"
+                          title="Disable"
+                        >
+                          <i class="bi bi-slash-circle"></i>
+                        </button>
+                    }
+
+                }
                 </div>
               </td>
             </tr>

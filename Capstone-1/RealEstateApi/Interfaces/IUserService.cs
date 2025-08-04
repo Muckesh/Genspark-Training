@@ -13,6 +13,7 @@ namespace RealEstateApi.Interfaces
         Task<User> GetUserById(Guid id);
 
         Task<User> DeleteUserAsync(Guid id);
+        Task<User> EnableUserAsync(Guid id);
 
         Task<User> CreateAdminUser(CreateUserDto userDto);
 

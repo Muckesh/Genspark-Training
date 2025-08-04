@@ -29,9 +29,13 @@ import { Home } from './components/shared/home/home';
 import { NoAuthGuard } from './guards/no-auth.guard';
 import { Notifications } from './components/shared/notifications/notifications';
 import { MyPurchases } from './components/buyer/my-purchases/my-purchases';
+import { ForgotPassword } from './components/auth/forgot-password/forgot-password';
+import { ResetPassword } from './components/auth/reset-password/reset-password';
 
 export const routes: Routes = [
     {path:'login',component:LoginForm, canActivate:[NoAuthGuard]},
+    {path:'forgot-password',component:ForgotPassword, canActivate:[NoAuthGuard]},
+    {path: 'reset-password',component:ResetPassword,canActivate:[NoAuthGuard]},
     {path:'',component:LoginForm, canActivate:[NoAuthGuard]},
     
     {path:'register/buyer',component:RegisterBuyer, canActivate:[NoAuthGuard]},

@@ -23,6 +23,9 @@ namespace RealEstateApi.Contexts
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
 
+        public DbSet<PasswordResetToken> PasswordResetTokens { get; set; }
+
+
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             var auditEntries = OnBeforeSaveChanges();
@@ -147,7 +150,6 @@ namespace RealEstateApi.Contexts
                         .WithMany(i => i.Replies)
                         .HasForeignKey(r => r.InquiryId)
                         .OnDelete(DeleteBehavior.Restrict);
-
             // Optional: Global query filters for soft delete
             // modelBuilder.Entity<User>().HasQueryFilter(e => !e.IsDeleted);
             // modelBuilder.Entity<PropertyListing>().HasQueryFilter(e => !e.IsDeleted);

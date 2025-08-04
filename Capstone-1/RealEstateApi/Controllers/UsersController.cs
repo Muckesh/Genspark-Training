@@ -44,7 +44,7 @@ namespace RealEstateApi.Controllers
                 var stats = await _userService.GetDashboardStatsAsync();
                 return Ok(stats);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -105,11 +105,11 @@ namespace RealEstateApi.Controllers
                     return Forbid("You can only change your own password.");
 
                 var result = await _userService.ChangePasswordAsync(id, dto);
-                return result ? Ok(new { message = "Password changed successfully." }) : BadRequest(new {message = "Failed to change password."});
+                return result ? Ok(new { message = "Password changed successfully." }) : BadRequest(new { message = "Failed to change password." });
             }
             catch (UnauthorizedAccessAppException ex)
             {
-                return StatusCode(403,new { message = ex.Message });
+                return StatusCode(403, new { message = ex.Message });
             }
             catch (UserNotFoundException ex)
             {
@@ -132,6 +132,29 @@ namespace RealEstateApi.Controllers
                 {
                     message = "User deleted successfully",
                     userId = deletedUser.Id
+                });
+            }
+            catch (UserNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        
+        [HttpPut("enable/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EnableUser(Guid id)
+        {
+            try
+            {
+                var enabledUser = await _userService.EnableUserAsync(id);
+                return Ok(new
+                {
+                    message = "User enabled successfully",
+                    userId = enabledUser.Id
                 });
             }
             catch (UserNotFoundException ex)

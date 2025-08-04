@@ -11,5 +11,9 @@ namespace RealEstateApi.Interfaces
         Task LogoutAsync(LogoutRequestDto dto, string accessToken);
         Task<User> GetUserDetailsAsync();
 
+        Task ForgotPasswordAsync(ForgotPasswordDto dto);
+        Task ResetPasswordAsync(ResetPasswordDto dto);
+
+
     }
 }

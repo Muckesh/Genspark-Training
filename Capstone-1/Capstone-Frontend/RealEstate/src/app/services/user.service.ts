@@ -56,6 +56,10 @@ export class UserService {
     return this.http.delete(`${this.baseUrl}/${id}`);
   }
 
+  enableUser(id: string): Observable<any> {
+    return this.http.put(`${this.baseUrl}/enable/${id}`,{});
+  }
+
   changePassword(id: string, dto: ChangePasswordDto): Observable<any> {
     return this.http.put(`${this.baseUrl}/change-password/${id}`, dto);
   }
